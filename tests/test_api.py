@@ -1,0 +1,146 @@
+import sys
+import os
+import pytest
+from fastapi.testclient import TestClient
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from app.main import app
+
+client = TestClient(app)
+
+def test_health_check():
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json()["status"] == "healthy"
+
+def test_user_registration_and_login():
+    reg_data = {
+        "username": "test_officer",
+        "email": "officer@monitoring.gov.in",
+        "password": "SecurePassword123",
+        "role": "Monitoring Officer",
+        "department": "Ministry of Railways"
+    }
+    response = client.post("/register", json=reg_data)
+    assert response.status_code == 201
+    assert response.json()["username"] == "test_officer"
+
+    login_data = {
+        "username": "test_officer",
+        "password": "SecurePassword123"
+    }
+    response = client.post("/login", json=login_data)
+    assert response.status_code == 200
+    assert "access_token" in response.json()
+
+def test_project_lifecycle():
+    proj_data = {
+        "project_code": "PRJ-TEST-001",
+        "name": "High-Speed Rail Corridor Test Project",
+        "department": "Ministry of Railways",
+        "project_type": "Transportation",
+        "location": "Mumbai-Ahmedabad",
+        "budget": 1200.0,
+        "planned_start_date": "2024-01-01",
+        "planned_end_date": "2026-12-31",
+        "planned_duration_days": 1095
+    }
+    # Create Project
+    res = client.post("/projects", json=proj_data)
+    assert res.status_code == 201
+    project_id = res.json()["id"]
+
+    # List Projects
+    res = client.get("/projects")
+    assert res.status_code == 200
+    assert len(res.json()) >= 1
+
+    # Get Single Project
+    res = client.get(f"/projects/{project_id}")
+    assert res.status_code == 200
+    assert res.json()["project_code"] == "PRJ-TEST-001"
+
+    # Add Milestone
+    milestone_data = {
+        "project_id": project_id,
+        "name": "Land Acquisition Phase 1",
+        "target_date": "2024-06-30",
+        "status": "COMPLETED",
+        "completion_percentage": 100.0
+    }
+    res = client.post("/milestones", json=milestone_data)
+    assert res.status_code == 201
+
+    # Record Progress
+    prog_data = {
+        "project_id": project_id,
+        "completion_percentage": 45.0,
+        "expenditure": 480.0,
+        "reported_by": "Test Officer",
+        "remarks": "On schedule"
+    }
+    res = client.post("/progress", json=prog_data)
+    assert res.status_code == 201
+
+    # Log Risk
+    risk_data = {
+        "project_id": project_id,
+        "title": "Right of Way clearance delay",
+        "severity": "HIGH",
+        "category": "Regulatory",
+        "mitigation_plan": "Expedite state liaison"
+    }
+    res = client.post("/risks", json=risk_data)
+    assert res.status_code == 201
+
+def test_ml_prediction_endpoint():
+    # Low delay test payload
+    low_payload = {
+        "budget": 500.0,
+        "expenditure": 200.0,
+        "planned_duration_days": 365,
+        "time_elapsed_days": 150,
+        "completion_percentage": 50.0,
+        "total_milestones": 10,
+        "completed_milestones": 5,
+        "delayed_milestones": 0,
+        "pending_milestones": 5,
+        "risk_score": 1.5
+    }
+    res = client.post("/predict", json=low_payload)
+    assert res.status_code == 200
+    data = res.json()
+    assert "delay_level" in data
+    assert data["delay_level"] in ["LOW", "MEDIUM", "HIGH"]
+
+    # High delay test payload
+    high_payload = {
+        "budget": 1000.0,
+        "expenditure": 900.0,
+        "planned_duration_days": 365,
+        "time_elapsed_days": 400,
+        "completion_percentage": 30.0,
+        "total_milestones": 20,
+        "completed_milestones": 5,
+        "delayed_milestones": 12,
+        "pending_milestones": 3,
+        "risk_score": 8.5
+    }
+    res = client.post("/predict", json=high_payload)
+    assert res.status_code == 200
+    data = res.json()
+    assert data["delay_level"] in ["MEDIUM", "HIGH"]
+
+def test_dashboard_overview():
+    res = client.get("/dashboard/overview")
+    assert res.status_code == 200
+    data = res.json()
+    assert "total_projects" in data
+    assert "delay_distribution" in data
+    assert "utilized_budget" in data
+
+def test_audit_logs():
+    res = client.get("/audit-logs")
+    assert res.status_code == 200
+    assert isinstance(res.json(), list)
