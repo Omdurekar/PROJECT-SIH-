@@ -444,262 +444,277 @@
     <!-- =========================================
      STATE-WISE PROJECTS SECTION
 ========================================= -->
-<section class="state section">
-    <section class="state-projects">
 
-    <!-- HEADING -->
-    <div class="state-title">
 
-        <h1>
-            State-wise Projects
-            <span>(as of July, 2026)</span>
-        </h1>
-
-    </div>
-
-
-    <div class="state-main">
-
-
-        <!-- =================================
-             LEFT INFORMATION CARD
-        =============== =================== -->
-
-        <div class="state-info-card">
-
-            <!-- STATE NAME -->
-
-            <div class="state-name">
-                Ladakh
-            </div>
-
-
-            <!-- STATISTICS -->
-
-            <div class="state-stats">
-
-
-                <!-- PROJECT COUNT -->
-
-                <div class="state-stat">
-
-                    <div class="state-icon">
-                        📊
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Project Count (No.)
-                            <small>ⓘ</small>
-                        </h3>
-
-                        <p>
-                            9
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ORIGINAL COST -->
-
-                <div class="state-stat">
-
-                    <div class="state-icon">
-                        🪙
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Original Cost (in Cr.)
-                            <small>ⓘ</small>
-                        </h3>
-
-                        <p>
-                            ₹ 52,745.96
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <!-- REVISED COST -->
-
-                <div class="state-stat">
-
-                    <div class="state-icon">
-                        💰
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Latest Revised Cost (in Cr.)
-                            <small>ⓘ</small>
-                        </h3>
-
-                        <p>
-                            ₹ 41,982.80
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <!-- EXPENDITURE -->
-
-                <div class="state-stat">
-
-                    <div class="state-icon">
-                        📈
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Expenditure (Cumm.) (in Cr.)
-                            <small>ⓘ</small>
-                        </h3>
-
-                        <p>
-                            ₹ 31,642.63
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <!-- COMPLETED -->
-
-                <div class="state-stat">
-
-                    <div class="state-icon">
-                        📅
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Completed During month (No.)
-                            <small>ⓘ</small>
-                        </h3>
-
-                        <p>
-                            0
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <!-- NEWLY ADDED -->
-
-                <div class="state-stat">
-
-                    <div class="state-icon">
-                        🏗️
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Newly Added (No.)
-                            <small>ⓘ</small>
-                        </h3>
-
-                        <p>
-                            0
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-            </div>
-
-        </div>
-    </section>
-</section>
 <!-- ==========================================
-     INDIA STATE-WISE PROJECT MONITORING
+     HIGH RISK PROJECTS
 ========================================== -->
 
-<!-- =========================================
-     HIGH RISKS PROJECTS SECTION
-========================================= -->
-    <!-- CAROUSEL -->
-    
+<section class="high-risk-section">
 
-
-        <!-- PROJECT CARDS CONTAINER -->
-        <!-- ================================
-     HIGH RISK PROJECTS
-================================ -->
-
-<section class="high-risk-section" id="high-risk">
-<div class="project-carousel">
-
-        <!-- LEFT BUTTON -->
-        <button class="carousel-btn left-btn" onclick="moveProjects(-1)">
-            &#10094;
-        </button>
-</div>
     <div class="section-heading">
-       
-        <div>
-            <span class="section-label">AI / ML MONITORING</span>
 
-            <h2>
-                High-Risk Projects
-            </h2>
+        <!-- <span class="section-tag">PAIMANA AI</span> -->
 
-            <p>
-                Top 3 projects identified by the PAIMANA risk prediction model
-            </p>
-        </div>
+        <h2>High Risk Projects</h2>
 
-        <div class="risk-status">
-            <span class="status-dot"></span>
-            ML MODEL ACTIVE
-        </div>
+        <!-- <p>
+            Top 3 projects identified as high-risk
+            by the project intelligence model
+        </p> -->
 
     </div>
 
 
-    <!-- PROJECT CARDS -->
+    <div class="risk-cards-container">
 
-    <div class="project-wrapper">
 
-        <div class="project-track" id="projectTrack">
+        <!-- ==============================
+             PROJECT 1
+        =============================== -->
 
-            <!-- Cards will be loaded from backend -->
-            
-            <div class="loading-projects">
-                <div class="loader"></div>
-                <p>Analysing projects using ML model...</p>
+        <div class="risk-card"
+             onclick="openProject('PRJ001')">
+
+            <div class="risk-card-top">
+
+                <span class="risk-label">
+                    HIGH RISK
+                </span>
+
+                <div class="risk-score">
+
+                    <strong>87</strong>
+
+                    <span>/100</span>
+
+                </div>
+
+            </div>
+
+
+            <h3>
+                Mumbai-Ahmedabad High Speed Rail
+            </h3>
+
+
+            <p class="organization">
+                National High Speed Rail Corporation
+            </p>
+
+
+            <div class="risk-details">
+
+                <div>
+                    <span>Project Cost</span>
+                    <strong>₹1,08,000 Cr</strong>
+                </div>
+
+                <div>
+                    <span>Physical Progress</span>
+                    <strong>62%</strong>
+                </div>
+
+            </div>
+
+
+            <div class="risk-progress">
+
+                <div class="progress-label">
+                    <span>Risk Level</span>
+                    <span>87%</span>
+                </div>
+
+                <div class="progress-bar">
+
+                    <div
+                        class="progress-fill"
+                        style="width:87%">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="view-project">
+
+                View Project Analysis
+                <span>→</span>
+
             </div>
 
         </div>
 
+
+
+        <!-- ==============================
+             PROJECT 2
+        =============================== -->
+
+        <div class="risk-card"
+             onclick="openProject('PRJ002')">
+
+            <div class="risk-card-top">
+
+                <span class="risk-label">
+                    HIGH RISK
+                </span>
+
+                <div class="risk-score">
+
+                    <strong>81</strong>
+
+                    <span>/100</span>
+
+                </div>
+
+            </div>
+
+
+            <h3>
+                Chennai Metro Rail Phase-II
+            </h3>
+
+
+            <p class="organization">
+                Chennai Metro Rail Limited
+            </p>
+
+
+            <div class="risk-details">
+
+                <div>
+                    <span>Project Cost</span>
+                    <strong>₹63,246 Cr</strong>
+                </div>
+
+                <div>
+                    <span>Physical Progress</span>
+                    <strong>56%</strong>
+                </div>
+
+            </div>
+
+
+            <div class="risk-progress">
+
+                <div class="progress-label">
+                    <span>Risk Level</span>
+                    <span>81%</span>
+                </div>
+
+                <div class="progress-bar">
+
+                    <div
+                        class="progress-fill"
+                        style="width:81%">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="view-project">
+
+                View Project Analysis
+                <span>→</span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ==============================
+             PROJECT 3
+        =============================== -->
+
+        <div class="risk-card"
+             onclick="openProject('PRJ003')">
+
+            <div class="risk-card-top">
+
+                <span class="risk-label">
+                    HIGH RISK
+                </span>
+
+                <div class="risk-score">
+
+                    <strong>76</strong>
+
+                    <span>/100</span>
+
+                </div>
+
+            </div>
+
+
+            <h3>
+                National Highway Development Project
+            </h3>
+
+
+            <p class="organization">
+                National Highways Authority of India
+            </p>
+
+
+            <div class="risk-details">
+
+                <div>
+                    <span>Project Cost</span>
+                    <strong>₹91,200 Cr</strong>
+                </div>
+
+                <div>
+                    <span>Physical Progress</span>
+                    <strong>74%</strong>
+                </div>
+
+            </div>
+
+
+            <div class="risk-progress">
+
+                <div class="progress-label">
+                    <span>Risk Level</span>
+                    <span>76%</span>
+                </div>
+
+                <div class="progress-bar">
+
+                    <div
+                        class="progress-fill"
+                        style="width:76%">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="view-project">
+
+                View Project Analysis
+                <span>→</span>
+
+            </div>
+
+        </div>
+
+
     </div>
-</section>
-
-</section>
 
 
-        <!-- RIGHT BUTTON -->
+    <!-- SEE ALL -->
 
-        <button class="carousel-btn right-btn" onclick="moveProjects(1)">
-            &#10095;
-        </button>
+    <div class="view-all-container">
+
+        <a href="high-risk.html" class="view-all-btn">
+            View All High Risk Projects →
+        </a>
 
     </div>
 
