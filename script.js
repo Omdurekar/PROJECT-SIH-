@@ -105,3 +105,107 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+async function searchProjects() {
+
+    const projectName =
+        document.getElementById("projectName").value;
+
+    const ministry =
+        document.getElementById("ministry").value;
+
+    const state =
+        document.getElementById("state").value;
+
+    const sector =
+        document.getElementById("sector").value;
+
+    const risk =
+        document.getElementById("risk").value;
+
+    const projectSize =
+        document.getElementById("projectSize").value;
+
+    const progress =
+        document.getElementById("progress").value;
+
+    const overrun =
+        document.getElementById("overrun").value;
+
+
+    const filters = {
+
+        project_name: projectName,
+
+        ministry: ministry,
+
+        state: state,
+
+        sector: sector,
+
+        risk_category: risk,
+
+        project_size: projectSize,
+
+        physical_progress: progress,
+
+        time_overrun: overrun
+
+    };
+
+
+    console.log("Sending filters:", filters);
+
+
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:8000/projects/search",
+            {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(filters)
+
+            }
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error("Unable to fetch projects");
+
+        }
+
+
+        const data = await response.json();
+
+
+        displaySearchResults(data);
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("searchResults").innerHTML = `
+
+            <div class="result-placeholder">
+
+                <span>⚠️</span>
+
+                <p>
+                    Backend is not connected.
+                    Please check the FastAPI server.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}

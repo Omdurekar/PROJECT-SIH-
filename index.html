@@ -82,9 +82,9 @@
             </button> -->
 
 
-            <div class="project-logo">
+            <!-- <div class="project-logo">
                 RiskLens
-            </div>
+            </div> -->
 
         </div>
 
@@ -96,7 +96,7 @@
     ========================= -->
 
     <nav>
-        <div class="nav-search">
+        <!-- <div class="nav-search">
 
         <input
             type="text"
@@ -109,7 +109,7 @@
             onclick="searchProject()"
         >
             🔍
-        </button>
+        </button> -->
 
     </div>
         <a href="index.html" class="active">
@@ -445,7 +445,209 @@
      STATE-WISE PROJECTS SECTION
 ========================================= -->
 
+<section class="project-search-section">
 
+    <div class="search-header">
+        
+        <h2>Search & Analyze Projects</h2>
+
+        <p>
+            Search and filter infrastructure projects using multiple parameters
+            to identify projects requiring monitoring or intervention.
+        </p>
+    </div>
+
+
+    <div class="search-panel">
+
+        <!-- Project Name -->
+        <div class="search-field project-name-field">
+
+            <label for="projectName">
+                Project Name
+            </label>
+
+            <input
+                type="text"
+                id="projectName"
+                placeholder="Search project name..."
+            >
+
+        </div>
+
+
+        <!-- Ministry -->
+        <div class="search-field">
+
+            <label for="ministry">
+                Ministry / Agency
+            </label>
+
+            <select id="ministry">
+
+                <option value="">All Ministries</option>
+
+                <!-- Options can later come from backend -->
+
+            </select>
+
+        </div>
+
+
+        <!-- State -->
+        <div class="search-field">
+
+            <label for="state">
+                State
+            </label>
+
+            <select id="state">
+
+                <option value="">All States</option>
+
+                <!-- Backend data will populate states -->
+
+            </select>
+
+        </div>
+
+
+        <!-- Sector -->
+        <div class="search-field">
+
+            <label for="sector">
+                Sector
+            </label>
+
+            <select id="sector">
+
+                <option value="">All Sectors</option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Risk -->
+        <div class="search-field">
+
+            <label for="risk">
+                Risk Category
+            </label>
+
+            <select id="risk">
+
+                <option value="">All Risk Levels</option>
+                <option value="High">High Risk</option>
+                <option value="Medium">Medium Risk</option>
+                <option value="Low">Low Risk</option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Project Size -->
+        <div class="search-field">
+
+            <label for="projectSize">
+                Project Size
+            </label>
+
+            <select id="projectSize">
+
+                <option value="">All Categories</option>
+                <option value="Large">Large</option>
+                <option value="Medium">Medium</option>
+                <option value="Small">Small</option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Physical Progress -->
+        <div class="search-field">
+
+            <label for="progress">
+                Physical Progress
+            </label>
+
+            <select id="progress">
+
+                <option value="">Any Progress</option>
+                <option value="0-25">0 – 25%</option>
+                <option value="25-50">25 – 50%</option>
+                <option value="50-75">50 – 75%</option>
+                <option value="75-100">75 – 100%</option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Time Overrun -->
+        <div class="search-field">
+
+            <label for="overrun">
+                Time Overrun
+            </label>
+
+            <select id="overrun">
+
+                <option value="">Any Duration</option>
+                <option value="0">No Overrun</option>
+                <option value="1-6">1 – 6 Months</option>
+                <option value="6-12">6 – 12 Months</option>
+                <option value="12+">More than 12 Months</option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Buttons -->
+
+        <div class="search-actions">
+
+            <button
+                type="button"
+                class="search-btn"
+                onclick="searchProjects()"
+            >
+                🔍 Search Projects
+            </button>
+
+            <button
+                type="button"
+                class="clear-btn"
+                onclick="clearSearch()"
+            >
+                Clear Filters
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- Search Result -->
+
+    <div id="searchResults" class="search-results">
+
+        <div class="result-placeholder">
+
+            <span>🔎</span>
+
+            <p>
+                Select filters and search for projects
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
 <!-- ==========================================
      HIGH RISK PROJECTS
 ========================================== -->
@@ -723,16 +925,16 @@
      COMING SOON / MOBILE APP SECTION
 ===================================================== -->
 
-<section class="app-section">
+<!-- <section class="app-section">
 
-    <!-- LEFT : MOBILE IMAGE --> 
+    LEFT : MOBILE IMAGE 
     <div class="app-image">
         <img src="images/image13.png" alt="Project Guardian Mobile App">
     </div>
 
 
-    <!-- CENTER : TEXT -->
-    <div class="app-content">
+     CENTER : TEXT -->
+    <!-- <div class="app-content">
 
         <h2>Coming Soon</h2>
 
@@ -741,11 +943,11 @@
             Google Play/iOS App.
         </p>
 
-    </div>
+    </div> -->
 
 
     <!-- RIGHT : APP STORE BUTTONS  -->
-     <div class="app-buttons">
+     <!-- <div class="app-buttons">
 
         <a href="#">
             <img src="images/image12.png"
@@ -759,7 +961,7 @@
 
     </div> 
 
-</section> 
+</section>  -->
 
 
 
@@ -778,10 +980,10 @@
 
         <div class="footer-top">
 
-            <div class="footer-brand">
+            <!-- <div class="footer-brand">
 
-                <img src="images/image1.png"
-                     alt="Government of India">
+                 <img src="images/image1.png" -->
+                     <!-- alt="Government of India"> --> 
 
                 <!-- <div class="footer-brand-text">
 
@@ -796,14 +998,14 @@
 
                 </div> -->
 
-                <img src="images/image.png"
+                <!-- <img src="images/image.png"
                      class="data-logo"
-                     alt="Data for Development">
+                     alt="Data for Development"> -->
 
-            </div>
+            <!-- </div>--> 
 
 
-            <!-- NeGD -->
+            <!-- NeGD
             <div class="negd-box">
 
                 <p>
@@ -815,7 +1017,7 @@
 
             </div>
 
-        </div>
+        </div> -->
 
 
 
@@ -823,102 +1025,84 @@
              CONTACT
         ========================================== -->
 
-        <div class="contact-section">
+        <footer class="footer">
 
-            <h3>Get in touch</h3>
+    <div class="footer-content">
 
-            <p class="address">
+        <!-- Contact Information -->
+        <div class="footer-contact">
 
-                Ministry of Statistics and Programme
-                Implementation, Government of India,
-                Khurshid Lal Bhawan,
-                Janpath, New Delhi-110001 (India).
-
-            </p>
-
-
-            <div class="contact-details">
-
-                <div class="contact-item">
-
-                    <span class="contact-icon">
-                        <img src="images/image8.png" alt="phone number">
-                    </span>
-
-                    <span>
-                        011-23455604
-                    </span>
-
+            <div class="contact-item">
+                <span class="contact-icon">
+                    <img src="images/image8.png" alt="phone number">
+                </span>
+                <div>
+                    <span>011-</span><br>
+                    <span>23455604</span>
                 </div>
+            </div>
 
-
-                <div class="contact-item">
-
-                    <span class="contact-icon">
-                        <img src="images/image9.png" alt="mail box">
-                    </span>
-
-                    <span>
-                        dir-ipmd[at]mospi[dot]gov[dot]in
-                    </span>
-
+            <div class="contact-item email">
+                <span class="contact-icon">
+                    <img src="images/image9.png" alt="email-box">
+                </span>
+                <div>
+                    <span>dir-ipmd[at]mospi[dot]gov[dot]in</span>
                 </div>
-
             </div>
 
         </div>
 
-
-
-        <!-- =========================================
-             DIVIDER
-        ========================================== -->
-
-        <hr>
-
-
-
-        <!-- =========================================
-             QUICK LINKS
-        ========================================== -->
-
+        
+        <!-- Quick Links -->
         <div class="quick-links">
 
             <h3>Quick Links</h3>
 
-
             <div class="links-container">
 
-                <a href="#">Home</a>
+                <a href="index.html">Home</a>
 
-                <a href="#">Contact Us</a>
+                <a href="#">Contact<br>Us</a>
 
                 <a href="#">FAQs</a>
 
-                <a href="#">Site Map</a>
+                <a href="#">Site<br>Map</a>
 
-                <a href="#">Hyperlinking Policy</a>
+                <a href="#">Hyperlinking<br>Policy</a>
 
-                <a href="#">Privacy Policy</a>
+                <a href="#">Privacy<br>Policy</a>
 
             </div>
 
         </div>
 
+    </div>
+    <hr>
+
+    <!-- Copyright -->
+    <div class="footer-bottom">
+
+        <p>
+            Content owned and maintained by: Infrastructure &amp; Project Monitoring
+            Division (IPMD) | Ministry of Statistics and Programme Implementation.
+            Copyright © 2025 Ministry of Statistics and Programme Implementation
+        </p>
 
     </div>
 
+</footer>
 
     <!-- COPYRIGHT -->
 
-    <div class="copyright">
+    <!-- <div class="copyright">
 
         Content owned and maintained by: Infrastructure & Project Monitoring Division(IPMD) | Ministry of Statistics and Programme Implementation.
 
         Copyright © 2025 Ministry of Statistics and Programme Implementation
 
     </div>
-</footer>
+</footer> -->
 <script src="script.js"></script>
 </body>
 
