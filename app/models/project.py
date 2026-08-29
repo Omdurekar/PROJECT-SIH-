@@ -6,39 +6,7 @@ from pydantic import BaseModel, Field
 from app.config.database import Base
 
 # --- ORM Model ---
-class Project(Base):
-    __tablename__ = "projects"
-
-    id = Column(Integer, primary_key=True, index=True)
-    project_code = Column(String(30), unique=True, index=True, nullable=False)
-    name = Column(String(200), nullable=False)
-    department = Column(String(100), nullable=False)
-    project_type = Column(String(50), nullable=False)
-    location = Column(String(100), nullable=False)
-
-    budget = Column(Float, nullable=False)
-    expenditure = Column(Float, default=0.0)
-
-    planned_start_date = Column(String(20), nullable=False)
-    planned_end_date = Column(String(20), nullable=False)
-    actual_start_date = Column(String(20), nullable=True)
-    actual_end_date = Column(String(20), nullable=True)
-
-    planned_duration_days = Column(Integer, nullable=False)
-    time_elapsed_days = Column(Integer, default=0)
-    completion_percentage = Column(Float, default=0.0)
-
-    status = Column(String(30), default="IN_PROGRESS")
-    delay_level = Column(String(20), default="LOW")
-    risk_score = Column(Float, default=0.0)
-
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
-
-    milestones = relationship("Milestone", back_populates="project", cascade="all, delete-orphan")
-    progress_updates = relationship("ProgressUpdate", back_populates="project", cascade="all, delete-orphan")
-    risks = relationship("Risk", back_populates="project", cascade="all, delete-orphan")
-    prediction_logs = relationship("PredictionLog", back_populates="project", cascade="all, delete-orphan")
+from app.models.orm import Project
 
 # --- Pydantic Schemas ---
 class ProjectCreate(BaseModel):

@@ -190,3 +190,84 @@ class DashboardOverview(BaseModel):
     avg_completion_percentage: float
     high_priority_projects: List[ProjectResponse]
     department_summary: Dict[str, Dict[str, Any]]
+
+
+# --- Dataset Project Schemas ---
+class DatasetProjectResponse(BaseModel):
+    id: int
+    global_project_id: str
+    project_name_clean: str
+    report_date: Optional[str] = None
+    project_status: Optional[str] = None
+    sector_clean: Optional[str] = None
+    agency_clean: Optional[str] = None
+    state_clean: Optional[str] = None
+    cost_original: Optional[float] = None
+    cost_anticipated: Optional[float] = None
+    cost_revised: Optional[float] = None
+    cost_overrun_amount_calc: Optional[float] = None
+    cost_overrun_percent_clean: Optional[float] = None
+    time_overrun_months_calc: Optional[float] = None
+    total_planned_duration_months: Optional[float] = None
+    project_age_months: Optional[float] = None
+    remaining_schedule_months: Optional[float] = None
+    physical_progress_clean: Optional[float] = None
+    time_overrun_prediction: Optional[int] = None
+    time_overrun_probability: Optional[float] = None
+    cost_overrun_prediction: Optional[int] = None
+    cost_overrun_probability: Optional[float] = None
+    risk_class_prediction: Optional[int] = None
+    risk_class_probability: Optional[float] = None
+    risk_class_0_probability: Optional[float] = None
+    risk_class_1_probability: Optional[float] = None
+    risk_class_2_probability: Optional[float] = None
+    created_at: datetime.datetime
+
+    class Config:
+        from_attributes = True
+
+
+# --- Top Risk Projects Schema ---
+class TopRiskProjectResponse(BaseModel):
+    id: int
+    global_project_id: str
+    project_name_clean: str
+    report_date: Optional[str] = None
+    project_status: Optional[str] = None
+    predicted_risk_class: Optional[int] = None
+    predicted_risk_probability: Optional[float] = None
+    cost_original: Optional[float] = None
+    cost_anticipated: Optional[float] = None
+    time_overrun_months_calc: Optional[float] = None
+    analysis_details: Optional[Any] = None
+    created_at: datetime.datetime
+
+    class Config:
+        from_attributes = True
+
+
+# --- Model Analytics & Explainability Schemas ---
+class ModelSummaryResponse(BaseModel):
+    id: int
+    model_key: str
+    model_name: str
+    task: str
+    target: str
+    target_definition: Optional[str] = None
+    dataset_info: Optional[Any] = None
+    best_model_parameters: Optional[Any] = None
+    test_performance: Optional[Any] = None
+    cross_validation_results: Optional[Any] = None
+    leakage_audit: Optional[Any] = None
+    top_feature_importance: Optional[Any] = None
+    shap_summary: Optional[Any] = None
+    created_at: datetime.datetime
+
+    class Config:
+        from_attributes = True
+
+
+class SHAPSummaryResponse(BaseModel):
+    time_overrun: Optional[Dict[str, Any]] = None
+    cost_overrun: Optional[Dict[str, Any]] = None
+    risk_class: Optional[Dict[str, Any]] = None

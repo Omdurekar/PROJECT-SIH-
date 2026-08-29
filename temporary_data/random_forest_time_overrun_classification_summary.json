@@ -1,0 +1,138 @@
+{
+  "model_name": "RandomForestClassifier",
+  "task": "classification",
+  "target": "target_time_overrun_increase",
+  "target_definition": "Binary target indicating whether project time overrun increased in subsequent report snapshots (1 = Time Overrun Increased, 0 = No Increase).",
+  "dataset_info": {
+    "train_sample_count": 6627,
+    "validation_sample_count": 254,
+    "test_sample_count": 1103,
+    "total_test_snapshots_explained": 1781,
+    "train_period": "2012-2019",
+    "validation_period": "2020-2021",
+    "test_period": "2022-2025"
+  },
+  "best_model_parameters": {
+    "n_estimators": 300,
+    "max_depth": 5,
+    "min_samples_split": 5,
+    "min_samples_leaf": 1,
+    "max_features": "sqrt",
+    "class_weight": "balanced",
+    "scaling_used": "StandardScaler for numerical features, OneHotEncoder for categorical features"
+  },
+  "classification_threshold": 0.45,
+  "threshold_details": {
+    "default_threshold": 0.5,
+    "validation_optimal_threshold": 0.45,
+    "operational_prediction_threshold": 0.45
+  },
+  "test_performance": {
+    "at_operational_threshold_0_45": {
+      "accuracy": 0.2561307901907357,
+      "precision": 0.18991097922848665,
+      "recall": 1.0,
+      "f1": 0.3192019950124688,
+      "confusion_matrix": [
+        [
+          90,
+          819
+        ],
+        [
+          0,
+          192
+        ]
+      ],
+      "true_negatives": 90,
+      "false_positives": 819,
+      "false_negatives": 0,
+      "true_positives": 192,
+      "roc_auc": 0.8508348230656401
+    },
+    "at_default_threshold_0_50": {
+      "accuracy": 0.5794732061762035,
+      "precision": 0.2825040128410915,
+      "recall": 0.9166666666666666,
+      "f1": 0.43190184049079755,
+      "confusion_matrix": [
+        [
+          462,
+          447
+        ],
+        [
+          16,
+          176
+        ]
+      ],
+      "true_negatives": 462,
+      "false_positives": 447,
+      "false_negatives": 16,
+      "true_positives": 176,
+      "roc_auc": 0.8508348230656401
+    }
+  },
+  "cross_validation_results": {
+    "cv_mean_accuracy": 0.6556160469516198,
+    "cv_std_accuracy": 0.012845216033525843,
+    "cv_mean_precision": 0.5924984278974116,
+    "cv_mean_recall": 0.7093220338983051,
+    "cv_mean_f1": 0.6454855965075434,
+    "cv_mean_roc_auc": 0.7177554297796925
+  },
+  "top_feature_importance": [
+    {
+      "feature": "time_overrun_months_calc",
+      "importance": 0.175277
+    },
+    {
+      "feature": "remaining_schedule_months",
+      "importance": 0.139787
+    },
+    {
+      "feature": "schedule_slippage_clean",
+      "importance": 0.098847
+    },
+    {
+      "feature": "is_ahead_of_schedule",
+      "importance": 0.093996
+    },
+    {
+      "feature": "elapsed_schedule_ratio_clean",
+      "importance": 0.07167
+    },
+    {
+      "feature": "project_age_months",
+      "importance": 0.05844
+    },
+    {
+      "feature": "cost_original",
+      "importance": 0.036931
+    },
+    {
+      "feature": "cost_anticipated",
+      "importance": 0.027629
+    },
+    {
+      "feature": "sector_clean_Railways",
+      "importance": 0.017347
+    },
+    {
+      "feature": "sector_clean_Coal",
+      "importance": 0.016736
+    }
+  ],
+  "leakage_audit": {
+    "status": "PASSED",
+    "training_test_leakage": false,
+    "future_features_used": false,
+    "preprocessing_fitted_on_training_only": true,
+    "excluded_target_and_future_cols": [
+      "target_risk_class",
+      "target_time_overrun_increase",
+      "target_cost_overrun_increase",
+      "future_time_overrun",
+      "future_cost"
+    ],
+    "snapshot_verification": "All input features were verified to reflect data available at the exact snapshot report date."
+  }
+}

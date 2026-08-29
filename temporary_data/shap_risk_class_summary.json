@@ -1,0 +1,145 @@
+{
+  "model_name": "Random Forest Multiclass Risk Classifier",
+  "target": "target_risk_class",
+  "shap_method": "TreeExplainer",
+  "number_of_original_features": 27,
+  "top_feature": "state_clean",
+  "top_feature_mean_abs_shap": 3.777264,
+  "features": [
+    {
+      "feature": "state_clean",
+      "mean_abs_shap": 3.777264,
+      "direction": "Non-linear / context-dependent"
+    },
+    {
+      "feature": "agency_clean",
+      "mean_abs_shap": 0.495033,
+      "direction": "Non-linear / context-dependent"
+    },
+    {
+      "feature": "sector_clean",
+      "mean_abs_shap": 0.448715,
+      "direction": "Higher values decrease class probability (-)"
+    },
+    {
+      "feature": "cost_original",
+      "mean_abs_shap": 0.18463,
+      "direction": "Non-linear / context-dependent"
+    },
+    {
+      "feature": "delay_reason_missing",
+      "mean_abs_shap": 0.162942,
+      "direction": "Non-linear / context-dependent"
+    },
+    {
+      "feature": "cost_anticipated",
+      "mean_abs_shap": 0.149096,
+      "direction": "Non-linear / context-dependent"
+    },
+    {
+      "feature": "cost_overrun_amount_calc",
+      "mean_abs_shap": 0.135917,
+      "direction": "Non-linear / context-dependent"
+    },
+    {
+      "feature": "remaining_schedule_months",
+      "mean_abs_shap": 0.135859,
+      "direction": "Non-linear / context-dependent"
+    },
+    {
+      "feature": "is_revised",
+      "mean_abs_shap": 0.132691,
+      "direction": "Non-linear / context-dependent"
+    },
+    {
+      "feature": "month_gap_prev",
+      "mean_abs_shap": 0.128685,
+      "direction": "Higher values increase class probability (+)"
+    },
+    {
+      "feature": "has_clearance_issue",
+      "mean_abs_shap": 0.121966,
+      "direction": "Non-linear / context-dependent"
+    },
+    {
+      "feature": "cost_escalation_rate_clean",
+      "mean_abs_shap": 0.103327,
+      "direction": "Non-linear / context-dependent"
+    },
+    {
+      "feature": "is_ahead_of_schedule",
+      "mean_abs_shap": 0.098577,
+      "direction": "Higher values increase class probability (+)"
+    },
+    {
+      "feature": "cost_revised",
+      "mean_abs_shap": 0.096247,
+      "direction": "Non-linear / context-dependent"
+    },
+    {
+      "feature": "prev_progress",
+      "mean_abs_shap": 0.092427,
+      "direction": "Non-linear / context-dependent"
+    },
+    {
+      "feature": "elapsed_schedule_ratio_clean",
+      "mean_abs_shap": 0.087262,
+      "direction": "Non-linear / context-dependent"
+    },
+    {
+      "feature": "cost_overrun_percent_clean",
+      "mean_abs_shap": 0.076466,
+      "direction": "Higher values decrease class probability (-)"
+    },
+    {
+      "feature": "has_land_acquisition_issue",
+      "mean_abs_shap": 0.074387,
+      "direction": "Higher values decrease class probability (-)"
+    },
+    {
+      "feature": "project_age_months",
+      "mean_abs_shap": 0.072284,
+      "direction": "Non-linear / context-dependent"
+    },
+    {
+      "feature": "progress_velocity_clean",
+      "mean_abs_shap": 0.067434,
+      "direction": "Non-linear / context-dependent"
+    },
+    {
+      "feature": "physical_progress_clean",
+      "mean_abs_shap": 0.064048,
+      "direction": "Non-linear / context-dependent"
+    },
+    {
+      "feature": "total_planned_duration_months",
+      "mean_abs_shap": 0.018596,
+      "direction": "Higher values decrease class probability (-)"
+    },
+    {
+      "feature": "approval_gt_doc_orig",
+      "mean_abs_shap": 0.013173,
+      "direction": "Higher values decrease class probability (-)"
+    },
+    {
+      "feature": "progress_isna",
+      "mean_abs_shap": 0.010261,
+      "direction": "Higher values increase class probability (+)"
+    },
+    {
+      "feature": "expenditure_cumulative",
+      "mean_abs_shap": 0.0,
+      "direction": "N/A"
+    },
+    {
+      "feature": "expenditure_ratio",
+      "mean_abs_shap": 0.0,
+      "direction": "N/A"
+    },
+    {
+      "feature": "annual_outlay",
+      "mean_abs_shap": 0.0,
+      "direction": "N/A"
+    }
+  ]
+}

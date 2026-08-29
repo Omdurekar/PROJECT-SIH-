@@ -10,14 +10,20 @@ def get_project_by_id(db: Session, project_id: int) -> Optional[Project]:
 def get_project_by_code(db: Session, project_code: str) -> Optional[Project]:
     return db.query(Project).filter(Project.project_code == project_code).first()
 
+def get_project_by_name(db: Session, name: str) -> List[Project]:
+    return db.query(Project).filter(func.lower(Project.name).contains(name.lower().strip())).all()
+
 def list_projects(
     db: Session,
     skip: int = 0,
     limit: int = 100,
     department: Optional[str] = None,
-    delay_level: Optional[str] = None
+    delay_level: Optional[str] = None,
+    name: Optional[str] = None
 ) -> List[Project]:
     query = db.query(Project)
+    if name:
+        query = query.filter(func.lower(Project.name).contains(name.lower().strip()))
     if department:
         query = query.filter(Project.department == department)
     if delay_level:

@@ -6,19 +6,7 @@ from pydantic import BaseModel
 from app.config.database import Base
 
 # --- ORM Model ---
-class Milestone(Base):
-    __tablename__ = "milestones"
-
-    id = Column(Integer, primary_key=True, index=True)
-    project_id = Column(Integer, ForeignKey("projects.id"), nullable=False)
-    name = Column(String(200), nullable=False)
-    target_date = Column(String(20), nullable=False)
-    status = Column(String(30), default="PENDING")
-    completion_percentage = Column(Float, default=0.0)
-    is_delayed = Column(Integer, default=0)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
-
-    project = relationship("Project", back_populates="milestones")
+from app.models.orm import Milestone
 
 # --- Pydantic Schemas ---
 class MilestoneCreate(BaseModel):

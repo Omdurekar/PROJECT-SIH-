@@ -1,0 +1,105 @@
+{
+  "model_name": "LogisticRegression",
+  "task": "classification",
+  "target": "target_cost_overrun_increase",
+  "target_definition": "Binary target indicating whether project cost overrun increased in subsequent report snapshots (1 = Cost Overrun Increased, 0 = No Increase).",
+  "dataset_info": {
+    "train_sample_count": 6627,
+    "validation_sample_count": 254,
+    "test_sample_count": 1103,
+    "total_test_snapshots_explained": 1781,
+    "train_period": "2012-2019",
+    "validation_period": "2020-2021",
+    "test_period": "2022-2025"
+  },
+  "best_model_parameters": {
+    "C": 0.1,
+    "class_weight": "balanced",
+    "solver": "lbfgs",
+    "max_iter": 1000,
+    "scaling_used": "StandardScaler for numerical features, OneHotEncoder for categorical features"
+  },
+  "classification_threshold": 0.21,
+  "threshold_details": {
+    "default_threshold": 0.5,
+    "validation_optimal_threshold": 0.21,
+    "operational_prediction_threshold": 0.21
+  },
+  "test_performance": {
+    "at_operational_threshold_0_21": {
+      "accuracy": 0.6518585675430644,
+      "precision": 0.6518585675430644,
+      "recall": 1.0,
+      "f1": 0.7892425905598244,
+      "confusion_matrix": [
+        [
+          0,
+          384
+        ],
+        [
+          0,
+          719
+        ]
+      ],
+      "true_negatives": 0,
+      "false_positives": 384,
+      "false_negatives": 0,
+      "true_positives": 719,
+      "observation_count": 1103,
+      "class_distribution": {
+        "0": 384,
+        "1": 719
+      },
+      "roc_auc": 0.8607205464765879
+    },
+    "at_default_threshold_0_50": {
+      "accuracy": 0.7706255666364461,
+      "precision": 0.7696759259259259,
+      "recall": 0.9248956884561892,
+      "f1": 0.8401768793430195,
+      "confusion_matrix": [
+        [
+          185,
+          199
+        ],
+        [
+          54,
+          665
+        ]
+      ],
+      "true_negatives": 185,
+      "false_positives": 199,
+      "false_negatives": 54,
+      "true_positives": 665,
+      "observation_count": 1103,
+      "class_distribution": {
+        "0": 384,
+        "1": 719
+      },
+      "roc_auc": 0.8607205464765879
+    }
+  },
+  "cross_validation_results": {
+    "cv_mean_accuracy": 0.6229046927914853,
+    "cv_std_accuracy": 0.010081062352275507,
+    "cv_mean_precision": 0.4480333866978855,
+    "cv_mean_recall": 0.7041166585352633,
+    "cv_mean_f1": 0.5473610940342509,
+    "cv_mean_roc_auc": 0.7194819726985571
+  },
+  "top_feature_importance": null,
+  "leakage_audit": {
+    "status": "PASSED",
+    "training_test_leakage": false,
+    "future_features_used": false,
+    "preprocessing_fitted_on_training_only": true,
+    "excluded_target_and_future_cols": [
+      "target_risk_class",
+      "target_time_overrun_increase",
+      "target_cost_overrun_increase",
+      "future_time_overrun",
+      "future_cost"
+    ],
+    "snapshot_verification": "All input features were verified to reflect data available at the exact snapshot report date."
+  }
+}

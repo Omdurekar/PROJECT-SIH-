@@ -10,7 +10,8 @@ from app.models.schemas import (
     ProgressCreate, ProgressResponse,
     RiskCreate, RiskUpdate, RiskResponse,
     PredictionRequest, PredictionResponse,
-    DashboardOverview
+    DashboardOverview,
+    DatasetProjectResponse, TopRiskProjectResponse, ModelSummaryResponse, SHAPSummaryResponse
 )
 
 from app.services import auth as auth_service
@@ -20,6 +21,7 @@ from app.services import progress as progress_service
 from app.services import predictions as predictions_service
 from app.services import risks as risks_service
 from app.services import dashboard as dashboard_service
+from app.services import model_analytics as model_analytics_service
 from app.database import audit as db_audit
 
 router = APIRouter()
@@ -51,10 +53,52 @@ def list_projects(
     limit: int = Query(100, ge=1, le=500),
     department: Optional[str] = None,
     delay_level: Optional[str] = None,
+    name: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
+    """
+    List monitored projects with optional filtering by name, department, or delay level.
+    """
     return projects_service.list_projects_service(
-        db, skip=skip, limit=limit, department=department, delay_level=delay_level
+        db, skip=skip, limit=limit, department=department, delay_level=delay_level, name=name
+    )
+
+@router.get("/projects/top-risk", response_model=List[TopRiskProjectResponse], tags=["Projects Dataset"])
+def get_top_risk_projects(limit: int = Query(10, ge=1, le=100), db: Session = Depends(get_db)):
+    """
+    Retrieve top ongoing projects with highest predicted delay and financial overrun risks.
+    """
+    return model_analytics_service.get_top_risk_projects_service(db, limit=limit)
+
+@router.get("/projects/by-name/{project_name}", response_model=List[DatasetProjectResponse], tags=["Projects Dataset"])
+def get_dataset_project_by_name_route(project_name: str, db: Session = Depends(get_db)):
+    """
+    Retrieve project details from the historical monitoring dataset by project name.
+    """
+    return projects_service.get_dataset_project_by_name_service(db, project_name=project_name)
+
+@router.get("/projects/by-id/{global_project_id}", response_model=DatasetProjectResponse, tags=["Projects Dataset"])
+def get_dataset_project_by_id_route(global_project_id: str, db: Session = Depends(get_db)):
+    """
+    Retrieve project details by global project ID.
+    """
+    return projects_service.get_dataset_project_by_id_service(db, global_project_id=global_project_id)
+
+@router.get("/projects/dataset/search", response_model=List[DatasetProjectResponse], tags=["Projects Dataset"])
+def search_dataset_projects(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=500),
+    search: Optional[str] = None,
+    sector: Optional[str] = None,
+    state: Optional[str] = None,
+    status: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    """
+    Search and filter monitored dataset projects by name, sector, state, or status.
+    """
+    return projects_service.search_dataset_projects_service(
+        db, skip=skip, limit=limit, search=search, sector=sector, state=state, status=status
     )
 
 @router.get("/projects/{project_id}", response_model=ProjectResponse, tags=["Projects"])
@@ -135,3 +179,67 @@ def list_audit_logs(skip: int = Query(0, ge=0), limit: int = Query(100, ge=1), d
             "timestamp": l.timestamp.isoformat()
         } for l in logs
     ]
+
+
+# --- Dataset Projects & Top Risk Retrieval Endpoints ---
+@router.get("/project/{project_name}", response_model=List[DatasetProjectResponse], tags=["Projects Dataset"])
+@router.get("/projects/by-name/{project_name}", response_model=List[DatasetProjectResponse], tags=["Projects Dataset"])
+def get_dataset_project_by_name(project_name: str, db: Session = Depends(get_db)):
+    """
+    Retrieve project details from the historical monitoring dataset by project name.
+    """
+    return projects_service.get_dataset_project_by_name_service(db, project_name=project_name)
+
+@router.get("/projects/by-id/{global_project_id}", response_model=DatasetProjectResponse, tags=["Projects Dataset"])
+def get_dataset_project_by_id(global_project_id: str, db: Session = Depends(get_db)):
+    """
+    Retrieve project details by global project ID.
+    """
+    return projects_service.get_dataset_project_by_id_service(db, global_project_id=global_project_id)
+
+@router.get("/projects/top-risk", response_model=List[TopRiskProjectResponse], tags=["Projects Dataset"])
+def get_top_risk_projects(limit: int = Query(10, ge=1, le=100), db: Session = Depends(get_db)):
+    """
+    Retrieve top ongoing projects with highest predicted delay and financial overrun risks.
+    """
+    return model_analytics_service.get_top_risk_projects_service(db, limit=limit)
+
+@router.get("/projects/dataset/search", response_model=List[DatasetProjectResponse], tags=["Projects Dataset"])
+def search_dataset_projects(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=500),
+    search: Optional[str] = None,
+    sector: Optional[str] = None,
+    state: Optional[str] = None,
+    status: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    """
+    Search and filter monitored dataset projects by name, sector, state, or status.
+    """
+    return projects_service.search_dataset_projects_service(
+        db, skip=skip, limit=limit, search=search, sector=sector, state=state, status=status
+    )
+
+
+# --- Machine Learning Model Analytics & Explainability Endpoints ---
+@router.get("/ml/models", response_model=List[ModelSummaryResponse], tags=["Machine Learning Analytics"])
+def list_model_summaries(db: Session = Depends(get_db)):
+    """
+    List all trained machine learning model performance summaries.
+    """
+    return model_analytics_service.list_model_summaries_service(db)
+
+@router.get("/ml/models/{model_key}", response_model=ModelSummaryResponse, tags=["Machine Learning Analytics"])
+def get_model_summary(model_key: str, db: Session = Depends(get_db)):
+    """
+    Get detailed evaluation metrics, cross-validation scores, hyperparameters, and leakage audit for a specific model key.
+    """
+    return model_analytics_service.get_model_summary_service(db, model_key=model_key)
+
+@router.get("/ml/explainability/shap", response_model=SHAPSummaryResponse, tags=["Machine Learning Analytics"])
+def get_shap_explainability(db: Session = Depends(get_db)):
+    """
+    Get consolidated SHAP feature importance explainability breakdown across models.
+    """
+    return model_analytics_service.get_shap_explainability_service(db)

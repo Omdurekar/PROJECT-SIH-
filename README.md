@@ -128,8 +128,49 @@ c:\Users\Abhay Kinkar\PROJECT-SIH-\
 
 1. **API Router (`app/api.py`)**: Receives HTTP requests, validates payload format using Pydantic schemas, delegates business operations to services, and returns HTTP responses with proper status codes.
 2. **Services (`app/services/`)**: Implements application logic, orchestrates feature engineering and ML prediction calls, updates project metrics, triggers audit logs, and enforces domain rules.
-3. **Database Layer (`app/database/`)**: Contains pure database queries. Separates ORM operations from business logic to enable database backend switching (e.g. SQLite ➔ PostgreSQL / MongoDB) without altering API endpoints or services.
-4. **Models (`app/models/`)**: Structured into separate domain files (`user.py`, `project.py`, `milestone.py`, `progress.py`, `risk.py`, `prediction.py`) defining SQLAlchemy ORM tables and Pydantic schemas.
+3. **Database Layer (`app/database/`)**: Encapsulated data access layer with SQLAlchemy ORM CRUD queries. Supports **PostgreSQL** via `DATABASE_URL` environment variable with dynamic fallback to **SQLite** (`sih_project_monitoring.db`) for local dev setup.
+4. **Models (`app/models/`)**: Contains SQLAlchemy ORM models (`app/models/orm.py`) and Pydantic validation schemas (`app/models/schemas.py`).
+
+---
+
+# 🗄️ Database Architecture & Data Ingestion Pipeline
+
+The platform uses PostgreSQL (or local SQLite) to persist both active operational data and offline analytical dataset artifacts.
+
+### 📊 Database Entities & Tables
+
+| Table Name | Primary Key / Index | Description / Source Data |
+| :--- | :--- | :--- |
+| **`dataset_projects`** | `global_project_id` | Stores 1,781 project snapshots imported from `random_forest_final_dataset.csv`. |
+| **`top_risk_projects`** | `global_project_id` | Quick-retrieval table storing top ongoing high-risk project analysis from `random_forest_top_3_ongoing_risk_projects.csv`. |
+| **`model_summaries`** | `model_key` | Stores evaluation metrics (Accuracy, Precision, Recall, F1, ROC-AUC), hyperparameters, leakage audit flags, and SHAP summaries from model JSON files. |
+| **`projects`** | `id`, `project_code` | Live monitored infrastructure projects created via REST API. |
+| **`users`** | `id`, `username` | System users, roles (Admin, Monitoring Officer), and encrypted passwords. |
+| **`milestones`** | `id`, `project_id` | Deliverable milestones and schedule target dates per project. |
+| **`progress_updates`** | `id`, `project_id` | Time-series progress and expenditure logs reported by officers. |
+| **`risks`** | `id`, `project_id` | Operational, financial, and environmental risk tracking entries. |
+| **`prediction_logs`** | `id`, `project_id` | Historical log of ML delay predictions and confidence scores. |
+| **`audit_logs`** | `id`, `timestamp` | Immutable audit trail recording every state-changing operational action. |
+
+### ⚡ Automated Database Seeding Script
+
+To populate PostgreSQL or local SQLite with dataset projects, top-risk projects, and model diagnostic metrics:
+
+```bash
+python -m app.database.seed
+```
+
+*Output*:
+```text
+Creating all database tables...
+Seeding dataset_projects from temporary_data/random_forest_final_dataset.csv...
+Successfully seeded 1781 projects into 'dataset_projects'.
+Seeding top_risk_projects from temporary_data/random_forest_top_3_ongoing_risk_projects.csv...
+Successfully seeded 3 projects into 'top_risk_projects'.
+Seeding model_summaries from JSON files in temporary_data...
+Successfully seeded 13 entries into 'model_summaries'.
+Database seeding completed successfully.
+```
 
 ---
 

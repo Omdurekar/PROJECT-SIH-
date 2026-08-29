@@ -1,0 +1,101 @@
+{
+  "model_name": "LogisticRegression",
+  "task": "classification",
+  "target": "target_risk_class",
+  "target_definition": "Multiclass risk target combining time and cost outcomes into 3 risk levels (Class 0 = Low Risk, Class 1 = Moderate Risk, Class 2 = High Overrun Risk).",
+  "dataset_info": {
+    "train_sample_count": 6627,
+    "validation_sample_count": 254,
+    "test_sample_count": 1103,
+    "total_test_snapshots_explained": 1781,
+    "train_period": "2012-2019",
+    "validation_period": "2020-2021",
+    "test_period": "2022-2025"
+  },
+  "best_model_parameters": {
+    "C": 0.1,
+    "class_weight": "None",
+    "solver": "lbfgs",
+    "max_iter": 1000,
+    "scaling_used": "StandardScaler for numerical features, OneHotEncoder for categorical features"
+  },
+  "classification_threshold": null,
+  "test_performance": {
+    "accuracy": 0.7089755213055303,
+    "macro_precision": 0.4868742368742369,
+    "macro_recall": 0.3386492748103716,
+    "macro_f1": 0.28869703412580805,
+    "weighted_precision": 0.7215453026876418,
+    "weighted_recall": 0.7089755213055303,
+    "weighted_f1": 0.5960192557528732,
+    "per_class_metrics": {
+      "0": {
+        "label_description": "Class 0 (No Overrun Increase)",
+        "precision": 0.75,
+        "recall": 0.018518518518518517,
+        "f1_score": 0.03614457831325301,
+        "support": 324
+      },
+      "1": {
+        "label_description": "Class 1 (Cost-overrun increase = 0, Time-overrun outcome unavailable)",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "support": 1
+      },
+      "2": {
+        "label_description": "Class 2 (High Risk of Overrun)",
+        "precision": 0.7106227106227107,
+        "recall": 0.9974293059125964,
+        "f1_score": 0.8299465240641711,
+        "support": 778
+      }
+    },
+    "confusion_matrix": [
+      [
+        6,
+        3,
+        315
+      ],
+      [
+        0,
+        0,
+        1
+      ],
+      [
+        2,
+        0,
+        776
+      ]
+    ],
+    "observation_count": 1103,
+    "class_distribution": {
+      "0": 324,
+      "1": 1,
+      "2": 778
+    },
+    "multiclass_roc_auc_ovr": 0.6838987004362211
+  },
+  "cross_validation_results": {
+    "cv_mean_accuracy": 0.5685830558638549,
+    "cv_std_accuracy": 0.0058685089150041355,
+    "cv_mean_macro_precision": 0.543447940050924,
+    "cv_mean_macro_recall": 0.3668238046555943,
+    "cv_mean_macro_f1": 0.3339412504214968,
+    "cv_mean_weighted_precision": 0.5438483621565828,
+    "cv_mean_weighted_recall": 0.5685830558638549,
+    "cv_mean_weighted_f1": 0.48722295264424853,
+    "cv_mean_multiclass_roc_auc_ovr": 0.6361370572786121
+  },
+  "top_feature_importance": null,
+  "leakage_audit": {
+    "excluded_target_and_future_cols": [
+      "target_risk_class",
+      "target_time_overrun_increase",
+      "target_cost_overrun_increase",
+      "future_time_overrun",
+      "future_cost"
+    ],
+    "snapshot_verification": "All 27 input features were verified to reflect data available at the exact snapshot report date."
+  }
+}
