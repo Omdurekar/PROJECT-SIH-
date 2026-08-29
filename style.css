@@ -2030,6 +2030,7 @@ nav {
     grid-template-columns: repeat(4, 1fr);
 
     gap: 20px;
+    
 
 }
 
@@ -2102,23 +2103,20 @@ nav {
 
 .search-actions {
 
-    grid-column: span 4;
-
     display: flex;
-
-    justify-content: flex-end;
-
-    gap: 12px;
-
-    margin-top: 5px;
-
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding-left: 30px;
+    margin-top: 20px;
 }
 
 
 .search-btn {
-
+    width:200px;
     border: none;
-
+    white-space: nowrap;
     background: #0d47a1;
 
     color: white;
@@ -2145,9 +2143,9 @@ nav {
 
 
 .clear-btn {
-
+    width:130px;
     background: white;
-
+    white-space:nowrap;
     color: #475569;
 
     border: 1px solid #cbd5e1;
