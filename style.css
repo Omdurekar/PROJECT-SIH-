@@ -117,11 +117,11 @@
         } */
         .logo1 {
         width: 80px;
-        height: 80px;
+        height: 100px;
 
-        background-image: url("images/image.png");
+        /* background-image: url("images/image.png"); */
 
-        background-size: 40px 40px;
+        background-size: 20px 20px;
         /* background-position: center; */
         background-repeat: no-repeat;
 
@@ -129,11 +129,11 @@
         }
         .logo2 {
         width: 100px;
-        height: 100px;
+        height: 90px;
 
-        background-image: url("images/image1.png");
+        /* background-image: url("images/image1.png"); */
           
-        background-size: 20px 20px;
+        background-size: 10px 10px;
         /* background-position: center; */
         background-repeat: no-repeat;
         padding-left:300px;
@@ -185,7 +185,7 @@
         }
 
         .project-logo {
-            margin-left: 25px;
+            margin-left: 800px;
 
             font-size: 28px;
             font-weight: 700;
@@ -199,334 +199,554 @@
            NAVIGATION
         ========================= */
 
-        nav {
-            height: 40px;
-            background: #159ddd;
+        /* =========================================
+   NAVIGATION
+========================================= */
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            gap: 65px;
-
-            color: white;
-        }
-
-        nav a {
-            font-size: 18px;
-            font-weight: 600;
-
-            position: relative;
-
-            padding: 14px 5px;
-        }
-
-        nav a:hover {
-            color: #fff;
-        }
-
-        nav a.active::after {
-            content: "";
-
-            position: absolute;
-
-            bottom: 0;
-            left: 0;
-
-            width: 100%;
-            height: 3px;
-
-            background: white;
-        }
-
-        .arrow {
-            font-size: 12px;
-            margin-left: 5px;
-        }
+nav {
+    display: flex;
+    align-items: center;
+    gap: 35px;
+}
 
 
-        /* =========================
-           HERO SECTION
-        ========================= */
+/* =========================================
+   SEARCH + BUTTONS WRAPPER
+========================================= */
 
-        .hero {
-            height: 500px;
+.nav-search-wrapper {
 
-            position: relative;
+    display: flex;
 
-            background-image:
-                linear-gradient(
-                    rgba(0, 0, 0, 0.12),
-                    rgba(0, 0, 0, 0.12)
-                ),
-                url("https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=2000&q=85");
+    align-items: center;
 
-            background-size: cover;
-            background-position: center;
+    gap: 10px;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    margin-left: 20px;
+}
 
 
+/* =========================================
+   SEARCH BOX
+========================================= */
+
+.nav-search {
+
+    width: 250px;
+
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+
+    background: white;
+
+    border-radius: 22px;
+
+    padding: 0 13px;
+
+    box-sizing: border-box;
+
+    transition: 0.3s ease;
+}
+
+
+/* Search box focus */
+
+.nav-search:focus-within {
+
+    background: white;
+
+    box-shadow:
+        0 0 0 2px rgba(0, 164, 214, 0.4);
+}
+
+
+/* =========================================
+   SEARCH ICON
+========================================= */
+
+.search-icon {
+
+    color: #bdbdbd;
+
+    font-size: 27px;
+
+    line-height: 1;
+
+    margin-right: 8px;
+
+    transform: rotate(-20deg);
+
+    display: inline-block;
+}
+
+
+/* =========================================
+   SEARCH INPUT
+========================================= */
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;   /* keeps everything in the middle */
+    gap: 35px;
+    width: 100%;
+    background-color: #00b4db;
+}
+.nav-search input {
+
+    width: 100%;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-family: 'Poppins', sans-serif;
+}
+
+
+.nav-search input::placeholder {
+
+    color: #bdbdbd;
+
+}
+
+
+/* =========================================
+   CIRCULAR ACTION BUTTONS
+========================================= */
+
+.nav-action-btn {
+
+    width: 40px;
+
+    height: 40px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: white;
+
+    color: #bdbdbd;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+
+/* Hover */
+
+.nav-action-btn:hover {
+
+    background: white;
+
+    color: white;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .nav-search-wrapper {
+
+        margin-left: 0;
+
+    }
+
+    .nav-search {
+
+        width: 190px;
+
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    nav {
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+        gap: 15px;
+
+    }
+
+    .nav-search-wrapper {
+
+        width: 100%;
+
+        justify-content: center;
+
+    }
+
+    .nav-search {
+
+        width: 240px;
+
+    }
+
+}
         /* DARK HERO BOX */
 
-        .hero-content {
-            width: 65%;
+        /* ==========================================
+   HERO SLIDER
+========================================== */
 
-            padding: 10px 20px;
+.slider {
+    position: relative;
+    width: 100%;
+    height: 575px;
+    overflow: hidden;
+}
 
-            text-align: center;
+/* ==========================================
+   EACH SLIDE
+========================================== */
 
-            background: rgba(0, 0, 0, 0.68);
+.slide {
 
-            backdrop-filter: blur(5px);
+    position: absolute;
 
-            border-radius: 8px;
+    top: 0;
+    left: 0;
 
-            color: white;
+    width: 100%;
+    height: 100%;
 
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
-        }
+    opacity: 0;
 
-        .hero-content h1 {
-            font-family: "Cinzel", serif;
-            font-size: 62px;
+    visibility: hidden;
 
-            font-weight: 700;
+    transition:
+        opacity 1s ease-in-out,
+        visibility 1s ease-in-out;
+}
 
-            letter-spacing: 4px;
 
-            margin-bottom: 15px;
-            color: #159ddd;
-            -webkit-text-stroke: 1.5px white;
-            text-shadow:2px 2px 3px rgba(0, 0, 0, 0.4);
-        }
+/* ACTIVE SLIDE */
 
-        .hero-content p {
-            font-size: 21px;
+.slide.active {
 
-            margin-bottom: 30px;
-        }
+    opacity: 1;
 
-        /* .hero-btn {
-            border: none;
+    visibility: visible;
 
-            background: #087ce9;
+    z-index: 1;
+}
 
-            color: white;
 
-            padding: 15px 30px;
+/* ==========================================
+   IMAGE
+========================================== */
 
-            border-radius: 8px;
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
 
-            font-size: 17px;
+/* ==========================================
+   DARK OVERLAY
+========================================== */
 
-            font-weight: 600;
+.slide::after {
 
-            transition: 0.3s;
-        }
+    content: "";
 
-        .hero-btn:hover {
-            background: #005db4;
-            transform: translateY(-2px);
-        } */
+    position: absolute;
 
+    inset: 0;
 
-        /* HERO ARROWS */
+    background: rgba(0, 0, 0, 0.15);
 
-        .hero-arrow {
-            position: absolute;
+    z-index: 1;
+}
 
-            top: 50%;
 
-            transform: translateY(-50%);
+/* ==========================================
+   TEXT BOX
+========================================== */
 
-            width: 50px;
-            height: 50px;
+.hero-content {
 
-            border-radius: 50%;
+    position: absolute;
 
-            background: rgba(0, 0, 0, 0.35);
+    z-index: 2;
 
-            color: white;
+    left: 50%;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    top: 50%;
 
-            font-size: 30px;
+    transform: translate(-50%, -50%);
 
-            cursor: pointer;
-        }
+    width: 60%;
 
-        .left-arrow {
-            left: 25px;
-        }
+    padding: 35px 45px;
 
-        .right-arrow {
-            right: 25px;
-        }
+    text-align: center;
 
+    background: rgba(20, 20, 20, 0.72);
 
-        /* SLIDER DOTS */
+    border-radius: 12px;
 
-        .slider-dots {
-            position: absolute;
+    box-sizing: border-box;
 
-            bottom: 20px;
+    backdrop-filter: blur(3px);
+}
 
-            left: 50%;
 
-            transform: translateX(-50%);
+/* ==========================================
+   HEADING
+========================================== */
 
-            display: flex;
+.hero-content h1 {
 
-            gap: 10px;
-        }
+    margin: 0 0 15px;
 
-        .dot {
-            width: 12px;
-            height: 12px;
+    font-family: "Georgia", serif;
 
-            border-radius: 50%;
+    font-size: 68px;
 
-            background: white;
+    font-weight: 500;
 
-            opacity: 0.7;
-        }
+    letter-spacing: 5px;
 
-        .dot.active {
-            background: #159ddd;
-            opacity: 1;
-        }
+    color: #ffffff;
 
+    text-shadow:
+        2px 2px 0 #008dcc,
+        -1px -1px 0 #008dcc,
+        1px -1px 0 #008dcc,
+        -1px 1px 0 #008dcc;
+}
 
-        /* =========================
-           STATISTICS SECTION
-        ========================= */
 
-        .stats {
-            padding: 35px 35px 20px;
+/* ==========================================
+   DESCRIPTION
+========================================== */
 
-            display: grid;
+.hero-content p {
 
-            grid-template-columns:
-                repeat(6, 1fr);
+    margin: 0;
 
-            gap: 15px;
-        }
+    font-family: "Poppins", sans-serif;
 
-        .stat-card {
-            background: white;
+    font-size: 24px;
 
-            border-radius: 10px;
+    line-height: 1.5;
 
-            padding: 22px;
+    color: white;
 
-            min-height: 125px;
+}
 
-            box-shadow:
-                0 5px 20px rgba(0, 0, 0, 0.07);
 
-            display: flex;
-            align-items: center;
+/* ==========================================
+   SLIDER ARROWS
+========================================== */
 
-            gap: 15px;
+.slider-arrow {
 
-            transition: 0.3s;
-        }
+    position: absolute;
 
-        .stat-card:hover {
-            transform: translateY(-5px);
+    top: 50%;
 
-            box-shadow:
-                0 10px 25px rgba(0, 0, 0, 0.1);
-        }
+    transform: translateY(-50%);
 
-        .stat-icon {
-            min-width: 55px;
-            height: 55px;
+    z-index: 5;
 
-            border-radius: 50%;
+    width: 60px;
 
-            background: #e9f5ff;
+    height: 60px;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    border-radius: 50%;
 
-            font-size: 25px;
-        }
+    border: 2px solid white;
 
-        .stat-card h4 {
-            font-size: 13px;
+    background: rgba(0, 0, 0, 0.55);
 
-            color: #697386;
+    color: white;
 
-            font-weight: 500;
-        }
+    font-size: 28px;
 
-        .stat-card h2 {
-            font-size: 21px;
+    cursor: pointer;
 
-            margin: 4px 0;
-        }
+    display: flex;
 
-        .stat-card p {
-            font-size: 11px;
+    align-items: center;
 
-            color: #8992a3;
-        }
+    justify-content: center;
 
+    transition: 0.3s;
+}
 
-        /* =========================
-           LOWER CONTENT
-        ========================= */
 
-        .main-content {
-            display: grid;
+.slider-arrow:hover {
 
-            grid-template-columns: 2fr 1fr;
+    background: rgba(0, 0, 0, 0.85);
 
-            gap: 20px;
+}
 
-            padding: 10px 35px 40px;
-        }
 
-        .section-box {
-            background: white;
+.slider-arrow.prev {
 
-            border-radius: 10px;
+    left: 10px;
 
-            padding: 20px;
+}
 
-            box-shadow:
-                0 5px 20px rgba(0, 0, 0, 0.06);
-        }
 
-        .section-title {
-            display: flex;
+.slider-arrow.next {
 
-            align-items: center;
+    right: 10px;
 
-            justify-content: space-between;
+}
 
-            margin-bottom: 20px;
-        }
 
-        .section-title h2 {
-            font-size: 21px;
-        }
+/* ==========================================
+   DOTS
+========================================== */
 
-        .section-title a {
-            color: #087ce9;
+.dots {
 
-            font-size: 13px;
-        }
+    position: absolute;
 
+    z-index: 5;
 
+    bottom: 18px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    display: flex;
+
+    gap: 10px;
+}
+
+
+.dot {
+
+    width: 13px;
+
+    height: 13px;
+
+    border-radius: 50%;
+
+    background: #ddd;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+
+.dot.active {
+
+    background: #009fe3;
+
+    transform: scale(1.2);
+}
+
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1000px) {
+
+    .slider {
+
+        height: 500px;
+
+    }
+
+    .hero-content {
+
+        width: 75%;
+
+    }
+
+    .hero-content h1 {
+
+        font-size: 48px;
+
+    }
+
+    .hero-content p {
+
+        font-size: 18px;
+
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .slider {
+
+        height: 450px;
+
+    }
+
+    .hero-content {
+
+        width: 85%;
+
+        padding: 25px 20px;
+
+    }
+
+    .hero-content h1 {
+
+        font-size: 32px;
+
+        letter-spacing: 2px;
+
+    }
+
+    .hero-content p {
+
+        font-size: 15px;
+
+    }
+
+    .slider-arrow {
+
+        width: 45px;
+
+        height: 45px;
+
+        font-size: 20px;
+
+    }
+
+}
         /* QUICK ACTIONS */
 
         .quick-actions {
@@ -1794,238 +2014,1024 @@
     }
 
 }
-/* =========================================
-   HIGH VALUE PROJECTS
-========================================= */
+/* ==========================================
+   HIGH RISK PROJECTS
+========================================== */
 
-.high-value-section {
-
-    min-height: 600px;
-
-    padding: 50px 20px 70px;
-
-    background:
-
-        linear-gradient(
-            120deg,
-            rgba(213, 241, 255, 0.95),
-            rgba(230, 247, 255, 0.90)
-        ),
-
-        url("images/dashboard-bg.jpg");
-
-    background-size: cover;
-
-    background-position: center;
-
-    overflow: hidden;
-
+.high-risk-section {
+    padding: 50px 6%;
+    background: #f5f7fa;
 }
 
 
-/* =========================================
-   TITLE
-========================================= */
+/* ==========================================
+   SECTION HEADING
+========================================== */
 
-.high-value-title {
-
-    text-align: center;
-
-    color: #111c3b;
-
-    font-size: 38px;
-
-    font-weight: 600;
-
-    margin-bottom: 50px;
-
-}
-
-
-/* =========================================
-   CAROUSEL
-========================================= */
-
-.project-carousel {
-
-    width: 100%;
-
+.section-heading {
     display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 30px;
+}
 
-    align-items: center;
+.section-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #0d47a1;
+}
 
-    position: relative;
+.section-heading h2 {
+    margin: 7px 0;
+    font-size: 32px;
+    color: #172b4d;
+}
 
+.section-heading p {
+    margin: 0;
+    color: #64748b;
+    font-size: 15px;
 }
 
 
-/* =========================================
+/* ==========================================
+   ML STATUS
+========================================== */
+
+.risk-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 9px 14px;
+
+    background: #ffffff;
+    border: 1px solid #dbe3ed;
+
+    border-radius: 5px;
+
+    font-size: 11px;
+    font-weight: 700;
+    color: #334155;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+
+    background: #16a34a;
+
+    border-radius: 50%;
+
+    box-shadow: 0 0 0 4px #dcfce7;
+}
+
+
+/* ==========================================
    PROJECT WRAPPER
-========================================= */
+========================================== */
 
 .project-wrapper {
-
     width: 100%;
-
     overflow: hidden;
-
 }
 
 
-/* =========================================
+/* ==========================================
    PROJECT TRACK
-========================================= */
+========================================== */
 
 .project-track {
 
-    display: flex;
+    display: grid;
 
-    gap: 48px;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
 
-    transition: transform 0.5s ease;
+    gap: 22px;
 
+    width: 100%;
 }
 
 
-/* =========================================
+/* ==========================================
    PROJECT CARD
-========================================= */
+========================================== */
 
 .project-card {
 
-    flex: 0 0 calc(
-        25% - 36px
-    );
+    background: #ffffff;
 
-    min-height: 530px;
-
-    background: white;
+    border: 1px solid #dce3eb;
 
     border-radius: 8px;
 
-    padding: 20px;
+    padding: 24px;
 
-    text-align: center;
+    cursor: pointer;
 
-    box-shadow:
-        0 5px 15px rgba(0,0,0,0.10);
+    position: relative;
 
-    transition: all 0.3s ease;
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
 
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
 }
-
-
-/* =========================================
-   CARD HOVER
-========================================= */
 
 .project-card:hover {
 
-    transform: translateY(-8px);
+    transform: translateY(-5px);
+
+    border-color: #0d47a1;
 
     box-shadow:
-        0 12px 25px rgba(0,0,0,0.18);
-
+        0 10px 25px rgba(15, 23, 42, 0.10);
 }
 
 
-/* =========================================
-   ICON
-========================================= */
+/* ==========================================
+   CARD TOP
+========================================== */
+
+.project-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    margin-bottom: 18px;
+}
+
+
+/* ==========================================
+   PROJECT ICON
+========================================== */
 
 .project-icon {
 
-    height: 120px;
+    width: 48px;
+    height: 48px;
 
     display: flex;
 
     align-items: center;
+    justify-content: center;
+
+    background: #edf4ff;
+
+    border-radius: 7px;
+
+    font-size: 23px;
+}
+
+
+/* ==========================================
+   RISK SCORE
+========================================== */
+
+.risk-score-box {
+
+    text-align: right;
+}
+
+.risk-score-label {
+
+    display: block;
+
+    font-size: 10px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.8px;
+
+    color: #64748b;
+}
+
+.risk-score {
+
+    font-size: 30px;
+
+    font-weight: 800;
+
+    line-height: 1;
+
+    color: #dc2626;
+}
+
+.risk-score-max {
+
+    font-size: 12px;
+
+    color: #94a3b8;
+}
+
+
+/* ==========================================
+   PROJECT INFORMATION
+========================================== */
+
+.project-category {
+
+    font-size: 12px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.7px;
+
+    color: #0d47a1;
+
+    margin: 0 0 7px;
+}
+
+.organization {
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #334155;
+
+    margin: 0 0 8px;
+}
+
+.project-name {
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    line-height: 1.35;
+
+    color: #172b4d;
+
+    margin: 0 0 20px;
+}
+
+
+/* ==========================================
+   RISK BADGE
+========================================== */
+
+.risk-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 5px 10px;
+
+    border-radius: 4px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    margin-bottom: 20px;
+}
+
+.risk-high {
+
+    background: #fee2e2;
+
+    color: #b91c1c;
+}
+
+.risk-medium {
+
+    background: #fef3c7;
+
+    color: #92400e;
+}
+
+.risk-low {
+
+    background: #dcfce7;
+
+    color: #166534;
+}
+
+
+/* ==========================================
+   PROJECT DETAILS
+========================================== */
+
+/* ==========================================
+   PAIMANA INDIA MAP
+========================================== */
+
+.project-map-section {
+
+    width: 100%;
+
+    max-width: 1200px;
+
+    margin: 50px auto;
+
+    padding: 0 25px;
+
+}
+
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.map-heading {
+
+    margin-bottom: 25px;
+
+}
+
+
+.map-heading span {
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
+    color: #0d47a1;
+
+}
+
+
+.map-heading h2 {
+
+    margin: 6px 0;
+
+    font-size: 30px;
+
+    color: #172b4d;
+
+}
+
+
+.map-heading p {
+
+    margin: 0;
+
+    color: #64748b;
+
+}
+
+
+/* ==========================================
+   MAP CONTAINER
+========================================== */
+
+.india-map-container {
+
+    position: relative;
+
+    width: 100%;
+
+    min-height: 650px;
+
+    display: flex;
 
     justify-content: center;
 
-    font-size: 85px;
+    align-items: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            #dff5ff,
+            #bce9fa
+        );
+
+    border-radius: 8px;
+
+    overflow: hidden;
+
+    padding: 25px;
+
+}
+
+
+/* ==========================================
+   MAP AREA
+========================================== */
+
+.map-area {
+
+    position: relative;
+
+    width: 75%;
+
+    max-width: 850px;
+
+}
+
+
+#indiaMap {
+
+    width: 100%;
+
+    height: auto;
+
+    display: block;
+
+}
+
+
+/* ==========================================
+   STATES
+========================================== */
+
+.state {
+
+    stroke: #111111;
+
+    stroke-width: 1.2;
+
+    cursor: pointer;
+
+    transition:
+        fill 0.2s ease,
+        stroke-width 0.2s ease,
+        filter 0.2s ease;
+
+}
+
+
+/* ==========================================
+   HOVER STATE
+========================================== */
+
+.state:hover {
+
+    stroke: #000000;
+
+    stroke-width: 3;
+
+    filter:
+        brightness(0.92);
+
+}
+
+
+/* ==========================================
+   SELECTED STATE
+========================================== */
+
+.state-selected {
+
+    stroke: #0d47a1 !important;
+
+    stroke-width: 4 !important;
+
+    filter:
+        drop-shadow(
+            0 0 5px
+            rgba(13,71,161,0.6)
+        );
+
+}
+
+
+/* ==========================================
+   TOOLTIP
+========================================== */
+
+.map-tooltip {
+
+    position: absolute;
+
+    display: none;
+
+    z-index: 20;
+
+    min-width: 170px;
+
+    padding: 12px 15px;
+
+    background: rgba(
+        20,
+        29,
+        43,
+        0.95
+    );
+
+    color: white;
+
+    border-radius: 6px;
+
+    pointer-events: none;
+
+    box-shadow:
+        0 5px 20px
+        rgba(0,0,0,0.2);
+
+}
+
+
+.map-tooltip strong {
+
+    display: block;
+
+    font-size: 15px;
+
+    margin-bottom: 7px;
+
+}
+
+
+.map-tooltip span {
+
+    display: block;
+
+    font-size: 12px;
+
+    margin-top: 4px;
+
+    color: #dbeafe;
+
+}
+
+
+/* ==========================================
+   LEGEND
+========================================== */
+
+.map-legend {
+
+    position: absolute;
+
+    right: 20px;
+
+    top: 20px;
+
+    width: 85px;
+
+    padding: 12px;
+
+    background: rgba(
+        255,
+        255,
+        255,
+        0.9
+    );
+
+    border-radius: 7px;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.15);
+
+}
+
+
+.legend-title {
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    margin-bottom: 10px;
+
+    text-align: center;
+
+    color: #172b4d;
+
+}
+
+
+.legend-content {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 8px;
+
+}
+
+
+.gradient-bar {
+
+    width: 24px;
+
+    height: 310px;
+
+    border-radius: 1px;
+
+    background:
+        linear-gradient(
+            to top,
+            #fffbd6,
+            #ffe5bd,
+            #ffb17d,
+            #ff6969,
+            #cf3038
+        );
+
+}
+
+
+.legend-numbers {
+
+    height: 310px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+
+    font-size: 11px;
+
+    color: #172b4d;
+
+}
+
+
+/* ==========================================
+   STATE INFORMATION
+========================================== */
+
+.state-info {
+
+    margin-top: 25px;
+
+    background: #ffffff;
+
+    border: 1px solid #dce3eb;
+
+    border-left:
+        5px solid #0d47a1;
+
+    border-radius: 8px;
+
+    padding: 25px;
+
+    min-height: 150px;
+
+    box-shadow:
+        0 4px 15px
+        rgba(0,0,0,0.07);
+
+}
+
+
+.state-placeholder {
+
+    text-align: center;
+
+    padding: 20px;
+
+}
+
+
+.india-icon {
+
+    font-size: 35px;
 
     margin-bottom: 10px;
 
 }
 
 
-/* =========================================
-   CATEGORY
-========================================= */
+.state-placeholder h3 {
 
-.project-category {
+    margin: 5px;
 
-    font-size: 17px;
+    color: #172b4d;
 
-    font-weight: 700;
+}
 
-    color: #101b3c;
 
-    min-height: 42px;
+.state-placeholder p {
+
+    color: #64748b;
+
+}
+
+
+/* ==========================================
+   STATE HEADER
+========================================== */
+
+.state-header {
 
     display: flex;
 
+    justify-content: space-between;
+
     align-items: center;
 
+}
+
+
+.state-label {
+
+    font-size: 10px;
+
+    letter-spacing: 1px;
+
+    color: #64748b;
+
+    font-weight: 700;
+
+}
+
+
+.state-header h3 {
+
+    margin: 5px 0;
+
+    font-size: 27px;
+
+    color: #172b4d;
+
+}
+
+
+.risk-box {
+
+    text-align: right;
+
+}
+
+
+.risk-box span {
+
+    display: block;
+
+    font-size: 11px;
+
+    color: #64748b;
+
+}
+
+
+.risk-box strong {
+
+    font-size: 30px;
+
+    color: #dc2626;
+
+}
+
+
+/* ==========================================
+   STATE STATISTICS
+========================================== */
+.map-area {
+    position: relative;
+    width: 75%;
+    max-width: 850px;
+    min-height: 650px;
+
+    display: flex;
+    align-items: center;
     justify-content: center;
-
 }
 
-
-/* =========================================
-   ORGANIZATION
-========================================= */
-
-.organization {
-
-    color: #777;
-
-    font-size: 17px;
-
-    line-height: 1.3;
-
-    min-height: 48px;
-
-    margin-top: 25px;
-
+#indiaMap {
+    width: 100%;
+    height: 650px;
+    display: block;
 }
 
+.state {
+    fill: #f5f6d7;
+    stroke: #111;
+    stroke-width: 1.2px;
+    cursor: pointer;
 
-/* =========================================
-   PROJECT NAME
-========================================= */
-
-.project-name {
-
-    color: #444;
-
-    font-size: 16px;
-
-    border-bottom: 1px solid #777;
-
-    padding-bottom: 8px;
-
-    white-space: nowrap;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-
+    transition: 0.2s ease;
 }
 
+.state:hover,
+.state-hover {
+    fill: #00b4db !important;
+    stroke: #0d47a1;
+    stroke-width: 2.5px;
+}
 
-/* =========================================
-   PROJECT DETAILS
-========================================= */
-
-.project-details {
+.state-selected {
+    fill: #0d47a1 !important;
+    stroke: #062e6f;
+    stroke-width: 3px;
+}
+.state-stat-grid {
 
     display: grid;
 
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns:
+        repeat(4, 1fr);
 
-    margin-top: 0;
+    gap: 15px;
+
+    margin-top: 20px;
+
+}
+
+
+.state-stat {
+
+    background: #f8fafc;
+
+    border-radius: 6px;
+
+    padding: 15px;
+
+}
+
+
+.state-stat span {
+
+    display: block;
+
+    font-size: 11px;
+
+    color: #64748b;
+
+}
+
+
+.state-stat strong {
+
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 23px;
+
+    color: #172b4d;
+
+}
+
+
+.state-stat.high strong {
+
+    color: #dc2626;
+
+}
+
+
+.state-stat.medium strong {
+
+    color: #d97706;
+
+}
+
+
+.state-stat.low strong {
+
+    color: #16a34a;
+
+}
+
+
+/* ==========================================
+   ERROR
+========================================== */
+
+.state-error {
+
+    text-align: center;
+
+    padding: 20px;
+
+}
+
+
+.state-error h3 {
+
+    color: #dc2626;
+
+}
+
+
+.state-error p {
+
+    color: #64748b;
+
+}
+
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 800px) {
+
+    .india-map-container {
+
+        min-height: 500px;
+
+    }
+
+
+    .map-area {
+
+        width: 90%;
+
+    }
+
+
+    .map-legend {
+
+        right: 10px;
+
+        transform:
+            scale(0.85);
+
+        transform-origin:
+            top right;
+
+    }
+
+
+    .state-stat-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .india-map-container {
+
+        padding: 10px;
+
+    }
+
+
+    .map-area {
+
+        width: 100%;
+
+    }
+
+
+    .map-legend {
+
+        display: none;
+
+    }
+
+
+    .state-header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+
+    .risk-box {
+
+        text-align: left;
+
+        margin-top: 10px;
+
+    }
+
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1000px) {
+
+    .project-track {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    .section-heading {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 15px;
+    }
+
+    .project-track {
+
+        grid-template-columns: 1fr;
+    }
 
 }
 
