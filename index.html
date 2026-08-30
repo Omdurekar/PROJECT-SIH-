@@ -51,44 +51,54 @@
          HEADER
     ========================= -->
 
-    <header>
+    <header class="main-header">
 
-        <div class="brand">
-            <div class="logo1">
-        <img src="images/image1.png" alt="Logo of coin">
-            </div>
-            <div class="logo2">
-        <img src="images/image.png" alt="Project Guardian Logo">
-            </div>
-    
+    <!-- LEFT: LOGOS -->
+    <div class="header-left">
 
-        <div class="header-actions">
-
-            <!-- <button
-                class="btn btn-project"
-                onclick="alert('Add Project / Update clicked')">
-
-                + ADD PROJECT / UPDATE
-
-            </button>
-
-
-            <button
-                class="btn btn-report"
-                onclick="alert('Reports section opened')">
-
-                REPORTS
-
-            </button> -->
-
-
-            <!-- <div class="project-logo">
-                RiskLens
-            </div> -->
-
+        <div class="logo1">
+            <img src="images/image1.png" alt="Ministry of Statistics and Programme Implementation">
         </div>
 
-    </header>
+        <div class="logo-divider"></div>
+
+        <div class="logo2">
+            <img src="images/image.png" alt="Data for Development">
+        </div>
+
+    </div>
+
+
+    <!-- CENTER: WEBSITE TITLE -->
+    <div class="header-title">
+
+        <h1>RISKLENS</h1>
+
+        <p>Project Monitoring &amp; Analysis Portal</p>
+
+        <span>
+            Central Sector Infrastructure Projects
+        </span>
+
+    </div>
+
+
+    <!-- RIGHT: STATUS / DATE -->
+    <div class="header-right">
+
+        <div class="portal-status">
+            <span class="status-dot"></span>
+            Live Monitoring
+        </div>
+
+        <div class="header-date">
+            <strong>Project Monitoring Portal</strong>
+            <small>Updated: July 2026</small>
+        </div>
+
+    </div>
+
+</header>
 
 
     <!-- =========================
@@ -268,169 +278,251 @@
 
 </section>
 
+<!-- Moniter Section -->
+<section class="moniter-section">
     <!-- RIGHT CONTENT -->
     <div class="monitor-content">
 
         <!-- MINISTRY / SECTOR TOGGLE -->
         <div class="view-switch">
 
-            <button class="switch-btn active">
-                Ministry-Wise
-            </button>
+    <button
+        class="switch-btn active"
+        id="ministryBtn"
+        onclick="showMinistry()">
+        Ministry-Wise
+    </button>
 
-            <button class="switch-btn">
-                Sector-Wise
-            </button>
+    <button
+        class="switch-btn"
+        id="sectorBtn"
+        onclick="showSector()">
+        Sector-Wise
+    </button>
 
-        </div>
+</div>
 
 
         <!-- MAIN DASHBOARD CARD -->
         <div class="dashboard-card">
 
-            <!-- TITLE -->
-            <div class="dashboard-heading">
+    <!-- MINISTRY CONTENT -->
+    <div id="ministryContent">
 
-                <h1>
-                    Department of Higher Education
-                    <span>(as of July, 2026)</span>
-                </h1>
+        <div class="dashboard-heading">
+            <h1>
+                Department of Higher Education
+                <span>(as of July, 2026)</span>
+            </h1>
+        </div>
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <img src="images/image7.png" alt="">
+                </div>
+
+                <div class="stat-info">
+                    <h3>Project Count (No.) <small>ⓘ</small></h3>
+                    <p>190</p>
+                </div>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <img src="images/image16.png" alt="">
+                </div>
+
+                <div class="stat-info">
+                    <h3>Original Cost (in Cr) <small>ⓘ</small></h3>
+                    <p>₹ 465,721.36</p>
+                </div>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <img src="images/image17.png" alt="">
+                </div>
+
+                <div class="stat-info">
+                    <h3>Latest Revised Cost (in Cr) <small>ⓘ</small></h3>
+                    <p>₹ 638,469.92</p>
+                </div>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <img src="images/image18.png" alt="">
+                </div>
+
+                <div class="stat-info">
+                    <h3>Expenditure (Cumm.) (in Cr) <small>ⓘ</small></h3>
+                    <p>₹ 459,390.96</p>
+                </div>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <img src="images/image19.png" alt="">
+                </div>
+
+                <div class="stat-info">
+                    <h3>Completed During Month (No.) <small>ⓘ</small></h3>
+                    <p>0</p>
+                </div>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <img src="images/image20.png" alt="">
+                </div>
+
+                <div class="stat-info">
+                    <h3>Newly Added (No.) <small>ⓘ</small></h3>
+                    <p>0</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SECTOR CONTENT -->
+    <div id="sectorContent" style="display: none;">
+
+        <div class="dashboard-heading">
+
+            <h1>
+                Sector-Wise Project Monitoring
+                <span>(as of July, 2026)</span>
+            </h1>
+
+        </div>
+
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    <img src="images/image7.png" alt="">
+                </div>
+
+                <div class="stat-info">
+
+                    <h3>
+                        Project Count (No.)
+                        <small>ⓘ</small>
+                    </h3>
+
+                    <p id="sectorProjectCount">0</p>
+
+                </div>
 
             </div>
 
 
-            <!-- STATISTICS -->
-            <div class="stats-grid">
+            <div class="stat-card">
 
+                <div class="stat-icon">
+                    <img src="images/image16.png" alt="">
+                </div>
 
-                <!-- 1. PROJECT COUNT -->
-                <div class="stat-card">
+                <div class="stat-info">
 
-                    <div class="stat-icon">
-                        <img src="images/image7.png" alt="project count">
-                    </div>
+                    <h3>
+                        Original Cost (in Cr)
+                        <small>ⓘ</small>
+                    </h3>
 
-                    <div class="stat-info">
-
-                        <h3>
-                            Project Count (No.) <small>ⓘ</small>
-                        </h3>
-
-                        <p>
-                            190
-                        </p>
-
-                    </div>
+                    <p id="sectorOriginalCost">₹ 0</p>
 
                 </div>
 
+            </div>
 
-                <!-- 2. ORIGINAL COST -->
-                <div class="stat-card">
 
-                    <div class="stat-icon">
-                        <img src="images/image16.png">
-                    </div>
+            <div class="stat-card">
 
-                    <div class="stat-info">
+                <div class="stat-icon">
+                    <img src="images/image17.png" alt="">
+                </div>
 
-                        <h3>
-                            Original Cost (in Cr) <small>ⓘ</small>
-                        </h3>
+                <div class="stat-info">
 
-                        <p>
-                            ₹ 465,721.36
-                        </p>
+                    <h3>
+                        Latest Revised Cost (in Cr)
+                        <small>ⓘ</small>
+                    </h3>
 
-                    </div>
+                    <p id="sectorRevisedCost">₹ 0</p>
 
                 </div>
 
+            </div>
 
-                <!-- 3. REVISED COST -->
-                <div class="stat-card">
 
-                    <div class="stat-icon">
-                        <img src="images/image17.png">
-                    </div>
+            <div class="stat-card">
 
-                    <div class="stat-info">
+                <div class="stat-icon">
+                    <img src="images/image18.png" alt="">
+                </div>
 
-                        <h3>
-                            Latest Revised Cost (in Cr) <small>ⓘ</small>
-                        </h3>
+                <div class="stat-info">
 
-                        <p>
-                            ₹ 638,469.92
-                        </p>
+                    <h3>
+                        Expenditure (Cumm.) (in Cr)
+                        <small>ⓘ</small>
+                    </h3>
 
-                    </div>
+                    <p id="sectorExpenditure">₹ 0</p>
 
                 </div>
 
+            </div>
 
-                <!-- 4. EXPENDITURE -->
-                <div class="stat-card">
 
-                    <div class="stat-icon">
-                        <img src="images/image18.png">
-                    </div>
+            <div class="stat-card">
 
-                    <div class="stat-info">
+                <div class="stat-icon">
+                    <img src="images/image19.png" alt="">
+                </div>
 
-                        <h3>
-                            Expenditure (Cumm.) (in Cr) <small>ⓘ</small>
-                        </h3>
+                <div class="stat-info">
 
-                        <p>
-                            ₹ 459,390.96
-                        </p>
+                    <h3>
+                        Completed During Month (No.)
+                        <small>ⓘ</small>
+                    </h3>
 
-                    </div>
+                    <p id="sectorCompleted">0</p>
 
                 </div>
 
+            </div>
 
-                <!-- 5. COMPLETED -->
-                <div class="stat-card">
 
-                    <div class="stat-icon">
-                        <img src="images/image19.png">
-                    </div>
+            <div class="stat-card">
 
-                    <div class="stat-info">
-
-                        <h3>
-                            Completed During Month (No.) <small>ⓘ</small>
-                        </h3>
-
-                        <p>
-                            0
-                        </p>
-
-                    </div>
-
+                <div class="stat-icon">
+                    <img src="images/image20.png" alt="">
                 </div>
 
+                <div class="stat-info">
 
-                <!-- 6. NEWLY ADDED -->
-                <div class="stat-card">
+                    <h3>
+                        Newly Added (No.)
+                        <small>ⓘ</small>
+                    </h3>
 
-                    <div class="stat-icon">
-                        <img src="images/image20.png">
-                    </div>
-
-                    <div class="stat-info">
-
-                        <h3>
-                            Newly Added (No.) <small>ⓘ</small>
-                        </h3>
-
-                        <p>
-                            0
-                        </p>
-
-                    </div>
+                    <p id="sectorNewlyAdded">0</p>
 
                 </div>
 
@@ -440,9 +532,11 @@
 
     </div>
 
+</div>
+
 </section>
     <!-- =========================================
-     STATE-WISE PROJECTS SECTION
+    Search PROJECTS SECTION
 ========================================= -->
 
 <section class="project-search-section">
@@ -635,19 +729,139 @@
 
     <div id="searchResults" class="search-results">
 
-        <div class="result-placeholder">
+    <div class="project-list">
 
-            <span>🔎</span>
+        <!-- Project 1 -->
+        <div class="project-row">
+            <div class="project-name">
+                <span class="project-number">1.</span>
+                Delhi Metro Expansion Project
+            </div>
 
-            <p>
-                Select filters and search for projects
-            </p>
+            <div class="project-progress">
+                64.0%
+            </div>
 
+            <div class="project-risk high">
+                High
+            </div>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="project-row">
+            <div class="project-name">
+                <span class="project-number">2.</span>
+                National Highway Development Project
+            </div>
+
+            <div class="project-progress">
+                58.1%
+            </div>
+
+            <div class="project-risk medium">
+                Medium
+            </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="project-row">
+            <div class="project-name">
+                <span class="project-number">3.</span>
+                Mumbai Coastal Road Project
+            </div>
+
+            <div class="project-progress">
+                49.2%
+            </div>
+
+            <div class="project-risk medium">
+                Medium
+            </div>
+        </div>
+
+        <!-- Project 4 -->
+        <div class="project-row">
+            <div class="project-name">
+                <span class="project-number">4.</span>
+                High Speed Rail Corridor
+            </div>
+
+            <div class="project-progress">
+                39.9%
+            </div>
+
+            <div class="project-risk high">
+                High
+            </div>
+        </div>
+
+        <!-- Project 5 -->
+        <div class="project-row">
+            <div class="project-name">
+                <span class="project-number">5.</span>
+                Smart City Infrastructure Project
+            </div>
+
+            <div class="project-progress">
+                72.5%
+            </div>
+
+            <div class="project-risk low">
+                Low
+            </div>
         </div>
 
     </div>
 
+</div>
+<!-- <div class="project-name">
+
+    <span class="status-icon">✓</span>
+
+    <span class="project-number">1.</span>
+
+    Delhi Metro Expansion Project
+
+</div> -->
 </section>
+<!-- =====================================================
+     FEATURED PROJECTS
+===================================================== -->
+
+<!-- <section class="featured-projects">
+
+    <div class="projects-header">
+
+        <span class="section-tag">
+            PROJECT MONITORING
+        </span>
+
+        <h2>Projects Under Monitoring</h2>
+
+        <p>
+            Explore selected infrastructure projects currently
+            being monitored through the project monitoring system.
+        </p>
+
+    </div>
+
+
+    <div id="featuredProjects" class="featured-project-grid">
+
+         Projects will be loaded here by JavaScript -->
+
+    <!-- </div>
+
+
+    <div class="projects-view-all">
+
+        <a href="projects.html">
+            View All Projects →
+        </a>
+
+    </div>
+
+</section> --> 
 <!-- ==========================================
      HIGH RISK PROJECTS
 ========================================== -->

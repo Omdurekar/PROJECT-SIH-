@@ -209,3 +209,526 @@ async function searchProjects() {
     }
 
 }
+function showMinistry() {
+
+    // Show Ministry
+    document.getElementById("ministryContent").style.display = "block";
+
+    // Hide Sector
+    document.getElementById("sectorContent").style.display = "none";
+
+
+    // Button styling
+    document.getElementById("ministryBtn").classList.add("active");
+
+    document.getElementById("sectorBtn").classList.remove("active");
+}
+
+
+function showSector() {
+
+    // Hide Ministry
+    document.getElementById("ministryContent").style.display = "none";
+
+    // Show Sector
+    document.getElementById("sectorContent").style.display = "block";
+
+
+    // Button styling
+    document.getElementById("sectorBtn").classList.add("active");
+
+    document.getElementById("ministryBtn").classList.remove("active");
+
+
+    // Fetch sector data
+    fetchSectorData();
+}
+const projects = [
+    {
+        name: "Mumbai-Ahmedabad High Speed Rail",
+        ministry: "Ministry of Railways",
+        state: "Maharashtra",
+        sector: "Transport",
+        risk: "High",
+        cost: "₹1,08,000 Cr",
+        progress: "65%"
+    },
+
+    {
+        name: "Delhi-Mumbai Expressway",
+        ministry: "Ministry of Road Transport",
+        state: "Maharashtra",
+        sector: "Road Transport",
+        risk: "Medium",
+        cost: "₹98,000 Cr",
+        progress: "82%"
+    },
+
+    {
+        name: "National River Linking Project",
+        ministry: "Ministry of Jal Shakti",
+        state: "Madhya Pradesh",
+        sector: "Water Resources",
+        risk: "High",
+        cost: "₹60,000 Cr",
+        progress: "42%"
+    },
+
+    {
+        name: "AIIMS Infrastructure Development",
+        ministry: "Ministry of Health",
+        state: "Delhi",
+        sector: "Health",
+        risk: "Low",
+        cost: "₹15,000 Cr",
+        progress: "90%"
+    },
+
+    {
+        name: "Dedicated Freight Corridor",
+        ministry: "Ministry of Railways",
+        state: "Uttar Pradesh",
+        sector: "Transport",
+        risk: "Medium",
+        cost: "₹81,459 Cr",
+        progress: "74%"
+    },
+
+    {
+        name: "Mumbai Metro Rail Project",
+        ministry: "Ministry of Housing",
+        state: "Maharashtra",
+        sector: "Urban Development",
+        risk: "High",
+        cost: "₹45,000 Cr",
+        progress: "55%"
+    }
+];
+document.addEventListener("DOMContentLoaded", function () {
+
+    populateDropdown(
+        "ministry",
+        "ministry",
+        "All Ministries"
+    );
+
+    populateDropdown(
+        "state",
+        "state",
+        "All States"
+    );
+
+    populateDropdown(
+        "sector",
+        "sector",
+        "All Sectors"
+    );
+
+});
+function populateDropdown(id, property, defaultText) {
+
+    const select = document.getElementById(id);
+
+    const values = [
+        ...new Set(
+            projects.map(project => project[property])
+        )
+    ];
+
+    values.forEach(value => {
+
+        const option = document.createElement("option");
+
+        option.value = value;
+
+        option.textContent = value;
+
+        select.appendChild(option);
+
+    });
+}
+function searchProjects() {
+
+    const projectName =
+        document.getElementById("projectName")
+            .value
+            .toLowerCase()
+            .trim();
+
+    const ministry =
+        document.getElementById("ministry").value;
+
+    const state =
+        document.getElementById("state").value;
+
+    const sector =
+        document.getElementById("sector").value;
+
+    const risk =
+        document.getElementById("risk").value;
+
+
+    const filteredProjects = projects.filter(project => {
+
+        const nameMatch =
+            project.name
+                .toLowerCase()
+                .includes(projectName);
+
+        const ministryMatch =
+            ministry === "" ||
+            project.ministry === ministry;
+
+        const stateMatch =
+            state === "" ||
+            project.state === state;
+
+        const sectorMatch =
+            sector === "" ||
+            project.sector === sector;
+
+        const riskMatch =
+            risk === "" ||
+            project.risk === risk;
+
+
+        return (
+            nameMatch &&
+            ministryMatch &&
+            stateMatch &&
+            sectorMatch &&
+            riskMatch
+        );
+
+    });
+
+
+    displayProjects(filteredProjects);
+}
+function displayProjects(filteredProjects) {
+
+    const results =
+        document.getElementById("searchResults");
+
+
+    if (filteredProjects.length === 0) {
+
+        results.innerHTML = `
+            <div class="result-placeholder">
+
+                <span>⚠️</span>
+
+                <p>
+                    No projects found matching your filters.
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    results.innerHTML = `
+
+        <div class="results-header">
+
+            <h3>
+                Search Results
+            </h3>
+
+            <span>
+                ${filteredProjects.length} Projects Found
+            </span>
+
+        </div>
+
+        <div class="project-results-grid">
+
+            ${filteredProjects.map(project => `
+
+                <div class="project-result-card">
+
+                    <div class="project-card-top">
+
+                        <span class="project-sector">
+                            ${project.sector}
+                        </span>
+
+                        <span class="risk-badge ${project.risk.toLowerCase()}">
+                            ${project.risk} Risk
+                        </span>
+
+                    </div>
+
+
+                    <h3>
+                        ${project.name}
+                    </h3>
+
+
+                    <div class="project-details">
+
+                        <div>
+                            <span>Ministry</span>
+                            <strong>
+                                ${project.ministry}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>State</span>
+                            <strong>
+                                ${project.state}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Project Cost</span>
+                            <strong>
+                                ${project.cost}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Progress</span>
+                            <strong>
+                                ${project.progress}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="view-project-btn"
+                        onclick="viewProject('${project.name}')">
+
+                        View Project →
+
+                    </button>
+
+                </div>
+
+            `).join("")}
+
+        </div>
+    `;
+}
+function clearSearch() {
+
+    document.getElementById("projectName").value = "";
+
+    document.getElementById("ministry").value = "";
+
+    document.getElementById("state").value = "";
+
+    document.getElementById("sector").value = "";
+
+    document.getElementById("risk").value = "";
+
+
+    document.getElementById("searchResults").innerHTML = `
+
+        <div class="result-placeholder">
+
+            <span>🔎</span>
+
+            <p>
+                Select filters and search for projects
+            </p>
+
+        </div>
+
+    `;
+}
+function viewProject(projectName) {
+
+    console.log("Opening:", projectName);
+
+    // Later you can redirect to:
+    // project-details.html?name=...
+
+    window.location.href =
+        "project-details.html?name=" +
+        encodeURIComponent(projectName);
+}
+const featuredProjects = [
+
+    {
+        id: 1,
+        name: "Mumbai-Ahmedabad High Speed Rail",
+        ministry: "Ministry of Railways",
+        state: "Maharashtra",
+        sector: "Transport",
+        risk: "High",
+        cost: "₹1,08,000 Cr",
+        progress: 65
+    },
+
+    {
+        id: 2,
+        name: "Dedicated Freight Corridor",
+        ministry: "Ministry of Railways",
+        state: "Uttar Pradesh",
+        sector: "Transport",
+        risk: "Medium",
+        cost: "₹81,459 Cr",
+        progress: 74
+    },
+
+    {
+        id: 3,
+        name: "National River Linking Project",
+        ministry: "Ministry of Jal Shakti",
+        state: "Madhya Pradesh",
+        sector: "Water Resources",
+        risk: "High",
+        cost: "₹60,000 Cr",
+        progress: 42
+    },
+
+    {
+        id: 4,
+        name: "AIIMS Infrastructure Development",
+        ministry: "Ministry of Health",
+        state: "Delhi",
+        sector: "Health",
+        risk: "Low",
+        cost: "₹15,000 Cr",
+        progress: 90
+    }
+
+];
+document.addEventListener("DOMContentLoaded", function () {
+
+    displayFeaturedProjects();
+
+});
+function displayFeaturedProjects() {
+
+    const container =
+        document.getElementById("featuredProjects");
+
+    container.innerHTML = featuredProjects
+        .slice(0, 3)
+        .map(project => {
+
+            return `
+
+                <div class="featured-project-card">
+
+                    <div class="project-card-header">
+
+                        <span class="project-sector">
+                            ${project.sector}
+                        </span>
+
+                        <span class="risk-badge ${project.risk.toLowerCase()}">
+                            ${project.risk} Risk
+                        </span>
+
+                    </div>
+
+
+                    <h3>
+                        ${project.name}
+                    </h3>
+
+
+                    <p class="project-ministry">
+                        ${project.ministry}
+                    </p>
+
+
+                    <div class="project-info">
+
+                        <div>
+                            <span>State</span>
+                            <strong>
+                                ${project.state}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Project Cost</span>
+                            <strong>
+                                ${project.cost}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="progress-section">
+
+                        <div class="progress-header">
+
+                            <span>
+                                Physical Progress
+                            </span>
+
+                            <strong>
+                                ${project.progress}%
+                            </strong>
+
+                        </div>
+
+                        <div class="progress-bar">
+
+                            <div
+                                class="progress-fill"
+                                style="width:${project.progress}%">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="project-details-btn"
+                        onclick="openProject(${project.id})">
+
+                        View Project
+                        <span>→</span>
+
+                    </button>
+
+                </div>
+
+            `;
+
+        })
+        .join("");
+}
+function openProject(projectId) {
+
+    window.location.href =
+        "project-details.html?id=" + projectId;
+
+}
+const projectSearch = document.getElementById("projectName");
+
+projectSearch.addEventListener("input", function () {
+
+    const searchText = this.value.toLowerCase().trim();
+
+    const projects = document.querySelectorAll(".project-row");
+
+    projects.forEach(function (project) {
+
+        const projectName = project
+            .querySelector(".project-name")
+            .textContent
+            .toLowerCase();
+
+        if (projectName.includes(searchText)) {
+            project.style.display = "grid";
+        } else {
+            project.style.display = "none";
+        }
+
+    });
+
+});
