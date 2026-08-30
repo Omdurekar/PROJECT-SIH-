@@ -1,0 +1,90 @@
+{
+  "model_name": "Random Forest Time Overrun Classifier",
+  "target": "target_time_overrun_increase",
+  "shap_method": "TreeExplainer",
+  "number_of_original_features": 16,
+  "top_feature": "time_overrun_months_calc",
+  "top_feature_mean_abs_shap": 0.016035,
+  "features": [
+    {
+      "feature": "time_overrun_months_calc",
+      "mean_abs_shap": 0.016035,
+      "direction": "Higher values decrease risk (-)"
+    },
+    {
+      "feature": "remaining_schedule_months",
+      "mean_abs_shap": 0.015146,
+      "direction": "Higher values decrease risk (-)"
+    },
+    {
+      "feature": "sector_clean",
+      "mean_abs_shap": 0.009088,
+      "direction": "Higher values decrease risk (-)"
+    },
+    {
+      "feature": "is_ahead_of_schedule",
+      "mean_abs_shap": 0.007925,
+      "direction": "Higher values increase risk (+)"
+    },
+    {
+      "feature": "schedule_slippage_clean",
+      "mean_abs_shap": 0.006751,
+      "direction": "Higher values decrease risk (-)"
+    },
+    {
+      "feature": "state_clean",
+      "mean_abs_shap": 0.005651,
+      "direction": "Higher values increase risk (+)"
+    },
+    {
+      "feature": "elapsed_schedule_ratio_clean",
+      "mean_abs_shap": 0.004515,
+      "direction": "Higher values increase risk (+)"
+    },
+    {
+      "feature": "agency_clean",
+      "mean_abs_shap": 0.003367,
+      "direction": "Higher values increase risk (+)"
+    },
+    {
+      "feature": "cost_original",
+      "mean_abs_shap": 0.003205,
+      "direction": "Higher values increase risk (+)"
+    },
+    {
+      "feature": "project_age_months",
+      "mean_abs_shap": 0.002944,
+      "direction": "Higher values increase risk (+)"
+    },
+    {
+      "feature": "cost_anticipated",
+      "mean_abs_shap": 0.002449,
+      "direction": "Higher values increase risk (+)"
+    },
+    {
+      "feature": "has_clearance_issue",
+      "mean_abs_shap": 0.002394,
+      "direction": "Higher values decrease risk (-)"
+    },
+    {
+      "feature": "project_size_ord",
+      "mean_abs_shap": 0.001748,
+      "direction": "Higher values increase risk (+)"
+    },
+    {
+      "feature": "is_revised",
+      "mean_abs_shap": 0.001078,
+      "direction": "Higher values increase risk (+)"
+    },
+    {
+      "feature": "progress_velocity_clean",
+      "mean_abs_shap": 0.000327,
+      "direction": "Higher values decrease risk (-)"
+    },
+    {
+      "feature": "has_land_acquisition_issue",
+      "mean_abs_shap": 0.000318,
+      "direction": "Higher values decrease risk (-)"
+    }
+  ]
+}

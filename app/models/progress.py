@@ -6,18 +6,7 @@ from pydantic import BaseModel, Field
 from app.config.database import Base
 
 # --- ORM Model ---
-class ProgressUpdate(Base):
-    __tablename__ = "progress_updates"
-
-    id = Column(Integer, primary_key=True, index=True)
-    project_id = Column(Integer, ForeignKey("projects.id"), nullable=False)
-    reported_by = Column(String(100), nullable=False)
-    completion_percentage = Column(Float, nullable=False)
-    expenditure = Column(Float, nullable=False)
-    remarks = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
-
-    project = relationship("Project", back_populates="progress_updates")
+from app.models.orm import ProgressUpdate
 
 # --- Pydantic Schemas ---
 class ProgressCreate(BaseModel):

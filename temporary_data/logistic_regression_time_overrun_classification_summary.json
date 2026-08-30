@@ -1,0 +1,95 @@
+{
+  "model_name": "LogisticRegression",
+  "task": "classification",
+  "target": "target_time_overrun_increase",
+  "target_definition": "Binary target indicating whether project time overrun increased in subsequent report snapshots (1 = Time Overrun Increased, 0 = No Increase).",
+  "dataset_info": {
+    "train_sample_count": 6627,
+    "validation_sample_count": 254,
+    "test_sample_count": 1103,
+    "total_test_snapshots_explained": 1781,
+    "train_period": "2012-2019",
+    "validation_period": "2020-2021",
+    "test_period": "2022-2025"
+  },
+  "best_model_parameters": {
+    "C": 1.0,
+    "class_weight": "balanced",
+    "solver": "lbfgs",
+    "max_iter": 1000,
+    "scaling_used": "StandardScaler for numerical features, OneHotEncoder for categorical features"
+  },
+  "classification_threshold": 0.2,
+  "threshold_details": {
+    "default_threshold": 0.5,
+    "validation_optimal_threshold": 0.2,
+    "operational_prediction_threshold": 0.2
+  },
+  "test_performance": {
+    "at_operational_threshold_0_20": {
+      "accuracy": 0.18165304268846502,
+      "precision": 0.1756633119853614,
+      "recall": 1.0,
+      "f1": 0.2988326848249027,
+      "confusion_matrix": [
+        [
+          8,
+          901
+        ],
+        [
+          0,
+          192
+        ]
+      ],
+      "true_negatives": 8,
+      "false_positives": 901,
+      "false_negatives": 0,
+      "true_positives": 192,
+      "roc_auc": 0.825091102860286
+    },
+    "at_default_threshold_0_50": {
+      "accuracy": 0.21435059037238874,
+      "precision": 0.1816461684011353,
+      "recall": 1.0,
+      "f1": 0.3074459567654123,
+      "confusion_matrix": [
+        [
+          44,
+          865
+        ],
+        [
+          0,
+          192
+        ]
+      ],
+      "true_negatives": 44,
+      "false_positives": 865,
+      "false_negatives": 0,
+      "true_positives": 192,
+      "roc_auc": 0.825091102860286
+    }
+  },
+  "cross_validation_results": {
+    "cv_mean_accuracy": 0.6151436173386828,
+    "cv_std_accuracy": 0.010507302626026371,
+    "cv_mean_precision": 0.5595258099640115,
+    "cv_mean_recall": 0.6097457627118643,
+    "cv_mean_f1": 0.5835170696240606,
+    "cv_mean_roc_auc": 0.6663526546439302
+  },
+  "top_feature_importance": null,
+  "leakage_audit": {
+    "status": "PASSED",
+    "training_test_leakage": false,
+    "future_features_used": false,
+    "preprocessing_fitted_on_training_only": true,
+    "excluded_target_and_future_cols": [
+      "target_risk_class",
+      "target_time_overrun_increase",
+      "target_cost_overrun_increase",
+      "future_time_overrun",
+      "future_cost"
+    ],
+    "snapshot_verification": "All input features were verified to reflect data available at the exact snapshot report date."
+  }
+}

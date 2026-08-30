@@ -1,0 +1,144 @@
+{
+  "model_name": "RandomForestClassifier",
+  "task": "classification",
+  "target": "target_risk_class",
+  "target_definition": "Multiclass risk target combining time and cost outcomes into 3 risk levels (Class 0 = Low Risk, Class 1 = Moderate Risk, Class 2 = High Overrun Risk).",
+  "dataset_info": {
+    "train_sample_count": 6627,
+    "validation_sample_count": 254,
+    "test_sample_count": 1103,
+    "total_test_snapshots_explained": 1781,
+    "train_period": "2012-2019",
+    "validation_period": "2020-2021",
+    "test_period": "2022-2025"
+  },
+  "best_model_parameters": {
+    "n_estimators": 100,
+    "max_depth": "None",
+    "min_samples_split": 10,
+    "min_samples_leaf": 1,
+    "max_features": "sqrt",
+    "class_weight": "None",
+    "scaling_used": "StandardScaler for numerical features, OneHotEncoder for categorical features"
+  },
+  "classification_threshold": null,
+  "test_performance": {
+    "accuracy": 0.7488667271078876,
+    "macro_precision": 0.4740577188991481,
+    "macro_recall": 0.4163360732912289,
+    "macro_f1": 0.4237180151539619,
+    "weighted_precision": 0.7339027570878008,
+    "weighted_recall": 0.7488667271078876,
+    "weighted_f1": 0.719353091755019,
+    "per_class_metrics": {
+      "0": {
+        "label_description": "Class 0 (No Overrun Increase)",
+        "precision": 0.6540880503144654,
+        "recall": 0.32098765432098764,
+        "f1_score": 0.4306418219461698,
+        "support": 324
+      },
+      "1": {
+        "label_description": "Class 1 (Cost Increase = 0, Future Time Outcome Unavailable)",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "support": 1
+      },
+      "2": {
+        "label_description": "Class 2 (High Overrun Risk)",
+        "precision": 0.7680851063829788,
+        "recall": 0.9280205655526992,
+        "f1_score": 0.840512223515716,
+        "support": 778
+      }
+    },
+    "confusion_matrix": [
+      [
+        104,
+        3,
+        217
+      ],
+      [
+        0,
+        0,
+        1
+      ],
+      [
+        55,
+        1,
+        722
+      ]
+    ],
+    "observation_count": 1103,
+    "class_distribution": {
+      "0": 324,
+      "1": 1,
+      "2": 778
+    },
+    "multiclass_roc_auc_ovr": 0.7233647535712642
+  },
+  "cross_validation_results": {
+    "cv_mean_accuracy": 0.6100786021229972,
+    "cv_std_accuracy": 0.007424717730164881,
+    "cv_mean_macro_precision": 0.6098171821986366,
+    "cv_mean_macro_recall": 0.469664046340449,
+    "cv_mean_macro_f1": 0.4898434780099663,
+    "cv_mean_weighted_precision": 0.6035018736524195,
+    "cv_mean_weighted_recall": 0.6100786021229972,
+    "cv_mean_weighted_f1": 0.5836299518451477,
+    "cv_mean_multiclass_roc_auc_ovr": 0.7228883585330659
+  },
+  "top_feature_importance": [
+    {
+      "feature": "remaining_schedule_months",
+      "importance": 0.105241
+    },
+    {
+      "feature": "cost_anticipated",
+      "importance": 0.10326
+    },
+    {
+      "feature": "cost_original",
+      "importance": 0.078666
+    },
+    {
+      "feature": "cost_overrun_amount_calc",
+      "importance": 0.057621
+    },
+    {
+      "feature": "elapsed_schedule_ratio_clean",
+      "importance": 0.039549
+    },
+    {
+      "feature": "cost_overrun_percent_clean",
+      "importance": 0.038793
+    },
+    {
+      "feature": "cost_escalation_rate_clean",
+      "importance": 0.037008
+    },
+    {
+      "feature": "physical_progress_clean",
+      "importance": 0.035234
+    },
+    {
+      "feature": "prev_progress",
+      "importance": 0.034397
+    },
+    {
+      "feature": "project_age_months",
+      "importance": 0.034387
+    }
+  ],
+  "leakage_audit": {
+    "excluded_target_and_future_cols": [
+      "target_risk_class",
+      "target_time_overrun_increase",
+      "target_cost_overrun_increase",
+      "future_time_overrun",
+      "future_cost"
+    ],
+    "snapshot_verification": "All 27 input features were verified to reflect data available at the exact snapshot report date."
+  }
+}

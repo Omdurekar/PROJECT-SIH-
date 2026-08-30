@@ -1,0 +1,148 @@
+{
+  "model_name": "RandomForestClassifier",
+  "task": "classification",
+  "target": "target_cost_overrun_increase",
+  "target_definition": "Binary target indicating whether project cost overrun increased in subsequent report snapshots (1 = Cost Overrun Increased, 0 = No Increase).",
+  "dataset_info": {
+    "train_sample_count": 6627,
+    "validation_sample_count": 254,
+    "test_sample_count": 1103,
+    "total_test_snapshots_explained": 1781,
+    "train_period": "2012-2019",
+    "validation_period": "2020-2021",
+    "test_period": "2022-2025"
+  },
+  "best_model_parameters": {
+    "n_estimators": 100,
+    "max_depth": "None",
+    "min_samples_split": 2,
+    "min_samples_leaf": 2,
+    "max_features": "sqrt",
+    "class_weight": "balanced",
+    "scaling_used": "StandardScaler for numerical features, OneHotEncoder for categorical features"
+  },
+  "classification_threshold": 0.24,
+  "threshold_details": {
+    "default_threshold": 0.5,
+    "validation_optimal_threshold": 0.24,
+    "operational_prediction_threshold": 0.5
+  },
+  "test_performance": {
+    "at_operational_threshold_0_24": {
+      "accuracy": 0.6518585675430644,
+      "precision": 0.6518585675430644,
+      "recall": 1.0,
+      "f1": 0.7892425905598244,
+      "confusion_matrix": [
+        [
+          0,
+          384
+        ],
+        [
+          0,
+          719
+        ]
+      ],
+      "true_negatives": 0,
+      "false_positives": 384,
+      "false_negatives": 0,
+      "true_positives": 719,
+      "observation_count": 1103,
+      "class_distribution": {
+        "0": 384,
+        "1": 719
+      },
+      "roc_auc": 0.867460955609643
+    },
+    "at_default_threshold_0_50": {
+      "accuracy": 0.7660924750679964,
+      "precision": 0.859594383775351,
+      "recall": 0.7663421418636995,
+      "f1": 0.8102941176470588,
+      "confusion_matrix": [
+        [
+          294,
+          90
+        ],
+        [
+          168,
+          551
+        ]
+      ],
+      "true_negatives": 294,
+      "false_positives": 90,
+      "false_negatives": 168,
+      "true_positives": 551,
+      "observation_count": 1103,
+      "class_distribution": {
+        "0": 384,
+        "1": 719
+      },
+      "roc_auc": 0.867460955609643
+    }
+  },
+  "cross_validation_results": {
+    "cv_mean_accuracy": 0.728234497282222,
+    "cv_std_accuracy": 0.01079598552325155,
+    "cv_mean_precision": 0.5805017166928161,
+    "cv_mean_recall": 0.5876326774001193,
+    "cv_mean_f1": 0.5831422518091653,
+    "cv_mean_roc_auc": 0.7513911720379622
+  },
+  "top_feature_importance": [
+    {
+      "feature": "cost_anticipated",
+      "importance": 0.208877
+    },
+    {
+      "feature": "project_size_ord",
+      "importance": 0.140948
+    },
+    {
+      "feature": "cost_original",
+      "importance": 0.099207
+    },
+    {
+      "feature": "cost_overrun_amount_calc",
+      "importance": 0.067943
+    },
+    {
+      "feature": "cost_escalation_rate_clean",
+      "importance": 0.067028
+    },
+    {
+      "feature": "cost_overrun_percent_clean",
+      "importance": 0.04974
+    },
+    {
+      "feature": "has_clearance_issue",
+      "importance": 0.034228
+    },
+    {
+      "feature": "physical_progress_clean",
+      "importance": 0.033472
+    },
+    {
+      "feature": "project_age_months",
+      "importance": 0.033408
+    },
+    {
+      "feature": "elapsed_schedule_ratio_clean",
+      "importance": 0.033379
+    }
+  ],
+  "leakage_audit": {
+    "status": "PASSED",
+    "training_test_leakage": false,
+    "future_features_used": false,
+    "preprocessing_fitted_on_training_only": true,
+    "excluded_target_and_future_cols": [
+      "target_risk_class",
+      "target_time_overrun_increase",
+      "target_cost_overrun_increase",
+      "future_time_overrun",
+      "future_cost"
+    ],
+    "snapshot_verification": "All input features were verified to reflect data available at the exact snapshot report date."
+  }
+}
