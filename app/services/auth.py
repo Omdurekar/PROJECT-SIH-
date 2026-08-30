@@ -5,6 +5,8 @@ from app.database import users as db_users
 from app.database import audit as db_audit
 from app.utils.auth import hash_password, verify_password, create_access_token
 
+from app.services.otp import request_otp_service
+
 def register_user_service(db: Session, user_in: UserCreate) -> UserResponse:
     existing_user = db_users.get_user_by_username(db, user_in.username)
     if existing_user:
@@ -32,6 +34,9 @@ def register_user_service(db: Session, user_in: UserCreate) -> UserResponse:
         details=f"User registered with role {user.role}"
     )
 
+    # Trigger OTP generation and email delivery for registration verification
+    request_otp_service(db, user.email)
+
     return UserResponse.model_validate(user)
 
 def authenticate_user_service(db: Session, credentials: UserLogin) -> Token:
@@ -41,6 +46,12 @@ def authenticate_user_service(db: Session, credentials: UserLogin) -> Token:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    if not user.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Email verification required. Please verify your email using OTP before logging in."
         )
 
     token = create_access_token(data={"sub": user.username, "role": user.role, "id": user.id})
@@ -59,3 +70,4 @@ def authenticate_user_service(db: Session, credentials: UserLogin) -> Token:
         token_type="bearer",
         user=UserResponse.model_validate(user)
     )
+

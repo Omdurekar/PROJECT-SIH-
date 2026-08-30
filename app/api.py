@@ -5,6 +5,7 @@ from app.config.database import get_db
 
 from app.models.schemas import (
     UserCreate, UserLogin, Token, UserResponse,
+    OTPVerifyRequest, OTPResendRequest, OTPResponse,
     ProjectCreate, ProjectUpdate, ProjectResponse,
     MilestoneCreate, MilestoneUpdate, MilestoneResponse,
     ProgressCreate, ProgressResponse,
@@ -15,6 +16,7 @@ from app.models.schemas import (
 )
 
 from app.services import auth as auth_service
+from app.services import otp as otp_service
 from app.services import projects as projects_service
 from app.services import milestones as milestones_service
 from app.services import progress as progress_service
@@ -25,6 +27,7 @@ from app.services import model_analytics as model_analytics_service
 from app.database import audit as db_audit
 
 router = APIRouter()
+auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 # --- Health Check ---
 @router.get("/health", tags=["Health"])
@@ -33,13 +36,23 @@ def health_check():
 
 
 # --- Authentication Endpoints ---
-@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED, tags=["Authentication"])
+@auth_router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def register_user(user_in: UserCreate, db: Session = Depends(get_db)):
     return auth_service.register_user_service(db, user_in)
 
-@router.post("/login", response_model=Token, tags=["Authentication"])
+@auth_router.post("/login", response_model=Token)
 def login(credentials: UserLogin, db: Session = Depends(get_db)):
     return auth_service.authenticate_user_service(db, credentials)
+
+@auth_router.post("/verify-otp", response_model=OTPResponse)
+def verify_otp_endpoint(request: OTPVerifyRequest, db: Session = Depends(get_db)):
+    return otp_service.verify_otp_service(db, request.email, request.otp_code)
+
+@auth_router.post("/resend-otp", response_model=OTPResponse)
+def resend_otp_endpoint(request: OTPResendRequest, db: Session = Depends(get_db)):
+    return otp_service.request_otp_service(db, request.email)
+
+
 
 
 # --- Projects Endpoints ---

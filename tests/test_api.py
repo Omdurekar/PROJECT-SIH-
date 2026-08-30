@@ -15,26 +15,46 @@ def test_health_check():
     assert response.status_code == 200
     assert response.json()["status"] == "healthy"
 
+from unittest.mock import patch
+
 def test_user_registration_and_login():
     uname = f"officer_{uuid.uuid4().hex[:6]}"
+    email = f"{uname}@monitoring.gov.in"
     reg_data = {
         "username": uname,
-        "email": f"{uname}@monitoring.gov.in",
+        "email": email,
         "password": "SecurePassword123",
         "role": "Monitoring Officer",
         "department": "Ministry of Railways"
     }
-    response = client.post("/register", json=reg_data)
-    assert response.status_code == 201
-    assert response.json()["username"] == uname
 
-    login_data = {
-        "username": uname,
-        "password": "SecurePassword123"
-    }
-    response = client.post("/login", json=login_data)
-    assert response.status_code == 200
-    assert "access_token" in response.json()
+    with patch("app.services.otp.send_otp_email") as mock_send:
+        response = client.post("/api/v1/auth/register", json=reg_data)
+        assert response.status_code == 201
+        assert response.json()["username"] == uname
+        assert response.json()["is_verified"] is False
+
+        login_data = {
+            "username": uname,
+            "password": "SecurePassword123"
+        }
+        # Unverified user login must be rejected
+        unverified_res = client.post("/api/v1/auth/login", json=login_data)
+        assert unverified_res.status_code == 403
+        assert "verification required" in unverified_res.json()["detail"].lower()
+
+        # Extract generated OTP from mock call args and verify via API
+        otp_code = mock_send.call_args[0][1]
+        verify_res = client.post("/api/v1/auth/verify-otp", json={"email": email, "otp_code": otp_code})
+        assert verify_res.status_code == 200
+        assert verify_res.json()["is_verified"] is True
+
+        # Verified user login must succeed
+        response = client.post("/api/v1/auth/login", json=login_data)
+        assert response.status_code == 200
+        assert "access_token" in response.json()
+
+
 
 def test_project_lifecycle():
     code = f"PRJ-{uuid.uuid4().hex[:6].upper()}"

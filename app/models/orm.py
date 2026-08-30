@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Text, JSON
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Text, JSON, Boolean
 from sqlalchemy.orm import relationship
 from app.config.database import Base
 
@@ -12,6 +12,7 @@ class User(Base):
     hashed_password = Column(String(255), nullable=False)
     role = Column(String(30), default="Monitoring Officer") # Admin, Project Manager, Monitoring Officer, Department Official, Viewer
     department = Column(String(100), nullable=True)
+    is_verified = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
 
@@ -196,3 +197,18 @@ class ModelSummary(Base):
     shap_summary = Column(JSON, nullable=True)
 
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+
+class OTPVerification(Base):
+    __tablename__ = "otp_verifications"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(100), index=True, nullable=False)
+    hashed_otp = Column(String(255), nullable=False)
+    attempts = Column(Integer, default=0, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    last_sent_at = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
+    is_used = Column(Boolean, default=False, nullable=False)
+    is_invalidated = Column(Boolean, default=False, nullable=False)
+

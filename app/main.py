@@ -6,8 +6,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config.settings import settings
-from app.config.database import engine, Base
-from app.api import router as api_router
+from app.config.database import engine, Base, init_db
+from app.api import router as api_router, auth_router
 from app.services.predictions import get_ml_bundle
 
 from contextlib import asynccontextmanager
@@ -24,7 +24,8 @@ async def lifespan(app: FastAPI):
     yield
 
 # Initialize Database tables
-Base.metadata.create_all(bind=engine)
+init_db(engine)
+
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -45,8 +46,10 @@ app.add_middleware(
 )
 
 # Include API Routers
+app.include_router(auth_router, prefix=settings.API_PREFIX)
 app.include_router(api_router, prefix=settings.API_PREFIX)
 app.include_router(api_router)  # Also mount at root for convenient direct calls
+
 
 @app.get("/")
 def root():
