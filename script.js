@@ -349,49 +349,85 @@ function populateDropdown(id, property, defaultText) {
 }
 function searchProjects() {
 
-    const projectName =
-        document.getElementById("projectName")
-            .value
-            .toLowerCase()
-            .trim();
+    // Get values from search fields
+    const projectName = document
+        .getElementById("projectName")
+        .value
+        .trim()
+        .toLowerCase();
 
-    const ministry =
-        document.getElementById("ministry").value;
+    const ministry = document.getElementById("ministry").value;
+    const state = document.getElementById("state").value;
+    const sector = document.getElementById("sector").value;
+    const risk = document.getElementById("risk").value;
 
-    const state =
-        document.getElementById("state").value;
+    // Result container
+    const results = document.getElementById("searchResults");
 
-    const sector =
-        document.getElementById("sector").value;
 
-    const risk =
-        document.getElementById("risk").value;
+    // ==========================================
+    // CHECK IF USER GAVE ANY CONSTRAINT
+    // ==========================================
 
+    if (
+        projectName === "" &&
+        ministry === "" &&
+        state === "" &&
+        sector === "" &&
+        risk === ""
+    ) {
+
+        results.innerHTML = `
+            <div class="result-placeholder">
+                <span>🔎</span>
+
+                <p>
+                    Please enter a project name or select
+                    at least one filter to search.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    // ==========================================
+    // FILTER PROJECTS
+    // ==========================================
 
     const filteredProjects = projects.filter(project => {
 
+        // Project name typing search
         const nameMatch =
-            project.name
-                .toLowerCase()
-                .includes(projectName);
+            project.name.toLowerCase().includes(projectName);
 
+
+        // Ministry
         const ministryMatch =
             ministry === "" ||
             project.ministry === ministry;
 
+
+        // State
         const stateMatch =
             state === "" ||
             project.state === state;
 
+
+        // Sector
         const sectorMatch =
             sector === "" ||
             project.sector === sector;
 
+
+        // Risk
         const riskMatch =
             risk === "" ||
             project.risk === risk;
 
 
+        // ALL selected conditions must match
         return (
             nameMatch &&
             ministryMatch &&
@@ -402,6 +438,10 @@ function searchProjects() {
 
     });
 
+
+    // ==========================================
+    // DISPLAY RESULTS
+    // ==========================================
 
     displayProjects(filteredProjects);
 }
