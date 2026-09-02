@@ -1,36 +1,8 @@
 import datetime
 from typing import Optional, Dict, Any, List
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, JSON
-from sqlalchemy.orm import relationship
 from pydantic import BaseModel, Field
-from app.config.database import Base
+from app.models.orm import PredictionLog, AuditLog
 from app.models.project import ProjectResponse
-
-# --- ORM Models ---
-class PredictionLog(Base):
-    __tablename__ = "prediction_logs"
-
-    id = Column(Integer, primary_key=True, index=True)
-    project_id = Column(Integer, ForeignKey("projects.id"), nullable=True)
-    delay_level = Column(String(20), nullable=False)
-    confidence = Column(Float, nullable=False)
-    features_snapshot = Column(JSON, nullable=True)
-    predicted_at = Column(DateTime, default=datetime.datetime.utcnow)
-
-    project = relationship("Project", back_populates="prediction_logs")
-
-
-class AuditLog(Base):
-    __tablename__ = "audit_logs"
-
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, nullable=True)
-    username = Column(String(50), nullable=True)
-    action = Column(String(100), nullable=False)
-    entity_type = Column(String(50), nullable=False)
-    entity_id = Column(String(50), nullable=True)
-    details = Column(String(500), nullable=True)
-    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
 
 # --- Pydantic Schemas ---
 class PredictionRequest(BaseModel):

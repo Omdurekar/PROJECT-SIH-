@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RISKLENS - Dedicated Project Analysis & Multi-Dimensional Risk Diagnostics Portal for Central Sector Infrastructure Projects.">
+    <title>Project Analysis &amp; Risk Diagnostics | RISKLENS</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- ApexCharts CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <!-- Custom Dedicated Stylesheet -->
+    <link rel="stylesheet" href="project-analysis.css">
+</head>
+
+<body>
+
+    <!-- =====================================================
+         ACCESSIBILITY / TOP NOTICE BAR
+    ===================================================== -->
+    <div class="top-accessibility-bar">
+        <div class="top-bar-inner">
+            <div class="gov-text">
+                <i class="fa-solid fa-flag-checkered"></i>
+                <span>Government of India &bull; Ministry of Statistics and Programme Implementation (MoSPI)</span>
+            </div>
+            <div class="top-quick-actions">
+                <span><i class="fa-solid fa-shield-halved"></i> Official Monitoring Portal</span>
+                <span class="divider">|</span>
+                <span id="currentDateDisplay"><i class="fa-regular fa-calendar-days"></i> September 2026</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================
+         MAIN HEADER
+    ===================================================== -->
+    <header class="main-header">
+        <!-- LEFT: LOGOS -->
+        <div class="header-left">
+            <div class="logo1">
+                <img src="images/image1.png" alt="Ministry of Statistics and Programme Implementation" onerror="this.style.display='none'">
+            </div>
+            <div class="logo-divider"></div>
+            <div class="logo2">
+                <img src="images/image.png" alt="Data for Development" onerror="this.style.display='none'">
+            </div>
+        </div>
+
+        <!-- CENTER: WEBSITE TITLE -->
+        <div class="header-title">
+            <h1>RISKLENS</h1>
+            <p>Project Monitoring &amp; Analysis Portal</p>
+            <span>Central Sector Infrastructure Projects (₹150 Cr &amp; Above)</span>
+        </div>
+
+        <!-- RIGHT: STATUS / DATE -->
+        <div class="header-right">
+            <div class="portal-status">
+                <span class="status-dot"></span>
+                <span>Live Monitoring Active</span>
+            </div>
+            <div class="header-date">
+                <strong>Project Intelligence Engine</strong>
+                <small id="serverHealthBadge"><i class="fa-solid fa-signal text-success"></i> Connected</small>
+            </div>
+        </div>
+    </header>
+
+    <!-- =====================================================
+         NAVIGATION
+    ===================================================== -->
+    <nav class="portal-nav">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="index.html" class="nav-item">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home</span>
+                </a>
+                <a href="project-analysis.html" class="nav-item active">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Project Analysis</span>
+                    <span class="active-indicator"></span>
+                </a>
+                <a href="model-analysis.html" class="nav-item">
+                    <i class="fa-solid fa-brain"></i>
+                    <span>Model Analysis</span>
+                </a>
+            </div>
+
+            <div class="nav-extra">
+                <div class="quick-counter" id="monitoredCountPill">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>Loading Monitored Projects...</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- =====================================================
+         MAIN CONTENT AREA
+    ===================================================== -->
+    <main class="main-wrapper">
+
+        <!-- HERO SECTION -->
+        <section class="analysis-hero">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fa-solid fa-magnifying-glass-chart"></i>
+                    <span>Tier 1 &amp; Tier 2 Intelligence Dashboard</span>
+                </div>
+                <h2>Project Analysis &amp; Risk Diagnostics</h2>
+                <p>
+                    Comprehensive real-time tracking of Central Sector Projects. Deep-dive into financial cost escalation, schedule slippage velocity, and AI-driven multi-class risk predictions.
+                </p>
+            </div>
+            
+            <div class="hero-actions">
+                <button class="btn btn-secondary" id="refreshBtn" title="Refresh Live Data">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    <span>Refresh Live Data</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- KPI SUMMARY OVERVIEW STRIP -->
+        <section class="kpi-strip" id="kpiStrip">
+            <div class="kpi-card">
+                <div class="kpi-icon icon-blue">
+                    <i class="fa-solid fa-diagram-project"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Total Monitored Projects</span>
+                    <h3 class="kpi-value" id="kpiTotalProjects">--</h3>
+                    <span class="kpi-subtext">Active infrastructure assets</span>
+                </div>
+            </div>
+
+            <div class="kpi-card kpi-high-risk">
+                <div class="kpi-icon icon-red">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">High Risk Projects</span>
+                    <h3 class="kpi-value text-red" id="kpiHighRisk">--</h3>
+                    <span class="kpi-subtext">Critical intervention required</span>
+                </div>
+            </div>
+
+            <div class="kpi-card kpi-medium-risk">
+                <div class="kpi-icon icon-amber">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Medium Risk Projects</span>
+                    <h3 class="kpi-value text-amber" id="kpiMedRisk">--</h3>
+                    <span class="kpi-subtext">Close supervision watch</span>
+                </div>
+            </div>
+
+            <div class="kpi-card kpi-low-risk">
+                <div class="kpi-icon icon-green">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Low Risk / On Track</span>
+                    <h3 class="kpi-value text-green" id="kpiLowRisk">--</h3>
+                    <span class="kpi-subtext">Within schedule &amp; budget</span>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon icon-purple">
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Total Capital Outlay</span>
+                    <h3 class="kpi-value" id="kpiTotalCost">₹ -- Cr</h3>
+                    <span class="kpi-subtext" id="kpiAvgProgress">Avg. Progress: --%</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- =====================================================
+             TIER 1: SEARCH & FILTER CONTROL BAR
+        ===================================================== -->
+        <section class="filter-control-card">
+            <div class="filter-header">
+                <div class="filter-title">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>Filter &amp; Search Projects</span>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn-text" id="resetFiltersBtn">
+                        <i class="fa-solid fa-filter-circle-xmark"></i> Clear Filters
+                    </button>
+                </div>
+            </div>
+
+            <div class="filter-grid">
+                <!-- Text Search -->
+                <div class="filter-group search-group">
+                    <label for="searchInput"><i class="fa-solid fa-magnifying-glass"></i> Project Name / ID</label>
+                    <div class="input-with-icon">
+                        <input type="text" id="searchInput" placeholder="Search by name, ID (e.g. PRJ-101)..." autocomplete="off">
+                        <button type="button" class="clear-input-btn" id="clearSearchBtn" title="Clear text">&times;</button>
+                    </div>
+                </div>
+
+                <!-- Ministry / Agency Dropdown -->
+                <div class="filter-group">
+                    <label for="agencyFilter"><i class="fa-solid fa-building-columns"></i> Ministry / Agency</label>
+                    <select id="agencyFilter">
+                        <option value="ALL">All Ministries / Agencies</option>
+                    </select>
+                </div>
+
+                <!-- State / Location Dropdown -->
+                <div class="filter-group">
+                    <label for="stateFilter"><i class="fa-solid fa-location-dot"></i> State / Location</label>
+                    <select id="stateFilter">
+                        <option value="ALL">All States / Locations</option>
+                    </select>
+                </div>
+
+                <!-- Sector Dropdown -->
+                <div class="filter-group">
+                    <label for="sectorFilter"><i class="fa-solid fa-industry"></i> Sector</label>
+                    <select id="sectorFilter">
+                        <option value="ALL">All Sectors</option>
+                    </select>
+                </div>
+
+                <!-- Risk Category Dropdown -->
+                <div class="filter-group">
+                    <label for="riskFilter"><i class="fa-solid fa-shield-virus"></i> Risk Category</label>
+                    <select id="riskFilter">
+                        <option value="ALL">All Risk Levels</option>
+                        <option value="HIGH">🔴 High Risk / Critical</option>
+                        <option value="MEDIUM">🟡 Medium Risk / Watch</option>
+                        <option value="LOW">🟢 Low Risk / On Track</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Active Filters Chip Bar -->
+            <div class="active-chips-bar" id="activeChipsBar" style="display: none;">
+                <span class="chips-label">Active Filters:</span>
+                <div class="chips-list" id="chipsList"></div>
+            </div>
+        </section>
+
+        <!-- =====================================================
+             TIER 1: PROJECT FLASHCARD GRID
+        ===================================================== -->
+        <section class="projects-section">
+            <div class="section-meta-header">
+                <div class="results-count">
+                    <span id="resultsCountText">Showing <strong>0</strong> projects</span>
+                </div>
+                <div class="sort-controls">
+                    <label for="sortSelector"><i class="fa-solid fa-arrow-down-short-wide"></i> Sort By:</label>
+                    <select id="sortSelector">
+                        <option value="risk-desc">Highest Risk Level First</option>
+                        <option value="cost-desc">Highest Total Budget</option>
+                        <option value="progress-asc">Lowest Physical Progress</option>
+                        <option value="progress-desc">Highest Physical Progress</option>
+                        <option value="name-asc">Project Name (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Grid Container -->
+            <div class="project-flashcard-grid" id="projectGrid">
+                <!-- Skeletons rendered initially via JS -->
+            </div>
+
+            <!-- Empty / No Results State -->
+            <div class="no-results-state" id="noResultsState" style="display: none;">
+                <div class="no-results-icon">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+                <h3>No Matching Projects Found</h3>
+                <p>No project records matched your search query and filter criteria. Try clearing filters or using a different search term.</p>
+                <button class="btn btn-primary" id="resetSearchFromEmptyBtn">
+                    <i class="fa-solid fa-rotate-left"></i> Reset All Filters
+                </button>
+            </div>
+
+            <!-- Pagination Bar -->
+            <div class="pagination-bar" id="paginationBar" style="display: none;">
+                <div class="page-info" id="paginationInfo">Page 1 of 1</div>
+                <div class="page-controls">
+                    <button class="btn btn-pagination" id="prevPageBtn" disabled>
+                        <i class="fa-solid fa-chevron-left"></i> Previous
+                    </button>
+                    <div class="page-numbers" id="pageNumbers"></div>
+                    <button class="btn btn-pagination" id="nextPageBtn" disabled>
+                        Next <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- =====================================================
+         TIER 2: DEEP-DIVE ANALYSIS MODAL / SIDE DRAWER
+    ===================================================== -->
+    <div class="modal-backdrop" id="projectModal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- MODAL HEADER -->
+                <div class="modal-header">
+                    <div class="modal-header-left">
+                        <div class="modal-title-row">
+                            <span class="project-id-badge" id="modalProjectId">PRJ-0000</span>
+                            <h2 class="modal-project-name" id="modalProjectName">Project Analysis Deep-Dive</h2>
+                            <span class="risk-badge" id="modalRiskBadge">HIGH RISK</span>
+                        </div>
+                        <div class="modal-meta-row">
+                            <span><i class="fa-solid fa-building-columns"></i> <span id="modalAgency">Agency</span></span>
+                            <span><i class="fa-solid fa-industry"></i> <span id="modalSector">Sector</span></span>
+                            <span><i class="fa-solid fa-location-dot"></i> <span id="modalLocation">Location</span></span>
+                            <span><i class="fa-regular fa-calendar-check"></i> Report: <span id="modalReportDate">Latest</span></span>
+                        </div>
+                    </div>
+                    <button type="button" class="modal-close-btn" id="modalCloseBtn" aria-label="Close modal">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- MODAL TAB NAVIGATION -->
+                <div class="modal-tab-bar">
+                    <button class="tab-btn active" data-tab="tab-cost" id="tabBtnCost">
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                        <span>Cost Overrun</span>
+                    </button>
+                    <button class="tab-btn" data-tab="tab-time" id="tabBtnTime">
+                        <i class="fa-solid fa-clock"></i>
+                        <span>Time Overrun</span>
+                    </button>
+                    <button class="tab-btn" data-tab="tab-risk" id="tabBtnRisk">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Overall Risk</span>
+                    </button>
+                    <button class="tab-btn" data-tab="tab-simulator" id="tabBtnSim">
+                        <i class="fa-solid fa-microchip"></i>
+                        <span>Live ML Simulator</span>
+                    </button>
+                </div>
+
+                <!-- MODAL BODY / TAB PANELS -->
+                <div class="modal-body">
+
+                    <!-- =====================================================
+                         TAB 1: COST OVERRUN
+                    ===================================================== -->
+                    <div class="tab-panel active" id="tab-cost">
+                        
+                        <!-- Prediction Banner -->
+                        <div class="prediction-alert-banner" id="costPredictionBanner">
+                            <div class="banner-icon icon-cost">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                            <div class="banner-text">
+                                <h4>Cost Escalation Risk Rating: <span id="costOverrunPredText" class="text-bold">Assessment Active</span></h4>
+                                <p id="costOverrunProbText">Model Probability: <strong>88.4%</strong> | High Escalation Sensitivity Detected.</p>
+                            </div>
+                            <div class="banner-score" id="costProbPill">
+                                <span class="score-num" id="costProbValue">88%</span>
+                                <span class="score-label">Escalation Probability</span>
+                            </div>
+                        </div>
+
+                        <!-- KPI Grid for Cost -->
+                        <div class="deep-kpi-grid">
+                            <div class="deep-kpi-card">
+                                <span class="kpi-title">Original Cost</span>
+                                <span class="kpi-val" id="costOriginalVal">₹ 0 Cr</span>
+                                <span class="kpi-hint">Sanctioned Budget</span>
+                            </div>
+                            <div class="deep-kpi-card">
+                                <span class="kpi-title">Anticipated / Revised Cost</span>
+                                <span class="kpi-val" id="costAnticipatedVal">₹ 0 Cr</span>
+                                <span class="kpi-hint">Current Estimated Outlay</span>
+                            </div>
+                            <div class="deep-kpi-card">
+                                <span class="kpi-title">Overrun Amount</span>
+                                <span class="kpi-val text-red" id="costOverrunAmountVal">₹ 0 Cr</span>
+                                <span class="kpi-hint" id="costOverrunPercentVal">0% Escalation</span>
+                            </div>
+                            <div class="deep-kpi-card">
+                                <span class="kpi-title">Cumulative Expenditure</span>
+                                <span class="kpi-val" id="costCumulativeExpVal">₹ 0 Cr</span>
+                                <span class="kpi-hint" id="costExpenditureRatioVal">Expenditure Ratio: 0%</span>
+                            </div>
+                            <div class="deep-kpi-card">
+                                <span class="kpi-title">Escalation Rate</span>
+                                <span class="kpi-val text-amber" id="costEscalationRateVal">0% / yr</span>
+                                <span class="kpi-hint">Annualized Outlay Speed</span>
+                            </div>
+                            <div class="deep-kpi-card">
+                                <span class="kpi-title">Project Age</span>
+                                <span class="kpi-val" id="costProjectAgeVal">0 Months</span>
+                                <span class="kpi-hint" id="costProjectSizeVal">Size Category: Medium</span>
+                            </div>
+                        </div>
+
+                        <!-- Charts Section -->
+                        <div class="charts-row">
+                            <div class="chart-card chart-card-2cols">
+                                <div class="chart-card-header">
+                                    <div class="chart-title">
+                                        <i class="fa-solid fa-chart-simple"></i>
+                                        <span>Budget vs. Revised vs. Cumulative Expenditure</span>
+                                    </div>
+                                    <span class="chart-tag">Values in ₹ Crores</span>
+                                </div>
+                                <div class="chart-container" id="costBarChart"></div>
+                            </div>
+
+                            <div class="chart-card">
+                                <div class="chart-card-header">
+                                    <div class="chart-title">
+                                        <i class="fa-solid fa-gauge-high"></i>
+                                        <span>Expenditure Utilization</span>
+                                    </div>
+                                </div>
+                                <div class="chart-container" id="costRadialChart"></div>
+                                <div class="chart-footer-note" id="costGaugeNote">
+                                    Capital utilization compared to sanctioned threshold.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- =====================================================
+                         TAB 2: TIME OVERRUN
+                    ===================================================== -->
+                    <div class="tab-panel" id="tab-time">
+
+                        <!-- Prediction Banner -->
+                        <div class="prediction-alert-banner" id="timePredictionBanner">
+                            <div class="banner-icon icon-time">
+                                <i class="fa-solid fa-stopwatch-20"></i>
+                            </div>
+                            <div class="banner-text">
+                                <h4>Schedule Delay Risk Rating: <span id="timeOverrunPredText" class="text-bold">Slippage Forecast Active</span></h4>
+                                <p id="timeOverrunProbText">ML Delay Class Confidence: <strong>92.1%</strong> | Schedule variance evaluated against targets.</p>
+                            </div>
+                            <div class="banner-score" id="timeProbPill">
+                                <span class="score-num" id="timeProbValue">92%</span>
+                                <span class="score-label">Delay Probability</span>
+                            </div>
+                        </div>
+
+                        <!-- KPI Grid for Time -->
+                        <div class="deep-kpi-grid">
+                            <div class="deep-kpi-card">
+                                <span class="kpi-title">Planned Duration</span>
+                                <span class="kpi-val" id="timePlannedDurationVal">0 Months</span>
+                                <span class="kpi-hint" id="timePlannedDaysVal">0 Days</span>
+                            </div>
+                            <div class="deep-kpi-card">
+                                <span class="kpi-title">Elapsed Schedule</span>
+                                <span class="kpi-val" id="timeElapsedVal">0 Months</span>
+                                <span class="kpi-hint" id="timeElapsedRatioVal">0% of Planned Time</span>
+                            </div>
+                            <div class="deep-kpi-card">
+                                <span class="kpi-title">Schedule Slippage</span>
+                                <span class="kpi-val text-red" id="timeSlippageVal">0 Months</span>
+                                <span class="kpi-hint" id="timeOverrunCalcVal">Calc: 0 Mo</span>
+                            </div>
+                            <div class="deep-kpi-card">
+                                <span class="kpi-title">Physical Progress</span>
+                                <span class="kpi-val text-green" id="timePhysicalProgressVal">0%</span>
+                                <span class="kpi-hint" id="timePrevProgressVal">Previous: 0%</span>
+                            </div>
+                            <div class="deep-kpi-card">
+                                <span class="kpi-title">Progress Velocity</span>
+                                <span class="kpi-val text-blue" id="timeProgressVelocityVal">0% / mo</span>
+                                <span class="kpi-hint">Current Construction Pace</span>
+                            </div>
+                            <div class="deep-kpi-card">
+                                <span class="kpi-title">Schedule Status</span>
+                                <span class="kpi-val" id="timeScheduleStatusVal">Normal</span>
+                                <span class="kpi-hint" id="timeIsRevisedVal">Revision: None</span>
+                            </div>
+                        </div>
+
+                        <!-- Charts Section -->
+                        <div class="charts-row">
+                            <div class="chart-card chart-card-2cols">
+                                <div class="chart-card-header">
+                                    <div class="chart-title">
+                                        <i class="fa-solid fa-code-compare"></i>
+                                        <span>Physical Progress vs. Elapsed Schedule Timeline</span>
+                                    </div>
+                                    <span class="chart-tag">Percentage (%) Comparison</span>
+                                </div>
+                                <div class="chart-container" id="timeDualBarChart"></div>
+                            </div>
+
+                            <div class="chart-card">
+                                <div class="chart-card-header">
+                                    <div class="chart-title">
+                                        <i class="fa-solid fa-gauge"></i>
+                                        <span>Execution Velocity Pace</span>
+                                    </div>
+                                </div>
+                                <div class="chart-container" id="timeVelocityGauge"></div>
+                                <div class="chart-footer-note" id="timeVelocityNote">
+                                    Monthly construction throughput vs target benchmark.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- =====================================================
+                         TAB 3: OVERALL RISK
+                    ===================================================== -->
+                    <div class="tab-panel" id="tab-risk">
+
+                        <!-- Prediction Summary Banner -->
+                        <div class="prediction-alert-banner" id="riskPredictionBanner">
+                            <div class="banner-icon icon-risk">
+                                <i class="fa-solid fa-shield-virus"></i>
+                            </div>
+                            <div class="banner-text">
+                                <h4>Composite Multi-Class Risk Rating: <span id="riskClassPredText" class="text-bold">HIGH RISK</span></h4>
+                                <p id="riskClassProbText">Combined probabilistic delay classification with multi-factor risk regression.</p>
+                            </div>
+                            <div class="banner-score" id="riskProbPill">
+                                <span class="score-num" id="riskProbValue">--</span>
+                                <span class="score-label">Class Confidence</span>
+                            </div>
+                        </div>
+
+                        <!-- Charts and Risk Flags Row -->
+                        <div class="charts-row">
+                            <!-- Donut Chart -->
+                            <div class="chart-card">
+                                <div class="chart-card-header">
+                                    <div class="chart-title">
+                                        <i class="fa-solid fa-chart-pie"></i>
+                                        <span>Risk Class Probability Distribution</span>
+                                    </div>
+                                </div>
+                                <div class="chart-container" id="riskDonutChart"></div>
+                                <div class="risk-prob-breakdown">
+                                    <div class="prob-chip chip-low">
+                                        <span>Low Risk:</span>
+                                        <strong id="riskProbLow">0%</strong>
+                                    </div>
+                                    <div class="prob-chip chip-med">
+                                        <span>Medium Risk:</span>
+                                        <strong id="riskProbMed">0%</strong>
+                                    </div>
+                                    <div class="prob-chip chip-high">
+                                        <span>High Risk:</span>
+                                        <strong id="riskProbHigh">0%</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Major Risk Indicators Badge Grid -->
+                            <div class="chart-card chart-card-2cols">
+                                <div class="chart-card-header">
+                                    <div class="chart-title">
+                                        <i class="fa-solid fa-list-check"></i>
+                                        <span>Critical Governance &amp; Regulatory Flags</span>
+                                    </div>
+                                    <span class="chart-tag">Field Diagnostic Triggers</span>
+                                </div>
+
+                                <div class="risk-indicator-grid">
+                                    <div class="indicator-box" id="flagClearance">
+                                        <div class="ind-icon"><i class="fa-solid fa-file-shield"></i></div>
+                                        <div class="ind-body">
+                                            <h5>Statutory / Forest Clearances</h5>
+                                            <p id="flagClearanceStatus">Pending MoEFCC Environmental Clearance</p>
+                                        </div>
+                                        <span class="ind-badge" id="flagClearanceBadge">FLAGGED</span>
+                                    </div>
+
+                                    <div class="indicator-box" id="flagLand">
+                                        <div class="ind-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+                                        <div class="ind-body">
+                                            <h5>Land Acquisition / RoW</h5>
+                                            <p id="flagLandStatus">Right of Way litigation reported</p>
+                                        </div>
+                                        <span class="ind-badge" id="flagLandBadge">FLAGGED</span>
+                                    </div>
+
+                                    <div class="indicator-box" id="flagDelayReason">
+                                        <div class="ind-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                                        <div class="ind-body">
+                                            <h5>Delay Reason Audit</h5>
+                                            <p id="flagDelayReasonStatus">Unresolved contractor dispute identified</p>
+                                        </div>
+                                        <span class="ind-badge" id="flagDelayReasonBadge">AUDIT</span>
+                                    </div>
+
+                                    <div class="indicator-box" id="flagApprovalDoc">
+                                        <div class="ind-icon"><i class="fa-solid fa-calendar-xmark"></i></div>
+                                        <div class="ind-body">
+                                            <h5>Approval > Original DOC</h5>
+                                            <p id="flagApprovalDocStatus">Revised sanction delayed post-target</p>
+                                        </div>
+                                        <span class="ind-badge" id="flagApprovalDocBadge">PASSED</span>
+                                    </div>
+                                </div>
+
+                                <!-- Health Indicators Table -->
+                                <div class="health-table-wrapper">
+                                    <h5 class="table-title"><i class="fa-solid fa-heart-pulse"></i> Vital Health Indicators Matrix</h5>
+                                    <table class="health-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Indicator</th>
+                                                <th>Current Metric</th>
+                                                <th>Benchmark Norm</th>
+                                                <th>Diagnostic Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="healthTableBody">
+                                            <!-- Dynamically populated -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- =====================================================
+                         TAB 4: LIVE ML SIMULATOR
+                    ===================================================== -->
+                    <div class="tab-panel" id="tab-simulator">
+                        <div class="sim-header-banner">
+                            <div class="sim-banner-icon">
+                                <i class="fa-solid fa-microchip"></i>
+                            </div>
+                            <div class="sim-banner-info">
+                                <h4>Interactive ML Delay Inference Simulator</h4>
+                                <p>Simulate parameter adjustments to test predictive delay classification live against the trained ML backend (`POST /api/v1/predict`).</p>
+                            </div>
+                        </div>
+
+                        <div class="sim-layout">
+                            <!-- Left: Form Controls -->
+                            <form id="mlSimForm" class="sim-form-card" onsubmit="return false;">
+                                <h5><i class="fa-solid fa-sliders"></i> Adjustable Simulation Parameters</h5>
+
+                                <div class="sim-form-grid">
+                                    <div class="sim-field">
+                                        <label for="simBudget">Project Budget (₹ Crores): <strong id="simBudgetDisplay">0</strong></label>
+                                        <input type="range" id="simBudget" min="10" max="50000" step="50" value="1200">
+                                    </div>
+
+                                    <div class="sim-field">
+                                        <label for="simExpenditure">Cumulative Expenditure (₹ Crores): <strong id="simExpenditureDisplay">0</strong></label>
+                                        <input type="range" id="simExpenditure" min="0" max="50000" step="50" value="450">
+                                    </div>
+
+                                    <div class="sim-field">
+                                        <label for="simPlannedDuration">Planned Duration (Days): <strong id="simDurationDisplay">0</strong></label>
+                                        <input type="range" id="simPlannedDuration" min="180" max="3650" step="30" value="1095">
+                                    </div>
+
+                                    <div class="sim-field">
+                                        <label for="simTimeElapsed">Time Elapsed (Days): <strong id="simElapsedDisplay">0</strong></label>
+                                        <input type="range" id="simTimeElapsed" min="30" max="3650" step="30" value="720">
+                                    </div>
+
+                                    <div class="sim-field">
+                                        <label for="simCompletion">Physical Completion (%): <strong id="simCompletionDisplay">0</strong>%</label>
+                                        <input type="range" id="simCompletion" min="0" max="100" step="1" value="45">
+                                    </div>
+
+                                    <div class="sim-field">
+                                        <label for="simDelayedMilestones">Delayed Milestones: <strong id="simDelayedDisplay">0</strong></label>
+                                        <input type="range" id="simDelayedMilestones" min="0" max="30" step="1" value="4">
+                                    </div>
+
+                                    <div class="sim-field">
+                                        <label for="simTotalMilestones">Total Milestones: <strong id="simTotalMilestonesDisplay">0</strong></label>
+                                        <input type="range" id="simTotalMilestones" min="5" max="50" step="1" value="20">
+                                    </div>
+
+                                    <div class="sim-field">
+                                        <label for="simRiskScore">Initial Risk Indicator Score (0-10): <strong id="simRiskScoreDisplay">0</strong></label>
+                                        <input type="range" id="simRiskScore" min="0" max="10" step="0.1" value="4.5">
+                                    </div>
+                                </div>
+
+                                <div class="sim-actions">
+                                    <button type="button" class="btn btn-primary btn-block" id="runMlSimBtn">
+                                        <i class="fa-solid fa-bolt"></i> Run Live ML Inference
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- Right: Live Result Box -->
+                            <div class="sim-result-card">
+                                <h5><i class="fa-solid fa-square-poll-vertical"></i> Live Model Output</h5>
+                                
+                                <div class="sim-output-body" id="simOutputBox">
+                                    <div class="sim-idle-state">
+                                        <i class="fa-solid fa-brain"></i>
+                                        <p>Adjust the sliders on the left and click <strong>"Run Live ML Inference"</strong> to obtain real-time model predictions and feature importance metrics.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- MODAL FOOTER -->
+                <div class="modal-footer">
+                    <div class="modal-footer-left">
+                        <span><i class="fa-solid fa-circle-info"></i> Data synthesized from MoSPI Central Project Monitoring System</span>
+                    </div>
+                    <div class="modal-footer-right">
+                        <button type="button" class="btn btn-secondary" id="modalDismissBtn">
+                            Close
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================
+         FOOTER
+    ===================================================== -->
+    <footer class="portal-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>RISKLENS Portal</h4>
+                <p>Advanced Infrastructure Risk Intelligence, Delay Classification &amp; Project Diagnostics System.</p>
+                <div class="gov-badge-footer">
+                    <img src="images/image1.png" alt="MoSPI Logo" onerror="this.style.display='none'">
+                    <span>Government of India</span>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Core Modules</h4>
+                <ul>
+                    <li><a href="index.html">Live Overview Dashboard</a></li>
+                    <li><a href="project-analysis.html">Project Analysis &amp; Flashcards</a></li>
+                    <li><a href="model-analysis.html">Model Analysis &amp; Feature Weights</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Official Compliance</h4>
+                <p>Designed in accordance with Government of India Web Guidelines (GIGW) for transparency in Central Sector Project monitoring.</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Ministry of Statistics and Programme Implementation (MoSPI). All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Dedicated Application JavaScript -->
+    <script src="project-analysis.js"></script>
+</body>
+
+</html>

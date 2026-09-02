@@ -1,25 +1,7 @@
 import datetime
 from typing import Optional
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text
-from sqlalchemy.orm import relationship
 from pydantic import BaseModel
-from app.config.database import Base
-
-# --- ORM Model ---
-class Risk(Base):
-    __tablename__ = "risks"
-
-    id = Column(Integer, primary_key=True, index=True)
-    project_id = Column(Integer, ForeignKey("projects.id"), nullable=False)
-    title = Column(String(200), nullable=False)
-    description = Column(Text, nullable=True)
-    category = Column(String(50), default="Operational")
-    severity = Column(String(20), default="MEDIUM")
-    status = Column(String(30), default="OPEN")
-    mitigation_plan = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
-
-    project = relationship("Project", back_populates="risks")
+from app.models.orm import Risk
 
 # --- Pydantic Schemas ---
 class RiskCreate(BaseModel):

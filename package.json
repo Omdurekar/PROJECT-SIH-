@@ -1,0 +1,15 @@
+{
+  "name": "sih-integrated-project-monitoring",
+  "version": "1.0.0",
+  "description": "SIH Integrated Project Monitoring Platform - Unified Dev Workspace",
+  "main": "app/main.py",
+  "scripts": {
+    "backend": "python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000",
+    "frontend": "npx live-server . --port=3000 --entry=index.html --no-browser",
+    "dev": "npx concurrently -k -n \"BACKEND,FRONTEND\" -c \"blue.bold,green.bold\" \"npm run backend\" \"npm run frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "live-server": "^1.2.2"
+  }
+}

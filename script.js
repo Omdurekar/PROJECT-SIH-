@@ -586,11 +586,8 @@ function viewProject(projectName) {
 
     console.log("Opening:", projectName);
 
-    // Later you can redirect to:
-    // project-details.html?name=...
-
     window.location.href =
-        "project-details.html?name=" +
+        "project-analysis.html?name=" +
         encodeURIComponent(projectName);
 }
 const featuredProjects = [
@@ -745,7 +742,7 @@ function displayFeaturedProjects() {
 function openProject(projectId) {
 
     window.location.href =
-        "project-details.html?id=" + projectId;
+        "project-analysis.html?id=" + projectId;
 
 }
 const projectSearch = document.getElementById("projectName");
