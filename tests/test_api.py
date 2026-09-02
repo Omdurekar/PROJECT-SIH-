@@ -1,5 +1,6 @@
 import sys
 import os
+import uuid
 import pytest
 from fastapi.testclient import TestClient
 
@@ -14,29 +15,51 @@ def test_health_check():
     assert response.status_code == 200
     assert response.json()["status"] == "healthy"
 
+from unittest.mock import patch
+
 def test_user_registration_and_login():
+    uname = f"officer_{uuid.uuid4().hex[:6]}"
+    email = f"{uname}@monitoring.gov.in"
     reg_data = {
-        "username": "test_officer",
-        "email": "officer@monitoring.gov.in",
+        "username": uname,
+        "email": email,
         "password": "SecurePassword123",
         "role": "Monitoring Officer",
         "department": "Ministry of Railways"
     }
-    response = client.post("/register", json=reg_data)
-    assert response.status_code == 201
-    assert response.json()["username"] == "test_officer"
 
-    login_data = {
-        "username": "test_officer",
-        "password": "SecurePassword123"
-    }
-    response = client.post("/login", json=login_data)
-    assert response.status_code == 200
-    assert "access_token" in response.json()
+    with patch("app.services.otp.send_otp_email") as mock_send:
+        response = client.post("/api/v1/auth/register", json=reg_data)
+        assert response.status_code == 201
+        assert response.json()["username"] == uname
+        assert response.json()["is_verified"] is False
+
+        login_data = {
+            "username": uname,
+            "password": "SecurePassword123"
+        }
+        # Unverified user login must be rejected
+        unverified_res = client.post("/api/v1/auth/login", json=login_data)
+        assert unverified_res.status_code == 403
+        assert "verification required" in unverified_res.json()["detail"].lower()
+
+        # Extract generated OTP from mock call args and verify via API
+        otp_code = mock_send.call_args[0][1]
+        verify_res = client.post("/api/v1/auth/verify-otp", json={"email": email, "otp_code": otp_code})
+        assert verify_res.status_code == 200
+        assert verify_res.json()["is_verified"] is True
+
+        # Verified user login must succeed
+        response = client.post("/api/v1/auth/login", json=login_data)
+        assert response.status_code == 200
+        assert "access_token" in response.json()
+
+
 
 def test_project_lifecycle():
+    code = f"PRJ-{uuid.uuid4().hex[:6].upper()}"
     proj_data = {
-        "project_code": "PRJ-TEST-001",
+        "project_code": code,
         "name": "High-Speed Rail Corridor Test Project",
         "department": "Ministry of Railways",
         "project_type": "Transportation",
@@ -59,7 +82,7 @@ def test_project_lifecycle():
     # Get Single Project
     res = client.get(f"/projects/{project_id}")
     assert res.status_code == 200
-    assert res.json()["project_code"] == "PRJ-TEST-001"
+    assert res.json()["project_code"] == code
 
     # Add Milestone
     milestone_data = {
@@ -144,3 +167,47 @@ def test_audit_logs():
     res = client.get("/audit-logs")
     assert res.status_code == 200
     assert isinstance(res.json(), list)
+
+def test_dataset_project_retrieval():
+    # Test GET /project/{project_name}
+    res = client.get("/project/BELONIA")
+    assert res.status_code == 200
+    data = res.json()
+    assert isinstance(data, list)
+    assert len(data) >= 1
+    assert "BELONIA" in data[0]["project_name_clean"]
+
+    # Test GET /projects/by-name/{project_name}
+    res_by_name = client.get("/projects/by-name/BELONIA")
+    assert res_by_name.status_code == 200
+    assert len(res_by_name.json()) >= 1
+
+    # Test GET /projects/by-id/{global_project_id}
+    global_id = data[0]["global_project_id"]
+    res_by_id = client.get(f"/projects/by-id/{global_id}")
+    assert res_by_id.status_code == 200
+    assert res_by_id.json()["global_project_id"] == global_id
+
+def test_top_risk_projects_retrieval():
+    res = client.get("/projects/top-risk")
+    assert res.status_code == 200
+    data = res.json()
+    assert isinstance(data, list)
+    assert len(data) >= 1
+
+def test_ml_model_summaries():
+    res = client.get("/ml/models")
+    assert res.status_code == 200
+    models = res.json()
+    assert isinstance(models, list)
+    assert len(models) >= 1
+
+    model_key = models[0]["model_key"]
+    res_single = client.get(f"/ml/models/{model_key}")
+    assert res_single.status_code == 200
+    assert res_single.json()["model_key"] == model_key
+
+def test_shap_explainability():
+    res = client.get("/ml/explainability/shap")
+    assert res.status_code == 200
+    assert isinstance(res.json(), dict)

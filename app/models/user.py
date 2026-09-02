@@ -1,6 +1,14 @@
 import datetime
 from typing import Optional
+<<<<<<< HEAD
 from pydantic import BaseModel, EmailStr
+=======
+from sqlalchemy import Column, Integer, String, DateTime
+from pydantic import BaseModel, EmailStr, Field
+from app.config.database import Base
+
+# --- ORM Model ---
+>>>>>>> origin/main
 from app.models.orm import User
 
 # --- Pydantic Schemas ---
@@ -21,6 +29,7 @@ class UserResponse(BaseModel):
     email: str
     role: str
     department: Optional[str]
+    is_verified: bool = False
     created_at: datetime.datetime
 
     class Config:
@@ -30,3 +39,15 @@ class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserResponse
+
+class OTPVerifyRequest(BaseModel):
+    email: EmailStr
+    otp_code: str = Field(..., pattern=r"^\d{6}$", description="6-digit numeric OTP")
+
+class OTPResendRequest(BaseModel):
+    email: EmailStr
+
+class OTPResponse(BaseModel):
+    message: str
+    email: str
+    is_verified: Optional[bool] = None

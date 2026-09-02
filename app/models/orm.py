@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Text, JSON
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Text, JSON, Boolean
 from sqlalchemy.orm import relationship
 from app.config.database import Base
 
@@ -13,6 +13,7 @@ class User(Base):
     hashed_password = Column(String(255), nullable=False)
     role = Column(String(30), default="Monitoring Officer") # Admin, Project Manager, Monitoring Officer, Department Official, Viewer
     department = Column(String(100), nullable=True)
+    is_verified = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
 
@@ -126,3 +127,95 @@ class AuditLog(Base):
     entity_id = Column(String(50), nullable=True)
     details = Column(Text, nullable=True)
     timestamp = Column(DateTime, default=datetime.datetime.utcnow)
+
+
+class DatasetProject(Base):
+    __tablename__ = "dataset_projects"
+
+    id = Column(Integer, primary_key=True, index=True)
+    global_project_id = Column(String(100), unique=True, index=True, nullable=False)
+    project_name_clean = Column(String(255), index=True, nullable=False)
+    report_date = Column(String(50), nullable=True)
+    project_status = Column(String(50), nullable=True)
+    sector_clean = Column(String(100), nullable=True)
+    agency_clean = Column(String(150), nullable=True)
+    state_clean = Column(String(100), nullable=True)
+
+    cost_original = Column(Float, nullable=True)
+    cost_anticipated = Column(Float, nullable=True)
+    cost_revised = Column(Float, nullable=True)
+    cost_overrun_amount_calc = Column(Float, nullable=True)
+    cost_overrun_percent_clean = Column(Float, nullable=True)
+
+    time_overrun_months_calc = Column(Float, nullable=True)
+    total_planned_duration_months = Column(Float, nullable=True)
+    project_age_months = Column(Float, nullable=True)
+    remaining_schedule_months = Column(Float, nullable=True)
+    physical_progress_clean = Column(Float, nullable=True)
+
+    time_overrun_prediction = Column(Integer, nullable=True)
+    time_overrun_probability = Column(Float, nullable=True)
+    cost_overrun_prediction = Column(Integer, nullable=True)
+    cost_overrun_probability = Column(Float, nullable=True)
+    risk_class_prediction = Column(Integer, nullable=True)
+    risk_class_probability = Column(Float, nullable=True)
+    risk_class_0_probability = Column(Float, nullable=True)
+    risk_class_1_probability = Column(Float, nullable=True)
+    risk_class_2_probability = Column(Float, nullable=True)
+
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+
+class TopRiskProject(Base):
+    __tablename__ = "top_risk_projects"
+
+    id = Column(Integer, primary_key=True, index=True)
+    global_project_id = Column(String(100), index=True, nullable=False)
+    project_name_clean = Column(String(255), index=True, nullable=False)
+    report_date = Column(String(50), nullable=True)
+    project_status = Column(String(50), nullable=True)
+
+    predicted_risk_class = Column(Integer, nullable=False)
+    predicted_risk_probability = Column(Float, nullable=False)
+    cost_original = Column(Float, nullable=True)
+    cost_anticipated = Column(Float, nullable=True)
+    time_overrun_months_calc = Column(Float, nullable=True)
+
+    analysis_details = Column(JSON, nullable=True)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+
+class ModelSummary(Base):
+    __tablename__ = "model_summaries"
+
+    id = Column(Integer, primary_key=True, index=True)
+    model_key = Column(String(100), unique=True, index=True, nullable=False)
+    model_name = Column(String(150), nullable=False)
+    task = Column(String(100), nullable=False)
+    target = Column(String(100), nullable=False)
+    target_definition = Column(Text, nullable=True)
+
+    dataset_info = Column(JSON, nullable=True)
+    best_model_parameters = Column(JSON, nullable=True)
+    test_performance = Column(JSON, nullable=True)
+    cross_validation_results = Column(JSON, nullable=True)
+    leakage_audit = Column(JSON, nullable=True)
+    top_feature_importance = Column(JSON, nullable=True)
+    shap_summary = Column(JSON, nullable=True)
+
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+
+class OTPVerification(Base):
+    __tablename__ = "otp_verifications"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(100), index=True, nullable=False)
+    hashed_otp = Column(String(255), nullable=False)
+    attempts = Column(Integer, default=0, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    last_sent_at = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
+    is_used = Column(Boolean, default=False, nullable=False)
+    is_invalidated = Column(Boolean, default=False, nullable=False)
+

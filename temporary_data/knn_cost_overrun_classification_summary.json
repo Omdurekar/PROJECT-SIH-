@@ -1,0 +1,77 @@
+{
+  "model_name": "KNeighborsClassifier",
+  "task": "classification",
+  "target": "target_cost_overrun_increase",
+  "target_definition": "Binary target indicating whether project cost overrun increased in subsequent report snapshots (1 = Cost Overrun Increased, 0 = No Increase).",
+  "dataset_info": {
+    "train_sample_count": 6627,
+    "validation_sample_count": 254,
+    "test_sample_count": 1103,
+    "total_test_snapshots_explained": 1781,
+    "train_period": "2012-2019",
+    "validation_period": "2020-2021",
+    "test_period": "2022-2025"
+  },
+  "best_model_parameters": {
+    "n_neighbors": 3,
+    "weights": "uniform",
+    "metric": "minkowski",
+    "p": 2,
+    "scaling_used": "StandardScaler for numerical features, OneHotEncoder for categorical features"
+  },
+  "classification_threshold": 0.5,
+  "threshold_details": {
+    "default_threshold": 0.5,
+    "validation_optimal_threshold": null,
+    "operational_prediction_threshold": 0.5
+  },
+  "test_performance": {
+    "accuracy": 0.6654578422484134,
+    "precision": 0.8977272727272727,
+    "recall": 0.5493741307371349,
+    "f1": 0.6816220880069025,
+    "confusion_matrix": [
+      [
+        339,
+        45
+      ],
+      [
+        324,
+        395
+      ]
+    ],
+    "true_negatives": 339,
+    "false_positives": 45,
+    "false_negatives": 324,
+    "true_positives": 395,
+    "observation_count": 1103,
+    "class_distribution": {
+      "0": 384,
+      "1": 719
+    },
+    "roc_auc": 0.7848538189615206
+  },
+  "cross_validation_results": {
+    "cv_mean_accuracy": 0.6897553146077009,
+    "cv_std_accuracy": 0.005353914962482711,
+    "cv_mean_precision": 0.5254058633376804,
+    "cv_mean_recall": 0.43338103756708407,
+    "cv_mean_f1": 0.47476018803234277,
+    "cv_mean_roc_auc": 0.6549766842664801
+  },
+  "top_feature_importance": null,
+  "leakage_audit": {
+    "status": "PASSED",
+    "training_test_leakage": false,
+    "future_features_used": false,
+    "preprocessing_fitted_on_training_only": true,
+    "excluded_target_and_future_cols": [
+      "target_risk_class",
+      "target_time_overrun_increase",
+      "target_cost_overrun_increase",
+      "future_time_overrun",
+      "future_cost"
+    ],
+    "snapshot_verification": "All input features were verified to reflect data available at the exact snapshot report date."
+  }
+}

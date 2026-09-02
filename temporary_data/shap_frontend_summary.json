@@ -1,0 +1,332 @@
+{
+  "time_overrun": {
+    "model_name": "Random Forest Time Overrun Classifier",
+    "target": "target_time_overrun_increase",
+    "shap_method": "TreeExplainer",
+    "number_of_original_features": 16,
+    "top_feature": "time_overrun_months_calc",
+    "top_feature_mean_abs_shap": 0.016035,
+    "features": [
+      {
+        "feature": "time_overrun_months_calc",
+        "mean_abs_shap": 0.016035,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "remaining_schedule_months",
+        "mean_abs_shap": 0.015146,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "sector_clean",
+        "mean_abs_shap": 0.009088,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "is_ahead_of_schedule",
+        "mean_abs_shap": 0.007925,
+        "direction": "Higher values increase risk (+)"
+      },
+      {
+        "feature": "schedule_slippage_clean",
+        "mean_abs_shap": 0.006751,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "state_clean",
+        "mean_abs_shap": 0.005651,
+        "direction": "Higher values increase risk (+)"
+      },
+      {
+        "feature": "elapsed_schedule_ratio_clean",
+        "mean_abs_shap": 0.004515,
+        "direction": "Higher values increase risk (+)"
+      },
+      {
+        "feature": "agency_clean",
+        "mean_abs_shap": 0.003367,
+        "direction": "Higher values increase risk (+)"
+      },
+      {
+        "feature": "cost_original",
+        "mean_abs_shap": 0.003205,
+        "direction": "Higher values increase risk (+)"
+      },
+      {
+        "feature": "project_age_months",
+        "mean_abs_shap": 0.002944,
+        "direction": "Higher values increase risk (+)"
+      },
+      {
+        "feature": "cost_anticipated",
+        "mean_abs_shap": 0.002449,
+        "direction": "Higher values increase risk (+)"
+      },
+      {
+        "feature": "has_clearance_issue",
+        "mean_abs_shap": 0.002394,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "project_size_ord",
+        "mean_abs_shap": 0.001748,
+        "direction": "Higher values increase risk (+)"
+      },
+      {
+        "feature": "is_revised",
+        "mean_abs_shap": 0.001078,
+        "direction": "Higher values increase risk (+)"
+      },
+      {
+        "feature": "progress_velocity_clean",
+        "mean_abs_shap": 0.000327,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "has_land_acquisition_issue",
+        "mean_abs_shap": 0.000318,
+        "direction": "Higher values decrease risk (-)"
+      }
+    ]
+  },
+  "cost_overrun": {
+    "model_name": "Random Forest Cost Overrun Classifier",
+    "target": "target_cost_overrun_increase",
+    "shap_method": "TreeExplainer",
+    "number_of_original_features": 17,
+    "top_feature": "cost_anticipated",
+    "top_feature_mean_abs_shap": 0.059762,
+    "features": [
+      {
+        "feature": "cost_anticipated",
+        "mean_abs_shap": 0.059762,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "project_size_ord",
+        "mean_abs_shap": 0.035814,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "cost_original",
+        "mean_abs_shap": 0.03064,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "state_clean",
+        "mean_abs_shap": 0.028039,
+        "direction": "Higher values increase risk (+)"
+      },
+      {
+        "feature": "sector_clean",
+        "mean_abs_shap": 0.024794,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "has_clearance_issue",
+        "mean_abs_shap": 0.020113,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "cost_overrun_amount_calc",
+        "mean_abs_shap": 0.015577,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "cost_escalation_rate_clean",
+        "mean_abs_shap": 0.013376,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "cost_overrun_percent_clean",
+        "mean_abs_shap": 0.010401,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "has_land_acquisition_issue",
+        "mean_abs_shap": 0.008444,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "elapsed_schedule_ratio_clean",
+        "mean_abs_shap": 0.00786,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "agency_clean",
+        "mean_abs_shap": 0.006766,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "physical_progress_clean",
+        "mean_abs_shap": 0.006753,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "project_age_months",
+        "mean_abs_shap": 0.006365,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "schedule_slippage_clean",
+        "mean_abs_shap": 0.00283,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "progress_velocity_clean",
+        "mean_abs_shap": 0.002016,
+        "direction": "Higher values decrease risk (-)"
+      },
+      {
+        "feature": "is_revised",
+        "mean_abs_shap": 0.002001,
+        "direction": "Higher values decrease risk (-)"
+      }
+    ]
+  },
+  "risk_class": {
+    "model_name": "Random Forest Multiclass Risk Classifier",
+    "target": "target_risk_class",
+    "shap_method": "TreeExplainer",
+    "number_of_original_features": 27,
+    "top_feature": "state_clean",
+    "top_feature_mean_abs_shap": 3.777264,
+    "features": [
+      {
+        "feature": "state_clean",
+        "mean_abs_shap": 3.777264,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "agency_clean",
+        "mean_abs_shap": 0.495033,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "sector_clean",
+        "mean_abs_shap": 0.448715,
+        "direction": "Higher values decrease class probability (-)"
+      },
+      {
+        "feature": "cost_original",
+        "mean_abs_shap": 0.18463,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "delay_reason_missing",
+        "mean_abs_shap": 0.162942,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "cost_anticipated",
+        "mean_abs_shap": 0.149096,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "cost_overrun_amount_calc",
+        "mean_abs_shap": 0.135917,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "remaining_schedule_months",
+        "mean_abs_shap": 0.135859,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "is_revised",
+        "mean_abs_shap": 0.132691,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "month_gap_prev",
+        "mean_abs_shap": 0.128685,
+        "direction": "Higher values increase class probability (+)"
+      },
+      {
+        "feature": "has_clearance_issue",
+        "mean_abs_shap": 0.121966,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "cost_escalation_rate_clean",
+        "mean_abs_shap": 0.103327,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "is_ahead_of_schedule",
+        "mean_abs_shap": 0.098577,
+        "direction": "Higher values increase class probability (+)"
+      },
+      {
+        "feature": "cost_revised",
+        "mean_abs_shap": 0.096247,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "prev_progress",
+        "mean_abs_shap": 0.092427,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "elapsed_schedule_ratio_clean",
+        "mean_abs_shap": 0.087262,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "cost_overrun_percent_clean",
+        "mean_abs_shap": 0.076466,
+        "direction": "Higher values decrease class probability (-)"
+      },
+      {
+        "feature": "has_land_acquisition_issue",
+        "mean_abs_shap": 0.074387,
+        "direction": "Higher values decrease class probability (-)"
+      },
+      {
+        "feature": "project_age_months",
+        "mean_abs_shap": 0.072284,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "progress_velocity_clean",
+        "mean_abs_shap": 0.067434,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "physical_progress_clean",
+        "mean_abs_shap": 0.064048,
+        "direction": "Non-linear / context-dependent"
+      },
+      {
+        "feature": "total_planned_duration_months",
+        "mean_abs_shap": 0.018596,
+        "direction": "Higher values decrease class probability (-)"
+      },
+      {
+        "feature": "approval_gt_doc_orig",
+        "mean_abs_shap": 0.013173,
+        "direction": "Higher values decrease class probability (-)"
+      },
+      {
+        "feature": "progress_isna",
+        "mean_abs_shap": 0.010261,
+        "direction": "Higher values increase class probability (+)"
+      },
+      {
+        "feature": "expenditure_cumulative",
+        "mean_abs_shap": 0.0,
+        "direction": "N/A"
+      },
+      {
+        "feature": "expenditure_ratio",
+        "mean_abs_shap": 0.0,
+        "direction": "N/A"
+      },
+      {
+        "feature": "annual_outlay",
+        "mean_abs_shap": 0.0,
+        "direction": "N/A"
+      }
+    ]
+  }
+}
