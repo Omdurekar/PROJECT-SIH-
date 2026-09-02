@@ -29,6 +29,10 @@
 
 
 <body>
+    <!-- =====================================================
+     AUTHENTICATION MODAL
+===================================================== -->
+
 
 
     <!-- =========================
@@ -105,48 +109,324 @@
          NAVIGATION
     ========================= -->
 
-    <nav>
-        <!-- <div class="nav-search">
+    <nav class="navbar">
 
-        <input
-            type="text"
-            id="projectSearch"
-            placeholder="Search projects..."
-        >
+    <a href="#home" class="nav-link active">
+        Home
+    </a>
 
-        <button
-            type="button"
-            onclick="searchProject()"
-        >
-            🔍
-        </button> -->
+    <a href="#" class="nav-link" onclick="openAuthModal(event)">
+        Model Analysis
+        <span class="arrow">▼</span>
+    </a>
+
+</nav>
+
+<!-- =====================================================
+     AUTHENTICATION MODAL
+===================================================== -->
+
+<!-- <div id="modelAnalysisContent"
+     class="model-analysis-content">
+
+
+     =====================================================
+     MODEL ANALYSIS AUTH SECTION
+===================================================== -->
+
+<!-- <div class="auth-overlay" id="authOverlay">
+
+    <div class="auth-container">
+
+         CLOSE BUTTON -->
+        <!-- <button class="auth-close" id="authClose">&times;</button> -->
+
+        <!-- ================= LOGIN ================= -->
+
+        <!-- <div class="auth-box" id="loginBox">
+
+            <div class="auth-header">
+                <span class="auth-badge">SECURE ACCESS</span>
+
+                <h2>Model Analysis</h2>
+
+                <p>
+                    Login to access project intelligence
+                    and monitoring analysis.
+                </p>
+            </div>
+
+            <form id="loginForm">
+
+             Username -->
+                <!-- <div class="auth-field">
+
+                    <label for="loginUsername">
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        id="loginUsername"
+                        name="username"
+                        placeholder="Enter username"
+                        required
+                    >
+
+                </div> -->
+
+
+                <!-- Password -->
+                <!-- <div class="auth-field">
+
+                    <label for="loginPassword">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        name="password"
+                        placeholder="Enter password"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="auth-submit"
+                >
+                    Login
+                </button>
+
+            </form>
+
+
+            <div class="auth-switch">
+
+                <span>Don't have an account?</span>
+
+                <button
+                    type="button"
+                    id="showRegister"
+                >
+                    Register
+                </button>
+
+            </div>
+
+        </div> -->
+
+
+        <!-- ================= REGISTER ================= -->
+
+        <!-- <div class="auth-box hidden" id="registerBox">
+
+            <div class="auth-header">
+
+                <span class="auth-badge">
+                    CREATE ACCOUNT
+                </span>
+
+                <h2>Register</h2>
+
+                <p>
+                    Create an account to access
+                    Model Analysis.
+                </p>
+
+            </div>
+
+
+            <form id="registerForm">
+
+                 Username -->
+                <!-- <div class="auth-field">
+
+                    <label for="registerUsername">
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        id="registerUsername"
+                        name="username"
+                        placeholder="Enter username"
+                        required
+                    >
+
+                </div> -->
+
+
+                <!-- Email -->
+                <!-- <div class="auth-field">
+
+                    <label for="registerEmail">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="registerEmail"
+                        name="email"
+                        placeholder="Enter email address"
+                        required
+                    >
+
+                </div> -->
+
+
+                <!-- Password -->
+                <!-- <div class="auth-field">
+
+                    <label for="registerPassword">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="registerPassword"
+                        name="password"
+                        placeholder="Create password"
+                        required
+                    >
+
+                </div> -->
+
+
+                <!-- Role -->
+                <!-- <div class="auth-field">
+
+                    <label for="registerRole">
+                        Role
+                    </label>
+
+                    <select
+                        id="registerRole"
+                        name="role"
+                    >
+
+                        <option value="Monitoring Officer">
+                            Monitoring Officer
+                        </option>
+
+                    </select>
+
+                </div> -->
+
+
+                <!-- Department -->
+                <!-- <div class="auth-field">
+
+                    <label for="registerDepartment">
+                        Department
+                    </label>
+
+                    <input
+                        type="text"
+                        id="registerDepartment"
+                        name="department"
+                        placeholder="Enter department (optional)"
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="auth-submit"
+                >
+                    Create Account
+                </button>
+
+            </form>
+
+
+            <div class="auth-switch">
+
+                <span>Already have an account?</span>
+
+                <button
+                    type="button"
+                    id="showLogin"
+                >
+                    Login
+                </button>
+
+            </div>
+
+        </div>
+  -->
+
+        <!-- ================= OTP ================= -->
+
+        <!-- <div class="auth-box hidden" id="otpBox">
+
+            <div class="auth-header">
+
+                <span class="auth-badge">
+                    EMAIL VERIFICATION
+                </span>
+
+                <h2>Verify Email</h2>
+
+                <p>
+                    Enter the 6-digit OTP sent to your
+                    registered email address.
+                </p>
+
+            </div>
+
+
+            <form id="otpForm">
+
+                <div class="auth-field">
+
+                    <label for="otpCode">
+                        OTP Code
+                    </label>
+
+                    <input
+                        type="text"
+                        id="otpCode"
+                        name="otp_code"
+                        placeholder="Enter 6-digit OTP"
+                        maxlength="6"
+                        pattern="[0-9]{6}"
+                        inputmode="numeric"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="auth-submit"
+                >
+                    Verify OTP
+                </button>
+
+            </form>
+
+
+            <button
+                type="button"
+                class="resend-btn"
+                id="resendOtp"
+            >
+                Resend OTP
+            </button>
+
+        </div>
 
     </div>
-        <a href="index.html" class="active">
-            Home
-        </a>
 
-        <!-- <a href="high-risk.html">
-            High Risk Projects
-            <span class="arrow">▼</span>
-        </a> -->
+</div>
 
-        <a href="model-analysis.html">
-            Model Analysis
-            <span class="arrow">▼</span>
-        </a>
-
-        <!-- <a href="#">
-            Projects
-        </a>
-
-        <a href="#">
-            About
-        </a> -->
-
-    </nav>
-
-
+</div> --> 
     <!-- =========================
          HERO
     ========================= -->
@@ -1322,6 +1602,406 @@
 
     </div>
 </footer> -->
+<!-- =====================================================
+     MODEL ANALYSIS AUTH MODAL
+===================================================== -->
+<!-- ================= AUTH MODAL ================= -->
+
+<!-- =====================================================
+     MODEL ANALYSIS AUTH MODAL
+===================================================== -->
+
+<div id="authModal" class="auth-modal">
+
+    <!-- Dark background -->
+    <div class="auth-overlay" onclick="closeAuthModal()"></div>
+
+
+    <!-- Main Authentication Box -->
+    <div class="auth-box">
+
+        <!-- Close Button -->
+        <button class="auth-close" onclick="closeAuthModal()">
+            &times;
+        </button>
+
+
+        <!-- =================================================
+             LEFT INFORMATION PANEL
+        ================================================== -->
+
+        <div class="auth-info">
+
+    <div class="auth-info-content">
+
+        <!-- Brand -->
+        <div class="auth-brand">
+            <span class="auth-brand-line"></span>
+            <span>PROJECT GUARDIAN</span>
+        </div>
+
+        <!-- Main Heading -->
+        <h2>
+            Infrastructure
+            <span>&</span>
+            Project Monitoring
+        </h2>
+
+        <p class="auth-description">
+            A centralized platform for monitoring major infrastructure
+            projects and identifying potential project risks through
+            data-driven analysis.
+        </p>
+
+
+        <!-- Features -->
+        <div class="auth-features">
+
+            <div class="auth-feature">
+
+                <div class="feature-icon">
+                    📊
+                </div>
+
+                <div>
+                    <h4>Project Risk Intelligence</h4>
+                    <p>
+                        Identify projects requiring closer monitoring.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="auth-feature">
+
+                <div class="feature-icon">
+                    📈
+                </div>
+
+                <div>
+                    <h4>Progress Monitoring</h4>
+                    <p>
+                        Track project progress and performance indicators.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="auth-feature">
+
+                <div class="feature-icon">
+                    🎯
+                </div>
+
+                <div>
+                    <h4>Data-Driven Analysis</h4>
+                    <p>
+                        Analyze project parameters to assess potential risks.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Bottom Information -->
+        <div class="auth-project-info">
+
+            <span class="project-info-label">
+                MONITORING COVERAGE
+            </span>
+
+            <strong>
+                Central Sector Infrastructure Projects
+            </strong>
+
+            <span>
+                Costing ₹150 Crore & Above
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+        <!-- =================================================
+             RIGHT FORM AREA
+        ================================================== -->
+
+        <div class="auth-form-area">
+
+
+            <!-- LOGIN / REGISTER TABS -->
+
+            <div class="auth-tabs">
+
+    <button
+        type="button"
+        class="auth-tab active"
+        id="loginTab"
+        onclick="showLogin()">
+        Login
+    </button>
+
+    <button
+        type="button"
+        class="auth-tab"
+        id="registerTab"
+        onclick="showRegister()">
+        Register
+    </button>
+
+</div>
+
+
+            <!-- =================================================
+                 LOGIN FORM
+            ================================================== -->
+
+            <form
+                id="loginForm"
+                class="auth-form active"
+                onsubmit="loginUser(event)">
+
+                <h2>Welcome Back</h2>
+
+                <p class="form-subtitle">
+                    Login to access Model Analysis
+                </p>
+
+
+                <!-- Username -->
+
+                <div class="form-group">
+
+                    <label for="loginUsername">
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        id="loginUsername"
+                        name="username"
+                        placeholder="Enter your username"
+                        required>
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div class="form-group">
+
+                    <label for="loginPassword">
+                        Password
+                    </label>
+
+                    <div class="password-box">
+
+                        <input
+                            type="password"
+                            id="loginPassword"
+                            name="password"
+                            placeholder="Enter your password"
+                            required>
+
+                        <button
+                            type="button"
+                            onclick="togglePassword('loginPassword')">
+                            👁
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Options -->
+
+                <div class="form-options">
+
+                    <label>
+                        <input
+                            type="checkbox"
+                            id="rememberMe">
+                        Remember me
+                    </label>
+
+                    <a href="#">
+                        Forgot password?
+                    </a>
+
+                </div>
+
+
+                <!-- Login Button -->
+
+                <button
+                    type="submit"
+                    class="auth-submit">
+
+                    Login
+
+                    <span>→</span>
+
+                </button>
+
+
+                <!-- Switch -->
+
+                <p class="switch-text">
+
+                    Don't have an account?
+
+                    <button
+                        type="button"
+                        onclick="showRegister()">
+                        Register
+                    </button>
+
+                </p>
+
+            </form>
+
+
+            <!-- =================================================
+                 REGISTRATION FORM
+            ================================================== -->
+
+            <form
+    id="registerForm"
+    class="auth-form"
+    onsubmit="registerUser(event)">
+
+    <h2>Create Account</h2>
+
+    <p class="form-subtitle">
+        Register to access Project Intelligence
+    </p>
+
+    <div class="form-group">
+
+        <label for="registerUsername">
+            Username *
+        </label>
+
+        <input
+            type="text"
+            id="registerUsername"
+            name="username"
+            placeholder="Enter username"
+            required>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label for="registerEmail">
+            Email *
+        </label>
+
+        <input
+            type="email"
+            id="registerEmail"
+            name="email"
+            placeholder="Enter your email"
+            required>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label for="registerPassword">
+            Password *
+        </label>
+
+        <div class="password-box">
+
+            <input
+                type="password"
+                id="registerPassword"
+                name="password"
+                placeholder="Create password"
+                required>
+
+            <button
+                type="button"
+                onclick="togglePassword('registerPassword')">
+                👁
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label for="registerRole">
+            Role
+        </label>
+
+        <input
+            type="text"
+            id="registerRole"
+            name="role"
+            value="Monitoring Officer">
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label for="registerDepartment">
+            Department
+        </label>
+
+        <input
+            type="text"
+            id="registerDepartment"
+            name="department"
+            placeholder="Enter department (optional)">
+
+    </div>
+
+
+    <button
+        type="submit"
+        class="auth-submit">
+
+        Create Account
+
+        <span>→</span>
+
+    </button>
+
+
+    <p class="switch-text">
+
+        Already have an account?
+
+        <button
+            type="button"
+            onclick="showLogin()">
+
+            Login
+
+        </button>
+
+    </p>
+
+</form>
+
+        </div>
+
+    </div>
+
+</div>
 <script src="script.js"></script>
 </body>
 

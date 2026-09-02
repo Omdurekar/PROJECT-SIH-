@@ -772,3 +772,1183 @@ projectSearch.addEventListener("input", function () {
     });
 
 });
+/* =====================================================
+   PROJECT GUARDIAN AUTHENTICATION
+===================================================== */
+
+
+/*
+   CHANGE THIS ONLY.
+
+   Example:
+   http://localhost:8000
+
+   Or your deployed backend URL.
+*/
+
+const API_BASE = "http://localhost:8000";
+
+let registeredEmail = "";
+
+/* =====================================================
+   MODEL ANALYSIS AUTH
+===================================================== */
+
+/* =====================================================
+   AUTH MODAL
+===================================================== */
+
+const authModal = document.getElementById("authModal");
+
+const loginForm = document.getElementById("loginForm");
+
+const registerForm = document.getElementById("registerForm");
+
+const authTitle = document.getElementById("authTitle");
+
+const authSubtitle = document.getElementById("authSubtitle");
+
+const authMessage = document.getElementById("authMessage");
+
+
+/* Open Modal */
+
+function openAuthModal(event) {
+
+    event.preventDefault();
+
+    authModal.style.display = "flex";
+
+    showLogin();
+
+}
+
+
+/* Close Modal */
+
+function closeAuthModal() {
+
+    authModal.style.display = "none";
+
+    authMessage.innerText = "";
+
+}
+
+
+/* Show Login */
+
+/* =====================================================
+   AUTH TAB SWITCHING
+===================================================== */
+
+function showLogin() {
+
+    const loginForm =
+        document.getElementById("loginForm");
+
+    const registerForm =
+        document.getElementById("registerForm");
+
+    const loginTab =
+        document.getElementById("loginTab");
+
+    const registerTab =
+        document.getElementById("registerTab");
+
+
+    registerForm.classList.remove("active");
+
+    loginForm.classList.add("active");
+
+
+    registerTab.classList.remove("active");
+
+    loginTab.classList.add("active");
+}
+
+
+function showRegister() {
+
+    const loginForm =
+        document.getElementById("loginForm");
+
+    const registerForm =
+        document.getElementById("registerForm");
+
+    const loginTab =
+        document.getElementById("loginTab");
+
+    const registerTab =
+        document.getElementById("registerTab");
+
+
+    loginForm.classList.remove("active");
+
+    registerForm.classList.add("active");
+
+
+    loginTab.classList.remove("active");
+
+    registerTab.classList.add("active");
+}
+
+
+/* =====================================================
+   PASSWORD VISIBILITY
+===================================================== */
+
+function togglePassword(inputId, button) {
+
+    const input =
+        document.getElementById(inputId);
+
+
+    if (input.type === "password") {
+
+        input.type = "text";
+
+        button.innerHTML = "🙈";
+
+    } else {
+
+        input.type = "password";
+
+        button.innerHTML = "👁";
+
+    }
+
+}
+
+
+/* =====================================================
+   OPEN MODAL
+===================================================== */
+
+function openAuthModal() {
+
+    const modal =
+        document.getElementById("authModal");
+
+    modal.classList.add("show");
+
+    showLogin();
+
+}
+
+
+/* =====================================================
+   CLOSE MODAL
+===================================================== */
+
+function closeAuthModal() {
+
+    const modal =
+        document.getElementById("authModal");
+
+    modal.classList.remove("show");
+
+}
+/* =====================================================
+   SHOW LOGIN
+===================================================== */
+
+function showLoginForm() {
+
+    loginBox.classList.remove("hidden");
+
+    registerBox.classList.add("hidden");
+
+    otpBox.classList.add("hidden");
+
+}
+
+
+/* =====================================================
+   SHOW REGISTER
+===================================================== */
+
+function showRegisterForm() {
+
+    loginBox.classList.add("hidden");
+
+    registerBox.classList.remove("hidden");
+
+    otpBox.classList.add("hidden");
+
+}
+
+
+showRegister.addEventListener(
+    "click",
+    showRegisterForm
+);
+
+
+showLogin.addEventListener(
+    "click",
+    showLoginForm
+);
+/* =====================================================
+   REGISTRATION
+===================================================== */
+registerForm.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+
+    const username =
+        document.getElementById("registerUsername").value.trim();
+
+    const email =
+        document.getElementById("registerEmail").value.trim();
+
+    const password =
+        document.getElementById("registerPassword").value;
+
+    const role =
+        document.getElementById("registerRole").value;
+
+    const department =
+        document.getElementById("registerDepartment").value.trim();
+
+
+    const requestBody = {
+
+        username: username,
+
+        email: email,
+
+        password: password,
+
+        role: role,
+
+        department: department || null
+
+    };
+
+
+    try {
+
+        const response = await fetch(
+            "/api/v1/auth/register",
+            {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type": "application/json"
+
+                },
+
+                body: JSON.stringify(requestBody)
+
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        if (response.ok) {
+
+            authMessage.style.color = "green";
+
+            authMessage.innerText =
+                "Registration successful. Please verify your email with OTP.";
+
+            /*
+             * You can open OTP form here.
+             */
+
+            console.log(data);
+
+
+        } else {
+
+            authMessage.style.color = "red";
+
+            authMessage.innerText =
+                data.detail ||
+                data.message ||
+                "Registration failed.";
+
+        }
+
+
+    } catch (error) {
+
+        authMessage.style.color = "red";
+
+        authMessage.innerText =
+            "Unable to connect to server.";
+
+        console.error(error);
+
+    }
+
+});
+/* =====================================================
+   OTP VERIFICATION
+===================================================== */
+
+const otpForm =
+    document.getElementById("otpForm");
+
+
+otpForm.addEventListener("submit", async function (event) {
+
+    event.preventDefault();
+
+
+    const email =
+        sessionStorage.getItem("registrationEmail");
+
+
+    const otp_code =
+        document.getElementById("otpCode").value.trim();
+
+
+    if (!/^\d{6}$/.test(otp_code)) {
+
+        alert("OTP must contain exactly 6 digits.");
+
+        return;
+
+    }
+
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:YOUR_PORT/api/v1/auth/verify-otp",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    email: email,
+
+                    otp_code: otp_code
+
+                })
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                data.message ||
+                "OTP verification failed."
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "Email verified successfully. You can now login."
+        );
+
+
+        sessionStorage.removeItem(
+            "registrationEmail"
+        );
+
+
+        showLoginForm();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to connect to the server."
+        );
+
+    }
+
+});
+/* =====================================================
+   LOGIN
+===================================================== */
+
+
+
+loginForm.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+
+    const username =
+        document.getElementById("loginUsername").value.trim();
+
+    const password =
+        document.getElementById("loginPassword").value;
+
+
+    try {
+
+        const response = await fetch(
+            "/api/v1/auth/login",
+            {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    username: username,
+
+                    password: password
+
+                })
+
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        if (response.ok) {
+
+            authMessage.style.color = "green";
+
+            authMessage.innerText =
+                "Login successful!";
+
+
+            /*
+             * Open Model Analysis after successful login
+             */
+
+            setTimeout(() => {
+
+                closeAuthModal();
+
+                // Change this according to your page
+                window.location.href = "#model-analysis";
+
+            }, 1000);
+
+
+        } else {
+
+            authMessage.style.color = "red";
+
+            authMessage.innerText =
+                data.detail ||
+                data.message ||
+                "Invalid username or password.";
+
+        }
+
+
+    } catch (error) {
+
+        authMessage.style.color = "red";
+
+        authMessage.innerText =
+            "Unable to connect to server.";
+
+        console.error(error);
+
+    }
+
+});
+/* =====================================================
+   RESEND OTP
+===================================================== */
+
+const resendOtp =
+    document.getElementById("resendOtp");
+
+
+resendOtp.addEventListener("click", async function () {
+
+    const email =
+        sessionStorage.getItem("registrationEmail");
+
+
+    if (!email) {
+
+        alert("Email not found.");
+
+        return;
+
+    }
+
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:YOUR_PORT/api/v1/auth/resend-otp",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    email: email
+
+                })
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                data.message ||
+                "Unable to resend OTP."
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "A new OTP has been sent to your email."
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to connect to the server."
+        );
+
+    }
+
+});
+/* =====================================================
+   OPEN / CLOSE MODAL
+===================================================== */
+
+// function openAuthModal() {
+
+//     document.getElementById("authModal")
+//         .classList.add("show");
+
+// }
+
+
+// function closeAuthModal() {
+
+//     document.getElementById("authModal")
+//         .classList.remove("show");
+
+// }
+
+
+/* =====================================================
+   LOGIN / REGISTER SWITCH
+===================================================== */
+
+// function showLogin() {
+
+//     document.getElementById("loginSection")
+//         .classList.add("active");
+
+//     document.getElementById("registerSection")
+//         .classList.remove("active");
+
+//     document.getElementById("otpSection")
+//         .classList.remove("active");
+
+// }
+
+
+// function showRegister() {
+
+//     document.getElementById("loginSection")
+//         .classList.remove("active");
+
+//     document.getElementById("registerSection")
+//         .classList.add("active");
+
+//     document.getElementById("otpSection")
+//         .classList.remove("active");
+
+// }
+
+
+// /* =====================================================
+//    REGISTER
+// ===================================================== */
+
+// document.getElementById("registerForm")
+// .addEventListener("submit", async function(event) {
+
+//     event.preventDefault();
+
+
+//     const username =
+//         document.getElementById("registerUsername").value.trim();
+
+//     const email =
+//         document.getElementById("registerEmail").value.trim();
+
+//     const password =
+//         document.getElementById("registerPassword").value;
+
+//     const role =
+//         document.getElementById("registerRole").value;
+
+//     const department =
+//         document.getElementById("registerDepartment").value.trim();
+
+
+//     const message =
+//         document.getElementById("registerMessage");
+
+
+//     message.textContent = "Creating account...";
+
+
+//     const data = {
+
+//         username: username,
+
+//         email: email,
+
+//         password: password,
+
+//         role: role,
+
+//         department: department || null
+
+//     };
+
+
+//     try {
+
+//         const response = await fetch(
+//             `${API_BASE}/api/v1/auth/register`,
+//             {
+//                 method: "POST",
+
+//                 headers: {
+//                     "Content-Type": "application/json"
+//                 },
+
+//                 body: JSON.stringify(data)
+//             }
+//         );
+
+
+//         const result = await response.json();
+
+
+//         if (!response.ok) {
+
+//             throw new Error(
+//                 result.detail ||
+//                 result.message ||
+//                 "Registration failed"
+//             );
+
+//         }
+
+
+//         registeredEmail = email;
+
+
+//         message.textContent =
+//             "Registration successful. OTP sent to your email.";
+
+
+//         /* SHOW OTP */
+
+//         document.getElementById("registerSection")
+//             .classList.remove("active");
+
+//         document.getElementById("otpSection")
+//             .classList.add("active");
+
+
+//     } catch (error) {
+
+//         message.textContent = error.message;
+
+//     }
+
+// });
+// /* =====================================================
+//    VERIFY OTP
+// ===================================================== */
+
+// /* =====================================================
+//    VERIFY OTP
+// ===================================================== */
+
+// document.getElementById("otpForm")
+// .addEventListener("submit", async function(event) {
+
+//     event.preventDefault();
+
+
+//     const otp =
+//         document.getElementById("otpCode").value.trim();
+
+
+//     const message =
+//         document.getElementById("otpMessage");
+
+
+//     /* EXACTLY 6 DIGITS */
+
+//     if (!/^\d{6}$/.test(otp)) {
+
+//         message.textContent =
+//             "OTP must contain exactly 6 digits.";
+
+//         return;
+
+//     }
+
+
+//     message.textContent =
+//         "Verifying OTP...";
+
+
+//     try {
+
+//         const response = await fetch(
+//             `${API_BASE}/api/v1/auth/verify-otp`,
+//             {
+//                 method: "POST",
+
+//                 headers: {
+//                     "Content-Type": "application/json"
+//                 },
+
+//                 body: JSON.stringify({
+
+//                     email: registeredEmail,
+
+//                     otp_code: otp
+
+//                 })
+//             }
+//         );
+
+
+//         const result = await response.json();
+
+
+//         if (!response.ok) {
+
+//             throw new Error(
+//                 result.detail ||
+//                 result.message ||
+//                 "OTP verification failed"
+//             );
+
+//         }
+
+
+//         message.textContent =
+//             "Email verified successfully.";
+
+
+//         /* GO TO LOGIN */
+
+//         setTimeout(() => {
+
+//             showLogin();
+
+//         }, 800);
+
+
+//     } catch (error) {
+
+//         message.textContent =
+//             error.message;
+
+//     }
+
+// });
+// /* =====================================================
+//    RESEND OTP
+// ===================================================== */
+
+// /* =====================================================
+//    RESEND OTP
+// ===================================================== */
+
+// async function resendOTP() {
+
+//     const message =
+//         document.getElementById("otpMessage");
+
+
+//     if (!registeredEmail) {
+
+//         message.textContent =
+//             "Email address is missing.";
+
+//         return;
+
+//     }
+
+
+//     message.textContent =
+//         "Sending OTP...";
+
+
+//     try {
+
+//         const response = await fetch(
+//             `${API_BASE}/api/v1/auth/resend-otp`,
+//             {
+//                 method: "POST",
+
+//                 headers: {
+//                     "Content-Type": "application/json"
+//                 },
+
+//                 body: JSON.stringify({
+
+//                     email: registeredEmail
+
+//                 })
+//             }
+//         );
+
+
+//         const result = await response.json();
+
+
+//         if (!response.ok) {
+
+//             throw new Error(
+//                 result.detail ||
+//                 result.message ||
+//                 "Unable to resend OTP"
+//             );
+
+//         }
+
+
+//         message.textContent =
+//             "New OTP has been sent to your email.";
+
+
+//     } catch (error) {
+
+//         message.textContent =
+//             error.message;
+
+//     }
+
+// } 
+//     /* =====================================================
+//    LOGIN USER
+// ===================================================== */
+
+// loginForm.addEventListener(
+//     "submit",
+//     async function(event) {
+
+//         event.preventDefault();
+
+
+//         const username =
+//             document
+//                 .getElementById("loginUsername")
+//                 .value
+//                 .trim();
+
+
+//         const password =
+//             document
+//                 .getElementById("loginPassword")
+//                 .value;
+
+
+//         try {
+
+//             const response =
+//                 await fetch(
+
+//                     `${API_BASE_URL}/api/v1/auth/login`,
+
+//                     {
+
+//                         method: "POST",
+
+//                         headers: {
+
+//                             "Content-Type":
+//                                 "application/json"
+
+//                         },
+
+//                         body: JSON.stringify({
+
+//                             username: username,
+
+//                             password: password
+
+//                         })
+
+//                     }
+
+//                 );
+
+
+//             const result =
+//                 await response.json();
+
+
+//             if (!response.ok) {
+
+//                 throw new Error(
+
+//                     result.detail ||
+//                     result.message ||
+//                     "Login failed."
+
+//                 );
+
+//             }
+
+
+//             console.log(
+//                 "Login successful:",
+//                 result
+//             );
+
+
+//             /*
+//                If backend returns access_token,
+//                save it.
+//             */
+
+//             if (result.access_token) {
+
+//                 localStorage.setItem(
+//                     "access_token",
+//                     result.access_token
+//                 );
+
+//             }
+
+
+//             /*
+//                Save login state.
+//             */
+
+//             localStorage.setItem(
+//                 "isLoggedIn",
+//                 "true"
+//             );
+
+
+//             localStorage.setItem(
+//                 "username",
+//                 username
+//             );
+
+
+//             alert(
+//                 "Login successful!"
+//             );
+
+
+//             closeAuthModal();
+
+
+//             /*
+//                Now the user can use
+//                Model Analysis.
+//             */
+
+//         } catch (error) {
+
+//             console.error(
+//                 "Login Error:",
+//                 error
+//             );
+
+
+//             alert(error.message);
+
+//         }
+
+//     }
+// );
+// /* =====================================================
+//    MODEL ANALYSIS AUTH CHECK
+// ===================================================== */
+
+// if (
+//     window.location.pathname.includes(
+//         "model-analysis.html"
+//     )
+// ) {
+
+//     const isLoggedIn =
+//         localStorage.getItem("isLoggedIn");
+
+
+//     if (isLoggedIn !== "true") {
+
+//         window.addEventListener(
+//             "DOMContentLoaded",
+//             function() {
+
+//                 openAuthModal();
+
+//             }
+//         );
+
+//     }
+
+// }
+// /* =====================================================
+//    LOGIN
+// ===================================================== */
+
+// document.getElementById("loginForm")
+// .addEventListener("submit", async function(event) {
+
+//     event.preventDefault();
+
+
+//     const username =
+//         document.getElementById("loginUsername")
+//         .value.trim();
+
+
+//     const password =
+//         document.getElementById("loginPassword")
+//         .value;
+
+
+//     const message =
+//         document.getElementById("loginMessage");
+
+
+//     message.textContent =
+//         "Logging in...";
+
+
+//     try {
+
+//         const response = await fetch(
+//             `${API_BASE}/api/v1/auth/login`,
+//             {
+//                 method: "POST",
+
+//                 headers: {
+//                     "Content-Type": "application/json"
+//                 },
+
+//                 body: JSON.stringify({
+
+//                     username: username,
+
+//                     password: password
+
+//                 })
+//             }
+//         );
+
+
+//         const result = await response.json();
+
+
+//         if (!response.ok) {
+
+//             throw new Error(
+//                 result.detail ||
+//                 result.message ||
+//                 "Invalid username or password"
+//             );
+
+//         }
+
+
+//         /*
+//          * If your backend returns a token,
+//          * store it here.
+//          */
+
+//         if (result.access_token) {
+
+//             localStorage.setItem(
+//                 "access_token",
+//                 result.access_token
+//             );
+
+//         }
+
+
+//         message.textContent =
+//             "Login successful.";
+
+
+//         /* HIDE LOGIN */
+
+//         closeAuthModal();
+
+
+//         /* SHOW MODEL ANALYSIS */
+
+//         document.getElementById(
+//             "modelAnalysisContent"
+//         ).style.display = "block";
+
+
+//     } catch (error) {
+
+//         message.textContent =
+//             error.message;
+
+//     }
+
+// });
+// document.addEventListener("DOMContentLoaded", function() {
+
+//     const token =
+//         localStorage.getItem("access_token");
+
+
+//     if (!token) {
+
+//         openAuthModal();
+
+//     } else {
+
+//         document.getElementById(
+//             "modelAnalysisContent"
+//         ).style.display = "block";
+
+//     }
+
+// });
