@@ -1,14 +1,15 @@
 import datetime
 from typing import Optional, Dict, Any, List
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, JSON
-from sqlalchemy.orm import relationship
 from pydantic import BaseModel, Field
-from app.config.database import Base
+from app.models.orm import PredictionLog, AuditLog
 from app.models.project import ProjectResponse
 
+<<<<<<< HEAD
+=======
 # --- ORM Models ---
 from app.models.orm import PredictionLog, AuditLog
 
+>>>>>>> origin/main
 # --- Pydantic Schemas ---
 class PredictionRequest(BaseModel):
     budget: float = Field(..., gt=0)

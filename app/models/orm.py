@@ -5,6 +5,7 @@ from app.config.database import Base
 
 class User(Base):
     __tablename__ = "users"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(50), unique=True, index=True, nullable=False)
@@ -18,6 +19,7 @@ class User(Base):
 
 class Project(Base):
     __tablename__ = "projects"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     project_code = Column(String(30), unique=True, index=True, nullable=False)
@@ -53,6 +55,7 @@ class Project(Base):
 
 class Milestone(Base):
     __tablename__ = "milestones"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     project_id = Column(Integer, ForeignKey("projects.id"), nullable=False)
@@ -68,6 +71,7 @@ class Milestone(Base):
 
 class ProgressUpdate(Base):
     __tablename__ = "progress_updates"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     project_id = Column(Integer, ForeignKey("projects.id"), nullable=False)
@@ -82,6 +86,7 @@ class ProgressUpdate(Base):
 
 class Risk(Base):
     __tablename__ = "risks"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     project_id = Column(Integer, ForeignKey("projects.id"), nullable=False)
@@ -98,6 +103,7 @@ class Risk(Base):
 
 class PredictionLog(Base):
     __tablename__ = "prediction_logs"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     project_id = Column(Integer, ForeignKey("projects.id"), nullable=True)
@@ -111,6 +117,7 @@ class PredictionLog(Base):
 
 class AuditLog(Base):
     __tablename__ = "audit_logs"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, nullable=True)

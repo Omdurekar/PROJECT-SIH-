@@ -1,11 +1,12 @@
 import datetime
 from typing import Optional
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Text
-from sqlalchemy.orm import relationship
 from pydantic import BaseModel, Field
+<<<<<<< HEAD
+=======
 from app.config.database import Base
 
 # --- ORM Model ---
+>>>>>>> origin/main
 from app.models.orm import ProgressUpdate
 
 # --- Pydantic Schemas ---

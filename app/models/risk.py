@@ -1,11 +1,12 @@
 import datetime
 from typing import Optional
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text
-from sqlalchemy.orm import relationship
 from pydantic import BaseModel
+<<<<<<< HEAD
+=======
 from app.config.database import Base
 
 # --- ORM Model ---
+>>>>>>> origin/main
 from app.models.orm import Risk
 
 # --- Pydantic Schemas ---

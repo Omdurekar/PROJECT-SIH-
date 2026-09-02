@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Project Guardian | Project Monitoring</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- <style>
+
+        /* =========================
+           GENERAL
+        ========================= */
+
+
+    </style> -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+    <!-- =====================================================
+     AUTHENTICATION MODAL
+===================================================== -->
+
+
+
+    <!-- =========================
+         TOP BAR
+    ========================= -->
+
+    <!-- <div class="top-bar">
+
+        <span>▣ Screen Reader Access</span>
+        <span>A⁺</span>
+        <span>A</span>
+        <span>A⁻</span>
+        <span>♿ Accessibility</span>
+        <span>Login</span>
+
+    </div> -->
+
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <header class="main-header">
+
+        <!-- LEFT: LOGOS -->
+        <div class="header-left">
+
+            <div class="logo1">
+                <img src="images/image1.png" alt="Ministry of Statistics and Programme Implementation">
+            </div>
+
+            <div class="logo-divider"></div>
+
+            <div class="logo2">
+                <img src="images/image.png" alt="Data for Development">
+            </div>
+
+        </div>
+
+
+        <!-- CENTER: WEBSITE TITLE -->
+        <div class="header-title">
+
+            <h1>RISKLENS</h1>
+
+            <p>Project Monitoring &amp; Analysis Portal</p>
+
+            <span>
+                Central Sector Infrastructure Projects
+            </span>
+
+        </div>
+
+
+        <!-- RIGHT: STATUS / DATE -->
+        <div class="header-right">
+
+            <div class="portal-status">
+                <span class="status-dot"></span>
+                Live Monitoring
+            </div>
+
+            <div class="header-date">
+                <strong>Project Monitoring Portal</strong>
+                <small>Updated: July 2026</small>
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         NAVIGATION
+    ========================= -->
+
+    <nav class="navbar">
+
+        <a href="#home" class="nav-link active">
+            Home
+        </a>
+
+        <a href="#" class="nav-link" onclick="openAuthModal(event)">
+            Model Analysis
+            <span class="arrow">▼</span>
+        </a>
+
+    </nav>
+
+    <!-- =====================================================
+     AUTHENTICATION MODAL
+===================================================== -->
+
+    <!-- <div id="modelAnalysisContent"
+     class="model-analysis-content">
+
+
+     =====================================================
+     MODEL ANALYSIS AUTH SECTION
+===================================================== -->
+
+    <!-- <div class="auth-overlay" id="authOverlay">
+
+    <div class="auth-container">
+
+         CLOSE BUTTON -->
+    <!-- <button class="auth-close" id="authClose">&times;</button> -->
+
+    <!-- ================= LOGIN ================= -->
+
+    <!-- <div class="auth-box" id="loginBox">
+
+            <div class="auth-header">
+                <span class="auth-badge">SECURE ACCESS</span>
+
+                <h2>Model Analysis</h2>
+
+                <p>
+                    Login to access project intelligence
+                    and monitoring analysis.
+                </p>
+            </div>
+
+            <form id="loginForm">
+
+             Username -->
+    <!-- <div class="auth-field">
+
+                    <label for="loginUsername">
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        id="loginUsername"
+                        name="username"
+                        placeholder="Enter username"
+                        required
+                    >
+
+                </div> -->
+
+
+    <!-- Password -->
+    <!-- <div class="auth-field">
+
+                    <label for="loginPassword">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        name="password"
+                        placeholder="Enter password"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="auth-submit"
+                >
+                    Login
+                </button>
+
+            </form>
+
+
+            <div class="auth-switch">
+
+                <span>Don't have an account?</span>
+
+                <button
+                    type="button"
+                    id="showRegister"
+                >
+                    Register
+                </button>
+
+    </div>
+        <a href="index.html" class="active">
+            Home
+        </a>
+
+        <a href="project-analysis.html">
+            Project Analysis
+        </a>
+
+        <a href="model-analysis.html">
+            Model Analysis
+            <span class="arrow">▼</span>
+        </a>
+
+        <!-- <a href="#">
+            Projects
+        </a>
+
+        <a href="#">
+            About
+        </a> -->
+
+    </nav>
+
+
+    <!-- =========================
+         HERO
+    ========================= -->
+
+    <!-- ==============================
+     AUTOMATIC IMAGE SLIDER
+================================ -->
+
+    <section class="slider" id="homeSlider">
+
+        <!-- SLIDE 1 -->
+        <div class="slide active">
+
+            <img src="images/homeimage/image1.jpeg" alt="Project Monitoring">
+
+            <div class="hero-content">
+
+                <h1>Project Monitoring</h1>
+
+                <p>
+                    Central Sector Infrastructure Projects
+                    Costing Rs. 150 crore &amp; above
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- SLIDE 2 -->
+        <div class="slide">
+
+            <img src="images/homeimage/image2.jpeg" alt="Infrastructure Development">
+
+            <div class="hero-content">
+
+                <h1>Project Monitoring</h1>
+
+                <p>
+                    Central Sector Infrastructure Projects
+                    Costing Rs. 150 crore &amp; above
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- SLIDE 3 -->
+        <div class="slide">
+
+            <img src="images/homeimage/image3.png" alt="Project Intelligence">
+
+            <div class="hero-content">
+
+                <h1>Project Monitoring</h1>
+
+                <p>
+                    Central Sector Infrastructure Projects
+                    Costing Rs. 150 crore &amp; above
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- SLIDE 4 -->
+        <div class="slide">
+
+            <img src="images/homeimage/image4.jpeg" alt="PAIMANA AI">
+
+            <div class="hero-content">
+
+                <h1>Project Monitoring</h1>
+
+                <p>
+                    Central Sector Infrastructure Projects
+                    Costing Rs. 150 crore &amp; above
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- LEFT ARROW -->
+        <button class="slider-arrow prev" onclick="changeSlide(-1)">
+            ❮
+        </button>
+
+
+        <!-- RIGHT ARROW -->
+        <button class="slider-arrow next" onclick="changeSlide(1)">
+            ❯
+        </button>
+
+
+        <!-- DOTS -->
+        <div class="dots">
+
+            <span class="dot active" onclick="currentSlide(1)"></span>
+
+            <span class="dot" onclick="currentSlide(2)"></span>
+
+            <span class="dot" onclick="currentSlide(3)"></span>
+
+            <span class="dot" onclick="currentSlide(4)"></span>
+
+        </div>
+
+    </section>
+
+    <!-- Moniter Section -->
+    <section class="moniter-section">
+        <!-- RIGHT CONTENT -->
+        <div class="monitor-content">
+
+            <!-- MINISTRY / SECTOR TOGGLE -->
+            <div class="view-switch">
+
+                <button class="switch-btn active" id="ministryBtn" onclick="showMinistry()">
+                    Ministry-Wise
+                </button>
+
+                <button class="switch-btn" id="sectorBtn" onclick="showSector()">
+                    Sector-Wise
+                </button>
+
+            </div>
+
+
+            <!-- MAIN DASHBOARD CARD -->
+            <div class="dashboard-card">
+
+                <!-- MINISTRY CONTENT -->
+                <div id="ministryContent">
+
+                    <div class="dashboard-heading">
+                        <h1>
+                            Department of Higher Education
+                            <span>(as of July, 2026)</span>
+                        </h1>
+                    </div>
+
+                    <div class="stats-grid">
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <img src="images/image7.png" alt="">
+                            </div>
+
+                            <div class="stat-info">
+                                <h3>Project Count (No.) <small>ⓘ</small></h3>
+                                <p>190</p>
+                            </div>
+                        </div>
+
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <img src="images/image16.png" alt="">
+                            </div>
+
+                            <div class="stat-info">
+                                <h3>Original Cost (in Cr) <small>ⓘ</small></h3>
+                                <p>₹ 465,721.36</p>
+                            </div>
+                        </div>
+
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <img src="images/image17.png" alt="">
+                            </div>
+
+                            <div class="stat-info">
+                                <h3>Latest Revised Cost (in Cr) <small>ⓘ</small></h3>
+                                <p>₹ 638,469.92</p>
+                            </div>
+                        </div>
+
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <img src="images/image18.png" alt="">
+                            </div>
+
+                            <div class="stat-info">
+                                <h3>Expenditure (Cumm.) (in Cr) <small>ⓘ</small></h3>
+                                <p>₹ 459,390.96</p>
+                            </div>
+                        </div>
+
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <img src="images/image19.png" alt="">
+                            </div>
+
+                            <div class="stat-info">
+                                <h3>Completed During Month (No.) <small>ⓘ</small></h3>
+                                <p>0</p>
+                            </div>
+                        </div>
+
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <img src="images/image20.png" alt="">
+                            </div>
+
+                            <div class="stat-info">
+                                <h3>Newly Added (No.) <small>ⓘ</small></h3>
+                                <p>0</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SECTOR CONTENT -->
+                <div id="sectorContent" style="display: none;">
+
+                    <div class="dashboard-heading">
+
+                        <h1>
+                            Sector-Wise Project Monitoring
+                            <span>(as of July, 2026)</span>
+                        </h1>
+
+                    </div>
+
+
+                    <div class="stats-grid">
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+                                <img src="images/image7.png" alt="">
+                            </div>
+
+                            <div class="stat-info">
+
+                                <h3>
+                                    Project Count (No.)
+                                    <small>ⓘ</small>
+                                </h3>
+
+                                <p id="sectorProjectCount">0</p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+                                <img src="images/image16.png" alt="">
+                            </div>
+
+                            <div class="stat-info">
+
+                                <h3>
+                                    Original Cost (in Cr)
+                                    <small>ⓘ</small>
+                                </h3>
+
+                                <p id="sectorOriginalCost">₹ 0</p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+                                <img src="images/image17.png" alt="">
+                            </div>
+
+                            <div class="stat-info">
+
+                                <h3>
+                                    Latest Revised Cost (in Cr)
+                                    <small>ⓘ</small>
+                                </h3>
+
+                                <p id="sectorRevisedCost">₹ 0</p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+                                <img src="images/image18.png" alt="">
+                            </div>
+
+                            <div class="stat-info">
+
+                                <h3>
+                                    Expenditure (Cumm.) (in Cr)
+                                    <small>ⓘ</small>
+                                </h3>
+
+                                <p id="sectorExpenditure">₹ 0</p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+                                <img src="images/image19.png" alt="">
+                            </div>
+
+                            <div class="stat-info">
+
+                                <h3>
+                                    Completed During Month (No.)
+                                    <small>ⓘ</small>
+                                </h3>
+
+                                <p id="sectorCompleted">0</p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+                                <img src="images/image20.png" alt="">
+                            </div>
+
+                            <div class="stat-info">
+
+                                <h3>
+                                    Newly Added (No.)
+                                    <small>ⓘ</small>
+                                </h3>
+
+                                <p id="sectorNewlyAdded">0</p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+    </section>
+    <!-- =========================================
+    Search PROJECTS SECTION
+========================================= -->
+
+    <section class="project-search-section">
+
+        <div class="search-header">
+
+            <h2>Search & Analyze Projects</h2>
+
+            <p>
+                Search and filter infrastructure projects using multiple parameters
+                to identify projects requiring monitoring or intervention.
+            </p>
+        </div>
+
+
+        <div class="search-panel">
+
+            <!-- Project Name -->
+            <div class="search-field project-name-field">
+
+                <label for="projectName">
+                    Project Name
+                </label>
+
+                <input type="text" id="projectName" placeholder="Search project name...">
+
+            </div>
+
+
+            <!-- Ministry -->
+            <div class="search-field">
+
+                <label for="ministry">
+                    Ministry / Agency
+                </label>
+
+                <select id="ministry">
+
+                    <option value="">All Ministries</option>
+
+                    <!-- Options can later come from backend -->
+
+                </select>
+
+            </div>
+
+
+            <!-- State -->
+            <div class="search-field">
+
+                <label for="state">
+                    State
+                </label>
+
+                <select id="state">
+
+                    <option value="">All States</option>
+
+                    <!-- Backend data will populate states -->
+
+                </select>
+
+            </div>
+
+
+            <!-- Sector -->
+            <div class="search-field">
+
+                <label for="sector">
+                    Sector
+                </label>
+
+                <select id="sector">
+
+                    <option value="">All Sectors</option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Risk -->
+            <div class="search-field">
+
+                <label for="risk">
+                    Risk Category
+                </label>
+
+                <select id="risk">
+
+                    <option value="">All Risk Levels</option>
+                    <option value="High">High Risk</option>
+                    <option value="Medium">Medium Risk</option>
+                    <option value="Low">Low Risk</option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Project Size -->
+            <!-- <div class="search-field">
+
+            <label for="projectSize">
+                Project Size
+            </label>
+
+            <select id="projectSize">
+
+                <option value="">All Categories</option>
+                <option value="Large">Large</option>
+                <option value="Medium">Medium</option>
+                <option value="Small">Small</option>
+
+            </select>
+
+        </div>
+
+
+        Physical Progress -->
+            <!-- <div class="search-field">
+
+            <label for="progress">
+                Physical Progress
+            </label>
+
+            <select id="progress">
+
+                <option value="">Any Progress</option>
+                <option value="0-25">0 – 25%</option>
+                <option value="25-50">25 – 50%</option>
+                <option value="50-75">50 – 75%</option>
+                <option value="75-100">75 – 100%</option>
+
+            </select>
+
+        </div> -->
+
+
+            <!-- Time Overrun -->
+            <!-- <div class="search-field">
+
+            <label for="overrun">
+                Time Overrun
+            </label>
+
+            <select id="overrun">
+
+                <option value="">Any Duration</option>
+                <option value="0">No Overrun</option>
+                <option value="1-6">1 – 6 Months</option>
+                <option value="6-12">6 – 12 Months</option>
+                <option value="12+">More than 12 Months</option>
+
+            </select>
+
+        </div> -->
+
+
+            <!-- Buttons -->
+
+            <div class="search-actions">
+
+                <button type="button" class="search-btn" onclick="searchProjects()">
+                    🔍 Search Projects
+                </button>
+
+                <button type="button" class="clear-btn" onclick="clearSearch()">
+                    Clear Filters
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Search Result -->
+
+        <div id="searchResults" class="search-results"></div>
+
+        <!-- <div class="project-list"> -->
+
+        <!-- Project 1 -->
+        <!-- <div class="project-row">
+
+            <div class="project-name">
+                <span class="status-icon">✓</span>
+                Delhi Metro Expansion Project
+            </div>
+
+            <div class="project-progress">
+                64.0%
+            </div>
+
+            <div class="project-risk high">
+                High
+            </div>
+
+        </div> -->
+
+
+        <!-- Project 2 -->
+        <!-- <div class="project-row">
+
+            <div class="project-name">
+                <span class="status-icon">✓</span>
+                National Highway Development Project
+            </div>
+
+            <div class="project-progress">
+                58.1%
+            </div>
+
+            <div class="project-risk medium">
+                Medium
+            </div> -->
+
+        <!-- </div> -->
+
+
+        <!-- Project 3 -->
+        <!-- <div class="project-row">
+
+            <div class="project-name">
+                <span class="status-icon">✓</span>
+                Mumbai Coastal Road Project
+            </div>
+
+            <div class="project-progress">
+                49.2%
+            </div>
+
+            <div class="project-risk medium">
+                Medium
+            </div>
+
+        </div>
+ -->
+
+        <!-- Project 4 -->
+        <!-- <div class="project-row">
+
+            <div class="project-name">
+                <span class="status-icon">✓</span>
+                High Speed Rail Corridor
+            </div>
+
+            <div class="project-progress">
+                39.9%
+            </div>
+
+            <div class="project-risk high">
+                High
+            </div>
+
+        </div> -->
+
+
+        <!-- Project 5 -->
+        <!-- <div class="project-row">
+
+            <div class="project-name">
+                <span class="status-icon">✓</span>
+                Smart City Infrastructure Project
+            </div>
+
+            <div class="project-progress">
+                72.5%
+            </div>
+
+            <div class="project-risk low">
+                Low
+            </div>
+
+        </div>
+
+    </div> -->
+
+        <!-- </div>  -->
+    </section>
+    <!-- =====================================================
+     FEATURED PROJECTS
+===================================================== -->
+
+    <!-- <section class="featured-projects">
+
+    <div class="projects-header">
+
+        <span class="section-tag">
+            PROJECT MONITORING
+        </span>
+
+        <h2>Projects Under Monitoring</h2>
+
+        <p>
+            Explore selected infrastructure projects currently
+            being monitored through the project monitoring system.
+        </p>
+
+    </div>
+
+
+    <div id="featuredProjects" class="featured-project-grid">
+
+         Projects will be loaded here by JavaScript -->
+
+    <!-- </div>
+
+
+    <div class="projects-view-all">
+
+        <a href="projects.html">
+            View All Projects →
+        </a>
+
+    </div>
+
+</section> -->
+    <!-- ==========================================
+     HIGH RISK PROJECTS
+========================================== -->
+
+    <section class="high-risk-section">
+
+        <div class="section-heading">
+
+            <!-- <span class="section-tag">PAIMANA AI</span> -->
+
+            <h2>High Risk Projects</h2>
+
+            <!-- <p>
+            Top 3 projects identified as high-risk
+            by the project intelligence model
+        </p> -->
+
+        </div>
+
+
+        <div class="risk-cards-container">
+
+
+            <!-- ==============================
+             PROJECT 1
+        =============================== -->
+
+            <div class="risk-card" onclick="openProject('PRJ001')">
+
+                <div class="risk-card-top">
+
+                    <span class="risk-label">
+                        HIGH RISK
+                    </span>
+
+                    <div class="risk-score">
+
+                        <strong>87</strong>
+
+                        <span>/100</span>
+
+                    </div>
+
+                </div>
+
+
+                <h3>
+                    Mumbai-Ahmedabad High Speed Rail
+                </h3>
+
+
+                <p class="organization">
+                    National High Speed Rail Corporation
+                </p>
+
+
+                <div class="risk-details">
+
+                    <div>
+                        <span>Project Cost</span>
+                        <strong>₹1,08,000 Cr</strong>
+                    </div>
+
+                    <div>
+                        <span>Physical Progress</span>
+                        <strong>62%</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="risk-progress">
+
+                    <div class="progress-label">
+                        <span>Risk Level</span>
+                        <span>87%</span>
+                    </div>
+
+                    <div class="progress-bar">
+
+                        <div class="progress-fill" style="width:87%">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="view-project">
+
+                    View Project Analysis
+                    <span>→</span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ==============================
+             PROJECT 2
+        =============================== -->
+
+            <div class="risk-card" onclick="openProject('PRJ002')">
+
+                <div class="risk-card-top">
+
+                    <span class="risk-label">
+                        HIGH RISK
+                    </span>
+
+                    <div class="risk-score">
+
+                        <strong>81</strong>
+
+                        <span>/100</span>
+
+                    </div>
+
+                </div>
+
+
+                <h3>
+                    Chennai Metro Rail Phase-II
+                </h3>
+
+
+                <p class="organization">
+                    Chennai Metro Rail Limited
+                </p>
+
+
+                <div class="risk-details">
+
+                    <div>
+                        <span>Project Cost</span>
+                        <strong>₹63,246 Cr</strong>
+                    </div>
+
+                    <div>
+                        <span>Physical Progress</span>
+                        <strong>56%</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="risk-progress">
+
+                    <div class="progress-label">
+                        <span>Risk Level</span>
+                        <span>81%</span>
+                    </div>
+
+                    <div class="progress-bar">
+
+                        <div class="progress-fill" style="width:81%">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="view-project">
+
+                    View Project Analysis
+                    <span>→</span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ==============================
+             PROJECT 3
+        =============================== -->
+
+            <div class="risk-card" onclick="openProject('PRJ003')">
+
+                <div class="risk-card-top">
+
+                    <span class="risk-label">
+                        HIGH RISK
+                    </span>
+
+                    <div class="risk-score">
+
+                        <strong>76</strong>
+
+                        <span>/100</span>
+
+                    </div>
+
+                </div>
+
+
+                <h3>
+                    National Highway Development Project
+                </h3>
+
+
+                <p class="organization">
+                    National Highways Authority of India
+                </p>
+
+
+                <div class="risk-details">
+
+                    <div>
+                        <span>Project Cost</span>
+                        <strong>₹91,200 Cr</strong>
+                    </div>
+
+                    <div>
+                        <span>Physical Progress</span>
+                        <strong>74%</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="risk-progress">
+
+                    <div class="progress-label">
+                        <span>Risk Level</span>
+                        <span>76%</span>
+                    </div>
+
+                    <div class="progress-bar">
+
+                        <div class="progress-fill" style="width:76%">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="view-project">
+
+                    View Project Analysis
+                    <span>→</span>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- SEE ALL -->
+
+        <div class="view-all-container">
+
+            <a href="high-risk.html" class="view-all-btn">
+                View All High Risk Projects →
+            </a>
+
+        </div>
+
+    </section>
+    <!-- =====================================================
+     COMING SOON / MOBILE APP SECTION
+===================================================== -->
+
+    <!-- <section class="app-section">
+
+    LEFT : MOBILE IMAGE 
+    <div class="app-image">
+        <img src="images/image13.png" alt="Project Guardian Mobile App">
+    </div>
+
+
+     CENTER : TEXT -->
+    <!-- <div class="app-content">
+
+        <h2>Coming Soon</h2>
+
+        <p>
+            Discover your new favorite spaces, Download from
+            Google Play/iOS App.
+        </p>
+
+    </div> -->
+
+
+    <!-- RIGHT : APP STORE BUTTONS  -->
+    <!-- <div class="app-buttons">
+
+        <a href="#">
+            <img src="images/image12.png"
+                 alt="Get it on Google Play">
+        </a>
+
+        <a href="#">
+            <img src="images/image11.png"
+                 alt="Download on the App Store">
+        </a>
+
+    </div> 
+
+</section>  -->
+
+
+
+    <!-- =====================================================
+     FOOTER
+===================================================== -->
+
+    <footer class="main-footer">
+
+        <div class="footer-container">
+
+
+            <!-- =========================================
+             MINISTRY LOGOS
+        ========================================== -->
+
+            <div class="footer-top">
+
+                <!-- <div class="footer-brand">
+
+                 <img src="images/image1.png" -->
+                <!-- alt="Government of India"> -->
+
+                <!-- <div class="footer-brand-text">
+
+                    <h3>
+                        Ministry of Statistics and
+                        Programme Implementation
+                    </h3>
+
+                    <p>
+                        Government of India
+                    </p>
+
+                </div> -->
+
+                <!-- <img src="images/image.png"
+                     class="data-logo"
+                     alt="Data for Development"> -->
+
+                <!-- </div>-->
+
+
+                <!-- NeGD
+            <div class="negd-box">
+
+                <p>
+                    Design and Developed by NeGD
+                </p>
+
+                <img src="images/negdlogo.png"
+                     alt="NeGD">
+
+            </div>
+
+        </div> -->
+
+
+
+                <!-- =========================================
+             CONTACT
+        ========================================== -->
+
+                <footer class="footer">
+
+                    <div class="footer-content">
+
+                        <!-- Contact Information -->
+                        <div class="footer-contact">
+
+                            <div class="contact-item">
+                                <span class="contact-icon">
+                                    <img src="images/image8.png" alt="phone number">
+                                </span>
+                                <div>
+                                    <span>011-</span><br>
+                                    <span>23455604</span>
+                                </div>
+                            </div>
+
+                            <div class="contact-item email">
+                                <span class="contact-icon">
+                                    <img src="images/image9.png" alt="email-box">
+                                </span>
+                                <div>
+                                    <span>dir-ipmd[at]mospi[dot]gov[dot]in</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <!-- Quick Links -->
+                        <div class="quick-links">
+
+                            <h3>Quick Links</h3>
+
+                            <div class="links-container">
+
+                                <a href="index.html">Home</a>
+
+                                <a href="#">Contact<br>Us</a>
+
+                                <a href="#">FAQs</a>
+
+                                <a href="#">Site<br>Map</a>
+
+                                <a href="#">Hyperlinking<br>Policy</a>
+
+                                <a href="#">Privacy<br>Policy</a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <hr>
+
+                    <!-- Copyright -->
+                    <div class="footer-bottom">
+
+                        <p>
+                            Content owned and maintained by: Infrastructure &amp; Project Monitoring
+                            Division (IPMD) | Ministry of Statistics and Programme Implementation.
+                            Copyright © 2025 Ministry of Statistics and Programme Implementation
+                        </p>
+
+                    </div>
+
+                </footer>
+
+                <!-- COPYRIGHT -->
+
+                <!-- <div class="copyright">
+
+        Content owned and maintained by: Infrastructure & Project Monitoring Division(IPMD) | Ministry of Statistics and Programme Implementation.
+
+        Copyright © 2025 Ministry of Statistics and Programme Implementation
+
+    </div>
+</footer> -->
+                <!-- =====================================================
+     MODEL ANALYSIS AUTH MODAL
+===================================================== -->
+                <!-- ================= AUTH MODAL ================= -->
+
+                <!-- =====================================================
+     MODEL ANALYSIS AUTH MODAL
+===================================================== -->
+
+                <div id="authModal" class="auth-modal">
+
+                    <!-- Dark background -->
+                    <div class="auth-overlay" onclick="closeAuthModal()"></div>
+
+
+                    <!-- Main Authentication Box -->
+                    <div class="auth-box">
+
+                        <!-- Close Button -->
+                        <button class="auth-close" onclick="closeAuthModal()">
+                            &times;
+                        </button>
+
+
+                        <!-- =================================================
+             LEFT INFORMATION PANEL
+        ================================================== -->
+
+                        <div class="auth-info">
+
+                            <div class="auth-info-content">
+
+                                <!-- Brand -->
+                                <div class="auth-brand">
+                                    <span class="auth-brand-line"></span>
+                                    <span>PROJECT GUARDIAN</span>
+                                </div>
+
+                                <!-- Main Heading -->
+                                <h2>
+                                    Infrastructure
+                                    <span>&</span>
+                                    Project Monitoring
+                                </h2>
+
+                                <p class="auth-description">
+                                    A centralized platform for monitoring major infrastructure
+                                    projects and identifying potential project risks through
+                                    data-driven analysis.
+                                </p>
+
+
+                                <!-- Features -->
+                                <div class="auth-features">
+
+                                    <div class="auth-feature">
+
+                                        <div class="feature-icon">
+                                            📊
+                                        </div>
+
+                                        <div>
+                                            <h4>Project Risk Intelligence</h4>
+                                            <p>
+                                                Identify projects requiring closer monitoring.
+                                            </p>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="auth-feature">
+
+                                        <div class="feature-icon">
+                                            📈
+                                        </div>
+
+                                        <div>
+                                            <h4>Progress Monitoring</h4>
+                                            <p>
+                                                Track project progress and performance indicators.
+                                            </p>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="auth-feature">
+
+                                        <div class="feature-icon">
+                                            🎯
+                                        </div>
+
+                                        <div>
+                                            <h4>Data-Driven Analysis</h4>
+                                            <p>
+                                                Analyze project parameters to assess potential risks.
+                                            </p>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Bottom Information -->
+                                <div class="auth-project-info">
+
+                                    <span class="project-info-label">
+                                        MONITORING COVERAGE
+                                    </span>
+
+                                    <strong>
+                                        Central Sector Infrastructure Projects
+                                    </strong>
+
+                                    <span>
+                                        Costing ₹150 Crore & Above
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <!-- =================================================
+             RIGHT FORM AREA
+        ================================================== -->
+
+                        <div class="auth-form-area">
+
+
+                            <!-- LOGIN / REGISTER TABS -->
+
+                            <div class="auth-tabs">
+
+                                <button type="button" class="auth-tab active" id="loginTab" onclick="showLogin()">
+                                    Login
+                                </button>
+
+                                <button type="button" class="auth-tab" id="registerTab" onclick="showRegister()">
+                                    Register
+                                </button>
+
+                            </div>
+
+
+                            <!-- =================================================
+                 LOGIN FORM
+            ================================================== -->
+
+                            <form id="loginForm" class="auth-form active" onsubmit="loginUser(event)">
+
+                                <h2>Welcome Back</h2>
+
+                                <p class="form-subtitle">
+                                    Login to access Model Analysis
+                                </p>
+
+
+                                <!-- Username -->
+
+                                <div class="form-group">
+
+                                    <label for="loginUsername">
+                                        Username
+                                    </label>
+
+                                    <input type="text" id="loginUsername" name="username"
+                                        placeholder="Enter your username" required>
+
+                                </div>
+
+
+                                <!-- Password -->
+
+                                <div class="form-group">
+
+                                    <label for="loginPassword">
+                                        Password
+                                    </label>
+
+                                    <div class="password-box">
+
+                                        <input type="password" id="loginPassword" name="password"
+                                            placeholder="Enter your password" required>
+
+                                        <button type="button" onclick="togglePassword('loginPassword')">
+                                            👁
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Options -->
+
+                                <div class="form-options">
+
+                                    <label>
+                                        <input type="checkbox" id="rememberMe">
+                                        Remember me
+                                    </label>
+
+                                    <a href="#">
+                                        Forgot password?
+                                    </a>
+
+                                </div>
+
+
+                                <!-- Login Button -->
+
+                                <button type="submit" class="auth-submit">
+
+                                    Login
+
+                                    <span>→</span>
+
+                                </button>
+
+
+                                <!-- Switch -->
+
+                                <p class="switch-text">
+
+                                    Don't have an account?
+
+                                    <button type="button" onclick="showRegister()">
+                                        Register
+                                    </button>
+
+                                </p>
+
+                            </form>
+
+
+                            <!-- =================================================
+                 REGISTRATION FORM
+            ================================================== -->
+
+                            <form id="registerForm" class="auth-form" onsubmit="registerUser(event)">
+
+                                <h2>Create Account</h2>
+
+                                <p class="form-subtitle">
+                                    Register to access Project Intelligence
+                                </p>
+
+                                <div class="form-group">
+
+                                    <label for="registerUsername">
+                                        Username *
+                                    </label>
+
+                                    <input type="text" id="registerUsername" name="username"
+                                        placeholder="Enter username" required>
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="registerEmail">
+                                        Email *
+                                    </label>
+
+                                    <input type="email" id="registerEmail" name="email" placeholder="Enter your email"
+                                        required>
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="registerPassword">
+                                        Password *
+                                    </label>
+
+                                    <div class="password-box">
+
+                                        <input type="password" id="registerPassword" name="password"
+                                            placeholder="Create password" required>
+
+                                        <button type="button" onclick="togglePassword('registerPassword')">
+                                            👁
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="registerRole">
+                                        Role
+                                    </label>
+
+                                    <input type="text" id="registerRole" name="role" value="Monitoring Officer">
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="registerDepartment">
+                                        Department
+                                    </label>
+
+                                    <input type="text" id="registerDepartment" name="department"
+                                        placeholder="Enter department (optional)">
+
+                                </div>
+
+
+                                <button type="submit" class="auth-submit">
+
+                                    Create Account
+
+                                    <span>→</span>
+
+                                </button>
+
+
+                                <p class="switch-text">
+
+                                    Already have an account?
+
+                                    <button type="button" onclick="showLogin()">
+
+                                        Login
+
+                                    </button>
+
+                                </p>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <script src="script.js"></script>
+</body>
+
+</html>
