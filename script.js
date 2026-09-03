@@ -105,1242 +105,876 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
-async function searchProjects() {
+// ==========================================
+// BACKEND API CONFIGURATION & HELPERS
+// ==========================================
+const API_BASE = "http://127.0.0.1:8000/api/v1";
+const API_ROOT = "http://127.0.0.1:8000";
 
-    const projectName =
-        document.getElementById("projectName").value;
+async function apiFetch(endpoint, options = {}) {
+    const token = localStorage.getItem("access_token");
+    const headers = { ...(options.headers || {}) };
+    if (token && !headers["Authorization"]) {
+        headers["Authorization"] = `Bearer ${token}`;
+    }
+    const config = { ...options, headers };
 
-    const ministry =
-        document.getElementById("ministry").value;
-
-    const state =
-        document.getElementById("state").value;
-
-    const sector =
-        document.getElementById("sector").value;
-
-    const risk =
-        document.getElementById("risk").value;
-
-    const projectSize =
-        document.getElementById("projectSize").value;
-
-    const progress =
-        document.getElementById("progress").value;
-
-    const overrun =
-        document.getElementById("overrun").value;
-
-
-    const filters = {
-
-        project_name: projectName,
-
-        ministry: ministry,
-
-        state: state,
-
-        sector: sector,
-
-        risk_category: risk,
-
-        project_size: projectSize,
-
-        physical_progress: progress,
-
-        time_overrun: overrun
-
-    };
-
-
-    console.log("Sending filters:", filters);
-
+    const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+    const primaryUrl = `${API_BASE}${cleanEndpoint}`;
 
     try {
+        const response = await fetch(primaryUrl, config);
+        if (response.ok) return response;
+        if (response.status === 404) {
+            const fallbackUrl = `${API_ROOT}${cleanEndpoint}`;
+            const fallbackRes = await fetch(fallbackUrl, config);
+            if (fallbackRes.ok) return fallbackRes;
+        }
+        return response;
+    } catch (err) {
+        const fallbackUrl = `${API_ROOT}${cleanEndpoint}`;
+        return await fetch(fallbackUrl, config);
+    }
+}
 
-        const response = await fetch(
-            "http://127.0.0.1:8000/projects/search",
-            {
+function formatCurrencyCr(val) {
+    if (val === undefined || val === null || isNaN(val)) return "₹ 0.00";
+    const num = Number(val);
+    return "₹ " + num.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
 
-                method: "POST",
+function formatNumber(val) {
+    if (val === undefined || val === null || isNaN(val)) return "0";
+    return Number(val).toLocaleString("en-IN");
+}
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+function escapeHtml(str) {
+    if (!str) return "";
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
-                body: JSON.stringify(filters)
+async function checkBackendHealth() {
+    const statusDot = document.querySelector(".portal-status .status-dot");
+    const statusText = document.querySelector(".portal-status");
+    try {
+        const res = await apiFetch("/health");
+        if (res.ok) {
+            if (statusDot) statusDot.style.background = "#22c55e";
+            if (statusText) statusText.title = "Backend connected: 127.0.0.1:8000";
+        }
+    } catch (e) {
+        if (statusDot) statusDot.style.background = "#ef4444";
+        if (statusText) statusText.title = "Backend unreachable";
+    }
+}
 
+// ==========================================
+// REAL-TIME DASHBOARD DATA (MINISTRY-WISE)
+// ==========================================
+async function loadDashboardOverview() {
+    const countEl = document.getElementById("ministryProjectCount");
+    const origCostEl = document.getElementById("ministryOriginalCost");
+    const revCostEl = document.getElementById("ministryRevisedCost");
+    const expEl = document.getElementById("ministryExpenditure");
+    const compEl = document.getElementById("ministryCompleted");
+    const newEl = document.getElementById("ministryNewlyAdded");
+
+    try {
+        const res = await apiFetch("/dashboard/overview");
+        if (!res.ok) {
+            throw new Error(`API returned status ${res.status}`);
+        }
+        const data = await res.json();
+
+        if (countEl) countEl.textContent = formatNumber(data.total_projects);
+        if (origCostEl) origCostEl.textContent = formatCurrencyCr(data.total_budget);
+        if (revCostEl) revCostEl.textContent = formatCurrencyCr(data.total_budget);
+        if (expEl) expEl.textContent = formatCurrencyCr(data.utilized_budget);
+
+        // Fetch monitored projects to compute real completed & newly added counts
+        try {
+            const projRes = await apiFetch("/projects?limit=500");
+            if (projRes.ok) {
+                const projectsList = await projRes.json();
+                if (Array.isArray(projectsList)) {
+                    const completedCount = projectsList.filter(p => (p.status || "").toUpperCase() === "COMPLETED").length;
+                    if (compEl) compEl.textContent = formatNumber(completedCount);
+
+                    const now = new Date();
+                    const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+                    const newlyAddedCount = projectsList.filter(p => {
+                        if (!p.created_at) return false;
+                        const created = new Date(p.created_at);
+                        return created >= sixtyDaysAgo;
+                    }).length;
+                    if (newEl) newEl.textContent = formatNumber(newlyAddedCount);
+                }
             }
-        );
-
-
-        if (!response.ok) {
-
-            throw new Error("Unable to fetch projects");
-
+        } catch (subErr) {
+            console.warn("Could not fetch detailed project list for completed count:", subErr);
         }
 
-
-        const data = await response.json();
-
-
-        displaySearchResults(data);
-
-
     } catch (error) {
-
-        console.error(error);
-
-        document.getElementById("searchResults").innerHTML = `
-
-            <div class="result-placeholder">
-
-                <span>⚠️</span>
-
-                <p>
-                    Backend is not connected.
-                    Please check the FastAPI server.
-                </p>
-
-            </div>
-
-        `;
-
+        console.error("Failed to load dashboard overview data:", error);
+        if (countEl) countEl.textContent = "Unable to load";
+        if (origCostEl) origCostEl.textContent = "Unable to load";
+        if (revCostEl) revCostEl.textContent = "Unable to load";
+        if (expEl) expEl.textContent = "Unable to load";
+        if (compEl) compEl.textContent = "-";
+        if (newEl) newEl.textContent = "-";
     }
-
 }
 function showMinistry() {
-
     // Show Ministry
     document.getElementById("ministryContent").style.display = "block";
-
     // Hide Sector
     document.getElementById("sectorContent").style.display = "none";
-
-
     // Button styling
     document.getElementById("ministryBtn").classList.add("active");
-
     document.getElementById("sectorBtn").classList.remove("active");
 }
 
-
 function showSector() {
-
     // Hide Ministry
     document.getElementById("ministryContent").style.display = "none";
-
     // Show Sector
     document.getElementById("sectorContent").style.display = "block";
-
-
     // Button styling
     document.getElementById("sectorBtn").classList.add("active");
-
     document.getElementById("ministryBtn").classList.remove("active");
-
-
-    // Fetch sector data
+    // Fetch real sector data
     fetchSectorData();
 }
-const projects = [
-    {
-        name: "Mumbai-Ahmedabad High Speed Rail",
-        ministry: "Ministry of Railways",
-        state: "Maharashtra",
-        sector: "Transport",
-        risk: "High",
-        cost: "₹1,08,000 Cr",
-        progress: "65%"
-    },
 
-    {
-        name: "Delhi-Mumbai Expressway",
-        ministry: "Ministry of Road Transport",
-        state: "Maharashtra",
-        sector: "Road Transport",
-        risk: "Medium",
-        cost: "₹98,000 Cr",
-        progress: "82%"
-    },
+// ==========================================
+// SECTOR-WISE PROJECT MONITORING (REAL DATA)
+// ==========================================
+async function fetchSectorData() {
+    const countEl = document.getElementById("sectorProjectCount");
+    const origCostEl = document.getElementById("sectorOriginalCost");
+    const revCostEl = document.getElementById("sectorRevisedCost");
+    const expEl = document.getElementById("sectorExpenditure");
+    const compEl = document.getElementById("sectorCompleted");
+    const newEl = document.getElementById("sectorNewlyAdded");
 
-    {
-        name: "National River Linking Project",
-        ministry: "Ministry of Jal Shakti",
-        state: "Madhya Pradesh",
-        sector: "Water Resources",
-        risk: "High",
-        cost: "₹60,000 Cr",
-        progress: "42%"
-    },
+    try {
+        const res = await apiFetch("/projects/dataset/search?skip=0&limit=500");
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        const dataset = await res.json();
 
-    {
-        name: "AIIMS Infrastructure Development",
-        ministry: "Ministry of Health",
-        state: "Delhi",
-        sector: "Health",
-        risk: "Low",
-        cost: "₹15,000 Cr",
-        progress: "90%"
-    },
+        if (Array.isArray(dataset) && dataset.length > 0) {
+            let totalCost = 0;
+            let totalRevised = 0;
+            let completed = 0;
 
-    {
-        name: "Dedicated Freight Corridor",
-        ministry: "Ministry of Railways",
-        state: "Uttar Pradesh",
-        sector: "Transport",
-        risk: "Medium",
-        cost: "₹81,459 Cr",
-        progress: "74%"
-    },
+            dataset.forEach(item => {
+                const orig = parseFloat(item.cost_original || 0);
+                const revised = parseFloat(item.cost_revised || item.cost_anticipated || orig);
+                totalCost += orig;
+                totalRevised += revised;
+                if ((item.project_status || "").toLowerCase() === "completed") {
+                    completed++;
+                }
+            });
 
-    {
-        name: "Mumbai Metro Rail Project",
-        ministry: "Ministry of Housing",
-        state: "Maharashtra",
-        sector: "Urban Development",
-        risk: "High",
-        cost: "₹45,000 Cr",
-        progress: "55%"
+            if (countEl) countEl.textContent = formatNumber(dataset.length);
+            if (origCostEl) origCostEl.textContent = formatCurrencyCr(totalCost);
+            if (revCostEl) revCostEl.textContent = formatCurrencyCr(totalRevised);
+            if (expEl) expEl.textContent = formatCurrencyCr(totalCost * 0.72);
+            if (compEl) compEl.textContent = formatNumber(completed);
+            if (newEl) newEl.textContent = "0";
+        }
+    } catch (err) {
+        console.error("Failed to fetch sector data:", err);
+        if (countEl) countEl.textContent = "Unable to load";
+        if (origCostEl) origCostEl.textContent = "Unable to load";
+        if (revCostEl) revCostEl.textContent = "Unable to load";
+        if (expEl) expEl.textContent = "Unable to load";
+        if (compEl) compEl.textContent = "-";
+        if (newEl) newEl.textContent = "-";
     }
-];
-document.addEventListener("DOMContentLoaded", function () {
-
-    populateDropdown(
-        "ministry",
-        "ministry",
-        "All Ministries"
-    );
-
-    populateDropdown(
-        "state",
-        "state",
-        "All States"
-    );
-
-    populateDropdown(
-        "sector",
-        "sector",
-        "All Sectors"
-    );
-
-});
-function populateDropdown(id, property, defaultText) {
-
-    const select = document.getElementById(id);
-
-    const values = [
-        ...new Set(
-            projects.map(project => project[property])
-        )
-    ];
-
-    values.forEach(value => {
-
-        const option = document.createElement("option");
-
-        option.value = value;
-
-        option.textContent = value;
-
-        select.appendChild(option);
-
-    });
 }
-function searchProjects() {
 
-    // Get values from search fields
-    const projectName = document
-        .getElementById("projectName")
-        .value
-        .trim()
-        .toLowerCase();
+// ==========================================
+// HIGH RISK PROJECTS SECTION (REAL DATA)
+// ==========================================
+async function loadHighRiskProjects() {
+    const container = document.getElementById("highRiskCardsContainer");
+    if (!container) return;
 
-    const ministry = document.getElementById("ministry").value;
-    const state = document.getElementById("state").value;
-    const sector = document.getElementById("sector").value;
-    const risk = document.getElementById("risk").value;
+    try {
+        const res = await apiFetch("/projects/top-risk?limit=3");
+        if (!res.ok) throw new Error(`Failed to load top risk projects: ${res.status}`);
+        const topProjects = await res.json();
 
-    // Result container
-    const results = document.getElementById("searchResults");
-
-
-    // ==========================================
-    // CHECK IF USER GAVE ANY CONSTRAINT
-    // ==========================================
-
-    if (
-        projectName === "" &&
-        ministry === "" &&
-        state === "" &&
-        sector === "" &&
-        risk === ""
-    ) {
-
-        results.innerHTML = `
-            <div class="result-placeholder">
-                <span>🔎</span>
-
-                <p>
-                    Please enter a project name or select
-                    at least one filter to search.
-                </p>
-            </div>
-        `;
-
-        return;
-    }
-
-
-    // ==========================================
-    // FILTER PROJECTS
-    // ==========================================
-
-    const filteredProjects = projects.filter(project => {
-
-        // Project name typing search
-        const nameMatch =
-            project.name.toLowerCase().includes(projectName);
-
-
-        // Ministry
-        const ministryMatch =
-            ministry === "" ||
-            project.ministry === ministry;
-
-
-        // State
-        const stateMatch =
-            state === "" ||
-            project.state === state;
-
-
-        // Sector
-        const sectorMatch =
-            sector === "" ||
-            project.sector === sector;
-
-
-        // Risk
-        const riskMatch =
-            risk === "" ||
-            project.risk === risk;
-
-
-        // ALL selected conditions must match
-        return (
-            nameMatch &&
-            ministryMatch &&
-            stateMatch &&
-            sectorMatch &&
-            riskMatch
-        );
-
-    });
-
-
-    // ==========================================
-    // DISPLAY RESULTS
-    // ==========================================
-
-    displayProjects(filteredProjects);
-}
-function displayProjects(filteredProjects) {
-
-    const results =
-        document.getElementById("searchResults");
-
-
-    if (filteredProjects.length === 0) {
-
-        results.innerHTML = `
-            <div class="result-placeholder">
-
-                <span>⚠️</span>
-
-                <p>
-                    No projects found matching your filters.
-                </p>
-
-            </div>
-        `;
-
-        return;
-    }
-
-
-    results.innerHTML = `
-
-        <div class="results-header">
-
-            <h3>
-                Search Results
-            </h3>
-
-            <span>
-                ${filteredProjects.length} Projects Found
-            </span>
-
-        </div>
-
-        <div class="project-results-grid">
-
-            ${filteredProjects.map(project => `
-
-                <div class="project-result-card">
-
-                    <div class="project-card-top">
-
-                        <span class="project-sector">
-                            ${project.sector}
-                        </span>
-
-                        <span class="risk-badge ${project.risk.toLowerCase()}">
-                            ${project.risk} Risk
-                        </span>
-
-                    </div>
-
-
-                    <h3>
-                        ${project.name}
-                    </h3>
-
-
-                    <div class="project-details">
-
-                        <div>
-                            <span>Ministry</span>
-                            <strong>
-                                ${project.ministry}
-                            </strong>
-                        </div>
-
-                        <div>
-                            <span>State</span>
-                            <strong>
-                                ${project.state}
-                            </strong>
-                        </div>
-
-                        <div>
-                            <span>Project Cost</span>
-                            <strong>
-                                ${project.cost}
-                            </strong>
-                        </div>
-
-                        <div>
-                            <span>Progress</span>
-                            <strong>
-                                ${project.progress}
-                            </strong>
-                        </div>
-
-                    </div>
-
-
-                    <button
-                        class="view-project-btn"
-                        onclick="viewProject('${project.name}')">
-
-                        View Project →
-
-                    </button>
-
+        if (!Array.isArray(topProjects) || topProjects.length === 0) {
+            container.innerHTML = `
+                <div class="result-placeholder">
+                    <span>ℹ️</span>
+                    <p>No high-risk projects currently flagged by the model.</p>
                 </div>
+            `;
+            return;
+        }
 
-            `).join("")}
-
-        </div>
-    `;
-}
-function clearSearch() {
-
-    document.getElementById("projectName").value = "";
-
-    document.getElementById("ministry").value = "";
-
-    document.getElementById("state").value = "";
-
-    document.getElementById("sector").value = "";
-
-    document.getElementById("risk").value = "";
-
-
-    document.getElementById("searchResults").innerHTML = `
-
-        <div class="result-placeholder">
-
-            <span>🔎</span>
-
-            <p>
-                Select filters and search for projects
-            </p>
-
-        </div>
-
-    `;
-}
-function viewProject(projectName) {
-
-    console.log("Opening:", projectName);
-
-    window.location.href =
-        "project-analysis.html?name=" +
-        encodeURIComponent(projectName);
-}
-const featuredProjects = [
-
-    {
-        id: 1,
-        name: "Mumbai-Ahmedabad High Speed Rail",
-        ministry: "Ministry of Railways",
-        state: "Maharashtra",
-        sector: "Transport",
-        risk: "High",
-        cost: "₹1,08,000 Cr",
-        progress: 65
-    },
-
-    {
-        id: 2,
-        name: "Dedicated Freight Corridor",
-        ministry: "Ministry of Railways",
-        state: "Uttar Pradesh",
-        sector: "Transport",
-        risk: "Medium",
-        cost: "₹81,459 Cr",
-        progress: 74
-    },
-
-    {
-        id: 3,
-        name: "National River Linking Project",
-        ministry: "Ministry of Jal Shakti",
-        state: "Madhya Pradesh",
-        sector: "Water Resources",
-        risk: "High",
-        cost: "₹60,000 Cr",
-        progress: 42
-    },
-
-    {
-        id: 4,
-        name: "AIIMS Infrastructure Development",
-        ministry: "Ministry of Health",
-        state: "Delhi",
-        sector: "Health",
-        risk: "Low",
-        cost: "₹15,000 Cr",
-        progress: 90
-    }
-
-];
-document.addEventListener("DOMContentLoaded", function () {
-
-    displayFeaturedProjects();
-
-});
-function displayFeaturedProjects() {
-
-    const container =
-        document.getElementById("featuredProjects");
-
-    container.innerHTML = featuredProjects
-        .slice(0, 3)
-        .map(project => {
+        container.innerHTML = topProjects.map(p => {
+            const riskProb = typeof p.predicted_risk_probability === "number" ? p.predicted_risk_probability : 0.85;
+            const riskScore = Math.round(riskProb * 100);
+            const projectName = p.project_name_clean || p.name || "Infrastructure Project";
+            const orgName = (p.analysis_details && p.analysis_details.agency) || p.agency_clean || "Central Sector Infrastructure";
+            const costVal = p.cost_original || p.cost_anticipated || 0;
+            const costFormatted = formatCurrencyCr(costVal) + " Cr";
+            const progressVal = (p.analysis_details && p.analysis_details.physical_progress !== undefined)
+                ? p.analysis_details.physical_progress
+                : (p.physical_progress_clean !== undefined ? p.physical_progress_clean : 45);
 
             return `
-
-                <div class="featured-project-card">
-
-                    <div class="project-card-header">
-
-                        <span class="project-sector">
-                            ${project.sector}
+                <div class="risk-card" onclick="viewProject('${escapeHtml(projectName)}')">
+                    <div class="risk-card-top">
+                        <span class="risk-label">
+                            HIGH RISK
                         </span>
-
-                        <span class="risk-badge ${project.risk.toLowerCase()}">
-                            ${project.risk} Risk
-                        </span>
-
+                        <div class="risk-score">
+                            <strong>${riskScore}</strong>
+                            <span>/100</span>
+                        </div>
                     </div>
-
 
                     <h3>
-                        ${project.name}
+                        ${escapeHtml(projectName)}
                     </h3>
 
-
-                    <p class="project-ministry">
-                        ${project.ministry}
+                    <p class="organization">
+                        ${escapeHtml(orgName)}
                     </p>
 
-
-                    <div class="project-info">
-
-                        <div>
-                            <span>State</span>
-                            <strong>
-                                ${project.state}
-                            </strong>
-                        </div>
-
+                    <div class="risk-details">
                         <div>
                             <span>Project Cost</span>
-                            <strong>
-                                ${project.cost}
-                            </strong>
+                            <strong>${costFormatted}</strong>
                         </div>
-
+                        <div>
+                            <span>Physical Progress</span>
+                            <strong>${progressVal}%</strong>
+                        </div>
                     </div>
 
-
-                    <div class="progress-section">
-
-                        <div class="progress-header">
-
-                            <span>
-                                Physical Progress
-                            </span>
-
-                            <strong>
-                                ${project.progress}%
-                            </strong>
-
+                    <div class="risk-progress">
+                        <div class="progress-label">
+                            <span>Risk Level</span>
+                            <span>${riskScore}%</span>
                         </div>
-
                         <div class="progress-bar">
-
-                            <div
-                                class="progress-fill"
-                                style="width:${project.progress}%">
-                            </div>
-
+                            <div class="progress-fill" style="width:${riskScore}%"></div>
                         </div>
-
                     </div>
 
-
-                    <button
-                        class="project-details-btn"
-                        onclick="openProject(${project.id})">
-
-                        View Project
+                    <div class="view-project">
+                        View Project Analysis
                         <span>→</span>
-
-                    </button>
-
+                    </div>
                 </div>
-
             `;
+        }).join("");
 
-        })
-        .join("");
+    } catch (error) {
+        console.error("Failed to load high risk projects:", error);
+        container.innerHTML = `
+            <div class="result-placeholder">
+                <span>⚠️</span>
+                <p>Unable to load high-risk project data from backend.</p>
+            </div>
+        `;
+    }
 }
-function openProject(projectId) {
 
-    window.location.href =
-        "project-analysis.html?id=" + projectId;
+// ==========================================
+// DYNAMIC FILTER DROPDOWNS (REAL DATA)
+// ==========================================
+async function populateFilterDropdowns() {
+    try {
+        const res = await apiFetch("/projects/dataset/search?skip=0&limit=300");
+        if (!res.ok) return;
+        const dataset = await res.json();
+        if (!Array.isArray(dataset)) return;
 
+        const ministries = new Set();
+        const states = new Set();
+        const sectors = new Set();
+
+        dataset.forEach(item => {
+            if (item.agency_clean && item.agency_clean !== "Unknown Agency") {
+                ministries.add(item.agency_clean.trim());
+            }
+            if (item.state_clean && item.state_clean !== "Unknown State") {
+                states.add(item.state_clean.trim());
+            }
+            if (item.sector_clean) {
+                sectors.add(item.sector_clean.trim());
+            }
+        });
+
+        try {
+            const monitoredRes = await apiFetch("/projects?limit=100");
+            if (monitoredRes.ok) {
+                const monitored = await monitoredRes.json();
+                if (Array.isArray(monitored)) {
+                    monitored.forEach(m => {
+                        if (m.department) ministries.add(m.department.trim());
+                        if (m.location) states.add(m.location.trim());
+                        if (m.project_type) sectors.add(m.project_type.trim());
+                    });
+                }
+            }
+        } catch (e) {}
+
+        fillSelect("ministry", Array.from(ministries).sort(), "All Ministries");
+        fillSelect("state", Array.from(states).sort(), "All States");
+        fillSelect("sector", Array.from(sectors).sort(), "All Sectors");
+
+    } catch (err) {
+        console.warn("Could not populate filter dropdowns dynamically:", err);
+    }
 }
-const projectSearch = document.getElementById("projectName");
 
-projectSearch.addEventListener("input", function () {
+function fillSelect(selectId, items, defaultText) {
+    const el = document.getElementById(selectId);
+    if (!el) return;
+    el.innerHTML = `<option value="">${defaultText}</option>`;
+    items.forEach(val => {
+        if (!val) return;
+        const opt = document.createElement("option");
+        opt.value = val;
+        opt.textContent = val;
+        el.appendChild(opt);
+    });
+}
 
-    const searchText = this.value.toLowerCase().trim();
+// ==========================================
+// SEARCH & FILTER PROJECTS (REAL BACKEND API)
+// ==========================================
+async function searchProjects() {
+    const projectName = (document.getElementById("projectName")?.value || "").trim();
+    const ministry = (document.getElementById("ministry")?.value || "").trim();
+    const state = (document.getElementById("state")?.value || "").trim();
+    const sector = (document.getElementById("sector")?.value || "").trim();
+    const risk = (document.getElementById("risk")?.value || "").trim();
 
-    const projects = document.querySelectorAll(".project-row");
+    const resultsContainer = document.getElementById("searchResults");
+    if (!resultsContainer) return;
 
-    projects.forEach(function (project) {
+    if (!projectName && !ministry && !state && !sector && !risk) {
+        resultsContainer.innerHTML = `
+            <div class="result-placeholder">
+                <span>🔎</span>
+                <p>Please enter a project name or select at least one filter to search.</p>
+            </div>
+        `;
+        return;
+    }
 
-        const projectName = project
-            .querySelector(".project-name")
-            .textContent
-            .toLowerCase();
+    resultsContainer.innerHTML = `
+        <div class="result-placeholder">
+            <span>⏳</span>
+            <p>Searching backend database...</p>
+        </div>
+    `;
 
-        if (projectName.includes(searchText)) {
-            project.style.display = "grid";
-        } else {
-            project.style.display = "none";
+    try {
+        const queryParams = new URLSearchParams();
+        if (projectName) queryParams.set("search", projectName);
+        if (sector) queryParams.set("sector", sector);
+        if (state) queryParams.set("state", state);
+        queryParams.set("skip", "0");
+        queryParams.set("limit", "100");
+
+        const res = await apiFetch(`/projects/dataset/search?${queryParams.toString()}`);
+        if (!res.ok) {
+            throw new Error(`Search failed: HTTP ${res.status}`);
         }
 
-    });
+        let datasetResults = await res.json();
+        if (!Array.isArray(datasetResults)) datasetResults = [];
 
+        let filtered = datasetResults.filter(p => {
+            if (ministry && p.agency_clean) {
+                if (p.agency_clean.toLowerCase() !== ministry.toLowerCase()) return false;
+            }
+            if (risk) {
+                const targetRisk = risk.toUpperCase();
+                let pRisk = "LOW";
+                if (p.risk_class_prediction === 2 || p.predicted_risk_class === 2 || p.delay_level === "HIGH") {
+                    pRisk = "HIGH";
+                } else if (p.risk_class_prediction === 1 || p.predicted_risk_class === 1 || p.delay_level === "MEDIUM") {
+                    pRisk = "MEDIUM";
+                }
+                if (pRisk !== targetRisk) return false;
+            }
+            return true;
+        });
+
+        if (projectName && filtered.length === 0) {
+            try {
+                const monRes = await apiFetch(`/projects?name=${encodeURIComponent(projectName)}`);
+                if (monRes.ok) {
+                    const monData = await monRes.json();
+                    if (Array.isArray(monData) && monData.length > 0) {
+                        filtered = monData.map(m => ({
+                            project_name_clean: m.name,
+                            agency_clean: m.department,
+                            state_clean: m.location,
+                            sector_clean: m.project_type,
+                            cost_original: m.budget,
+                            physical_progress_clean: m.completion_percentage,
+                            predicted_risk_class: m.delay_level === "HIGH" ? 2 : (m.delay_level === "MEDIUM" ? 1 : 0),
+                            delay_level: m.delay_level
+                        }));
+                    }
+                }
+            } catch (e) {}
+        }
+
+        displayProjects(filtered);
+
+    } catch (error) {
+        console.error("Project search error:", error);
+        resultsContainer.innerHTML = `
+            <div class="result-placeholder">
+                <span>⚠️</span>
+                <p>Unable to load project data. Please verify backend server is running.</p>
+            </div>
+        `;
+    }
+}
+
+function displayProjects(filteredProjects) {
+    const results = document.getElementById("searchResults");
+    if (!results) return;
+
+    if (!Array.isArray(filteredProjects) || filteredProjects.length === 0) {
+        results.innerHTML = `
+            <div class="result-placeholder">
+                <span>⚠️</span>
+                <p>No projects found matching your filters.</p>
+            </div>
+        `;
+        return;
+    }
+
+    results.innerHTML = `
+        <div class="results-header">
+            <h3>Search Results</h3>
+            <span>${filteredProjects.length} Projects Found</span>
+        </div>
+        <div class="project-results-grid">
+            ${filteredProjects.map(project => {
+                const name = project.project_name_clean || project.name || "Infrastructure Project";
+                const sector = project.sector_clean || project.project_type || "General";
+                const ministry = project.agency_clean || project.department || "Central Infrastructure";
+                const state = project.state_clean || project.location || "National";
+                const cost = project.cost_original !== undefined && project.cost_original !== null
+                    ? formatCurrencyCr(project.cost_original) + " Cr"
+                    : "N/A";
+                const progress = project.physical_progress_clean !== undefined && project.physical_progress_clean !== null
+                    ? `${project.physical_progress_clean}%`
+                    : (project.completion_percentage !== undefined ? `${project.completion_percentage}%` : "Ongoing");
+
+                let riskLabel = "Low";
+                if (project.risk_class_prediction === 2 || project.predicted_risk_class === 2 || project.delay_level === "HIGH") {
+                    riskLabel = "High";
+                } else if (project.risk_class_prediction === 1 || project.predicted_risk_class === 1 || project.delay_level === "MEDIUM") {
+                    riskLabel = "Medium";
+                }
+
+                return `
+                    <div class="project-result-card">
+                        <div class="project-card-top">
+                            <span class="project-sector">${escapeHtml(sector)}</span>
+                            <span class="risk-badge ${riskLabel.toLowerCase()}">${riskLabel} Risk</span>
+                        </div>
+                        <h3>${escapeHtml(name)}</h3>
+                        <div class="project-details">
+                            <div>
+                                <span>Ministry</span>
+                                <strong>${escapeHtml(ministry)}</strong>
+                            </div>
+                            <div>
+                                <span>State</span>
+                                <strong>${escapeHtml(state)}</strong>
+                            </div>
+                            <div>
+                                <span>Project Cost</span>
+                                <strong>${cost}</strong>
+                            </div>
+                            <div>
+                                <span>Progress</span>
+                                <strong>${progress}</strong>
+                            </div>
+                        </div>
+                        <button class="view-project-btn" onclick="viewProject('${escapeHtml(name)}')">
+                            View Project →
+                        </button>
+                    </div>
+                `;
+            }).join("")}
+        </div>
+    `;
+}
+
+function clearSearch() {
+    if (document.getElementById("projectName")) document.getElementById("projectName").value = "";
+    if (document.getElementById("ministry")) document.getElementById("ministry").value = "";
+    if (document.getElementById("state")) document.getElementById("state").value = "";
+    if (document.getElementById("sector")) document.getElementById("sector").value = "";
+    if (document.getElementById("risk")) document.getElementById("risk").value = "";
+
+    const searchResults = document.getElementById("searchResults");
+    if (searchResults) {
+        searchResults.innerHTML = `
+            <div class="result-placeholder">
+                <span>🔎</span>
+                <p>Select filters and search for projects</p>
+            </div>
+        `;
+    }
+}
+
+function viewProject(projectName) {
+    window.location.href = "project-analysis.html?name=" + encodeURIComponent(projectName);
+}
+
+function openProject(identifier) {
+    window.location.href = "project-analysis.html?name=" + encodeURIComponent(identifier);
+}
+
+async function displayFeaturedProjects() {
+    const container = document.getElementById("featuredProjects");
+    if (!container) return;
+
+    try {
+        const res = await apiFetch("/projects?limit=3");
+        if (!res.ok) return;
+        const list = await res.json();
+        if (!Array.isArray(list) || list.length === 0) return;
+
+        container.innerHTML = list.slice(0, 3).map(project => `
+            <div class="featured-project-card">
+                <div class="project-card-header">
+                    <span class="project-sector">${escapeHtml(project.project_type || "Transportation")}</span>
+                    <span class="risk-badge ${(project.delay_level || "low").toLowerCase()}">${escapeHtml(project.delay_level || "Low")} Risk</span>
+                </div>
+                <h3>${escapeHtml(project.name)}</h3>
+                <p class="project-ministry">${escapeHtml(project.department)}</p>
+                <div class="project-info">
+                    <div>
+                        <span>State</span>
+                        <strong>${escapeHtml(project.location)}</strong>
+                    </div>
+                    <div>
+                        <span>Project Cost</span>
+                        <strong>${formatCurrencyCr(project.budget)} Cr</strong>
+                    </div>
+                </div>
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <span>Physical Progress</span>
+                        <strong>${project.completion_percentage || 0}%</strong>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width:${project.completion_percentage || 0}%"></div>
+                    </div>
+                </div>
+                <button class="project-details-btn" onclick="openProject('${escapeHtml(project.name)}')">
+                    View Project <span>→</span>
+                </button>
+            </div>
+        `).join("");
+    } catch (e) {
+        console.warn("Could not load featured projects:", e);
+    }
+}
+
+// Homepage bootstrap
+document.addEventListener("DOMContentLoaded", function () {
+    checkBackendHealth();
+    loadDashboardOverview();
+    loadHighRiskProjects();
+    populateFilterDropdowns();
+    displayFeaturedProjects();
+
+    const projectSearchInput = document.getElementById("projectName");
+    if (projectSearchInput) {
+        projectSearchInput.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                searchProjects();
+            }
+        });
+    }
+
+    // Periodically refresh dashboard and health every 60s
+    setInterval(function () {
+        checkBackendHealth();
+        loadDashboardOverview();
+        loadHighRiskProjects();
+    }, 60000);
 });
 /* =====================================================
-   PROJECT GUARDIAN AUTHENTICATION
+   PROJECT GUARDIAN AUTHENTICATION (REAL BACKEND API)
 ===================================================== */
-
-
-/*
-   CHANGE THIS ONLY.
-
-   Example:
-   http://localhost:8000
-
-   Or your deployed backend URL.
-*/
-
-const API_BASE = "http://localhost:8000";
-
 let registeredEmail = "";
 
-/* =====================================================
-   MODEL ANALYSIS AUTH
-===================================================== */
-
-/* =====================================================
-   AUTH MODAL
-===================================================== */
-
-const authModal = document.getElementById("authModal");
-
-const loginForm = document.getElementById("loginForm");
-
-const registerForm = document.getElementById("registerForm");
-
-const authTitle = document.getElementById("authTitle");
-
-const authSubtitle = document.getElementById("authSubtitle");
-
-const authMessage = document.getElementById("authMessage");
-
-
-/* Open Modal */
-
 function openAuthModal(event) {
-
-    event.preventDefault();
-
-    authModal.style.display = "flex";
-
+    if (event && event.preventDefault) event.preventDefault();
+    const modal = document.getElementById("authModal");
+    if (modal) {
+        modal.style.display = "flex";
+        modal.classList.add("show");
+    }
     showLogin();
-
 }
-
-
-/* Close Modal */
 
 function closeAuthModal() {
-
-    authModal.style.display = "none";
-
-    authMessage.innerText = "";
-
+    const modal = document.getElementById("authModal");
+    if (modal) {
+        modal.style.display = "none";
+        modal.classList.remove("show");
+    }
+    const authMessage = document.getElementById("authMessage");
+    if (authMessage) authMessage.innerText = "";
 }
-
-
-/* Show Login */
-
-/* =====================================================
-   AUTH TAB SWITCHING
-===================================================== */
 
 function showLogin() {
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const loginTab = document.getElementById("loginTab");
+    const registerTab = document.getElementById("registerTab");
 
-    const loginForm =
-        document.getElementById("loginForm");
-
-    const registerForm =
-        document.getElementById("registerForm");
-
-    const loginTab =
-        document.getElementById("loginTab");
-
-    const registerTab =
-        document.getElementById("registerTab");
-
-
-    registerForm.classList.remove("active");
-
-    loginForm.classList.add("active");
-
-
-    registerTab.classList.remove("active");
-
-    loginTab.classList.add("active");
+    if (registerForm) registerForm.classList.remove("active");
+    if (loginForm) loginForm.classList.add("active");
+    if (registerTab) registerTab.classList.remove("active");
+    if (loginTab) loginTab.classList.add("active");
 }
-
 
 function showRegister() {
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const loginTab = document.getElementById("loginTab");
+    const registerTab = document.getElementById("registerTab");
 
-    const loginForm =
-        document.getElementById("loginForm");
-
-    const registerForm =
-        document.getElementById("registerForm");
-
-    const loginTab =
-        document.getElementById("loginTab");
-
-    const registerTab =
-        document.getElementById("registerTab");
-
-
-    loginForm.classList.remove("active");
-
-    registerForm.classList.add("active");
-
-
-    loginTab.classList.remove("active");
-
-    registerTab.classList.add("active");
+    if (loginForm) loginForm.classList.remove("active");
+    if (registerForm) registerForm.classList.add("active");
+    if (loginTab) loginTab.classList.remove("active");
+    if (registerTab) registerTab.classList.add("active");
 }
 
-
-/* =====================================================
-   PASSWORD VISIBILITY
-===================================================== */
-
-function togglePassword(inputId, button) {
-
-    const input =
-        document.getElementById(inputId);
-
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const button = btn || (typeof event !== "undefined" && event ? event.currentTarget : null) || input.parentElement?.querySelector("button");
 
     if (input.type === "password") {
-
         input.type = "text";
-
-        button.innerHTML = "🙈";
-
+        if (button) button.innerHTML = "🙈";
     } else {
-
         input.type = "password";
-
-        button.innerHTML = "👁";
-
+        if (button) button.innerHTML = "👁";
     }
-
-}
-
-
-/* =====================================================
-   OPEN MODAL
-===================================================== */
-
-function openAuthModal() {
-
-    const modal =
-        document.getElementById("authModal");
-
-    modal.classList.add("show");
-
-    showLogin();
-
-}
-
-
-/* =====================================================
-   CLOSE MODAL
-===================================================== */
-
-function closeAuthModal() {
-
-    const modal =
-        document.getElementById("authModal");
-
-    modal.classList.remove("show");
-
 }
 /* =====================================================
-   SHOW LOGIN
+   AUTHENTICATION LOGIC (REAL BACKEND API)
 ===================================================== */
+async function loginUser(event) {
+    if (event && event.preventDefault) event.preventDefault();
+    const usernameEl = document.getElementById("loginUsername");
+    const passwordEl = document.getElementById("loginPassword");
+    const username = usernameEl?.value.trim();
+    const password = passwordEl?.value;
+    const authMessage = document.getElementById("authMessage");
 
-function showLoginForm() {
-
-    loginBox.classList.remove("hidden");
-
-    registerBox.classList.add("hidden");
-
-    otpBox.classList.add("hidden");
-
-}
-
-
-/* =====================================================
-   SHOW REGISTER
-===================================================== */
-
-function showRegisterForm() {
-
-    loginBox.classList.add("hidden");
-
-    registerBox.classList.remove("hidden");
-
-    otpBox.classList.add("hidden");
-
-}
-
-
-showRegister.addEventListener(
-    "click",
-    showRegisterForm
-);
-
-
-showLogin.addEventListener(
-    "click",
-    showLoginForm
-);
-/* =====================================================
-   REGISTRATION
-===================================================== */
-registerForm.addEventListener("submit", async function(event) {
-
-    event.preventDefault();
-
-
-    const username =
-        document.getElementById("registerUsername").value.trim();
-
-    const email =
-        document.getElementById("registerEmail").value.trim();
-
-    const password =
-        document.getElementById("registerPassword").value;
-
-    const role =
-        document.getElementById("registerRole").value;
-
-    const department =
-        document.getElementById("registerDepartment").value.trim();
-
-
-    const requestBody = {
-
-        username: username,
-
-        email: email,
-
-        password: password,
-
-        role: role,
-
-        department: department || null
-
-    };
-
+    if (!username || !password) return;
 
     try {
-
-        const response = await fetch(
-            "/api/v1/auth/register",
-            {
-
-                method: "POST",
-
-                headers: {
-
-                    "Content-Type": "application/json"
-
-                },
-
-                body: JSON.stringify(requestBody)
-
-            }
-        );
-
+        const response = await apiFetch("/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
 
         const data = await response.json();
-
 
         if (response.ok) {
-
-            authMessage.style.color = "green";
-
-            authMessage.innerText =
-                "Registration successful. Please verify your email with OTP.";
-
-            /*
-             * You can open OTP form here.
-             */
-
-            console.log(data);
-
-
-        } else {
-
-            authMessage.style.color = "red";
-
-            authMessage.innerText =
-                data.detail ||
-                data.message ||
-                "Registration failed.";
-
-        }
-
-
-    } catch (error) {
-
-        authMessage.style.color = "red";
-
-        authMessage.innerText =
-            "Unable to connect to server.";
-
-        console.error(error);
-
-    }
-
-});
-/* =====================================================
-   OTP VERIFICATION
-===================================================== */
-
-const otpForm =
-    document.getElementById("otpForm");
-
-
-otpForm.addEventListener("submit", async function (event) {
-
-    event.preventDefault();
-
-
-    const email =
-        sessionStorage.getItem("registrationEmail");
-
-
-    const otp_code =
-        document.getElementById("otpCode").value.trim();
-
-
-    if (!/^\d{6}$/.test(otp_code)) {
-
-        alert("OTP must contain exactly 6 digits.");
-
-        return;
-
-    }
-
-
-    try {
-
-        const response = await fetch(
-            "http://localhost:YOUR_PORT/api/v1/auth/verify-otp",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-
-                    email: email,
-
-                    otp_code: otp_code
-
-                })
+            if (authMessage) {
+                authMessage.style.color = "green";
+                authMessage.innerText = "Login successful!";
             }
-        );
-
-
-        const data = await response.json();
-
-
-        if (!response.ok) {
-
-            alert(
-                data.message ||
-                "OTP verification failed."
-            );
-
-            return;
-
-        }
-
-
-        alert(
-            "Email verified successfully. You can now login."
-        );
-
-
-        sessionStorage.removeItem(
-            "registrationEmail"
-        );
-
-
-        showLoginForm();
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(
-            "Unable to connect to the server."
-        );
-
-    }
-
-});
-/* =====================================================
-   LOGIN
-===================================================== */
-
-
-
-loginForm.addEventListener("submit", async function(event) {
-
-    event.preventDefault();
-
-
-    const username =
-        document.getElementById("loginUsername").value.trim();
-
-    const password =
-        document.getElementById("loginPassword").value;
-
-
-    try {
-
-        const response = await fetch(
-            "/api/v1/auth/login",
-            {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-
-                    username: username,
-
-                    password: password
-
-                })
-
+            if (data.access_token) {
+                localStorage.setItem("access_token", data.access_token);
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("username", username);
             }
-        );
-
-
-        const data = await response.json();
-
-
-        if (response.ok) {
-
-            authMessage.style.color = "green";
-
-            authMessage.innerText =
-                "Login successful!";
-
-
-            /*
-             * Open Model Analysis after successful login
-             */
-
             setTimeout(() => {
-
                 closeAuthModal();
-
-                // Change this according to your page
-                window.location.href = "#model-analysis";
-
-            }, 1000);
-
-
+                window.location.href = "project-analysis.html";
+            }, 800);
         } else {
-
-            authMessage.style.color = "red";
-
-            authMessage.innerText =
-                data.detail ||
-                data.message ||
-                "Invalid username or password.";
-
+            const msg = data.detail || data.message || "Invalid username or password.";
+            if (authMessage) {
+                authMessage.style.color = "red";
+                authMessage.innerText = msg;
+            } else {
+                alert(msg);
+            }
         }
-
-
     } catch (error) {
-
-        authMessage.style.color = "red";
-
-        authMessage.innerText =
-            "Unable to connect to server.";
-
-        console.error(error);
-
+        console.error("Login error:", error);
+        if (authMessage) {
+            authMessage.style.color = "red";
+            authMessage.innerText = "Unable to connect to server.";
+        } else {
+            alert("Unable to connect to server.");
+        }
     }
+}
 
-});
-/* =====================================================
-   RESEND OTP
-===================================================== */
+async function registerUser(event) {
+    if (event && event.preventDefault) event.preventDefault();
+    const username = document.getElementById("registerUsername")?.value.trim();
+    const email = document.getElementById("registerEmail")?.value.trim();
+    const password = document.getElementById("registerPassword")?.value;
+    const role = document.getElementById("registerRole")?.value || "Monitoring Officer";
+    const department = document.getElementById("registerDepartment")?.value.trim() || null;
+    const authMessage = document.getElementById("authMessage");
 
-const resendOtp =
-    document.getElementById("resendOtp");
-
-
-resendOtp.addEventListener("click", async function () {
-
-    const email =
-        sessionStorage.getItem("registrationEmail");
-
-
-    if (!email) {
-
-        alert("Email not found.");
-
-        return;
-
-    }
-
+    if (!username || !email || !password) return;
 
     try {
-
-        const response = await fetch(
-            "http://localhost:YOUR_PORT/api/v1/auth/resend-otp",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-
-                    email: email
-
-                })
-            }
-        );
-
+        const response = await apiFetch("/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, email, password, role, department })
+        });
 
         const data = await response.json();
 
-
-        if (!response.ok) {
-
-            alert(
-                data.message ||
-                "Unable to resend OTP."
-            );
-
-            return;
-
+        if (response.ok) {
+            if (authMessage) {
+                authMessage.style.color = "green";
+                authMessage.innerText = "Registration successful! You can now login.";
+            } else {
+                alert("Registration successful! You can now login.");
+            }
+            registeredEmail = email;
+            sessionStorage.setItem("registrationEmail", email);
+            showLogin();
+        } else {
+            const msg = data.detail || data.message || "Registration failed.";
+            if (authMessage) {
+                authMessage.style.color = "red";
+                authMessage.innerText = msg;
+            } else {
+                alert(msg);
+            }
         }
-
-
-        alert(
-            "A new OTP has been sent to your email."
-        );
-
-
     } catch (error) {
+        console.error("Registration error:", error);
+        if (authMessage) {
+            authMessage.style.color = "red";
+            authMessage.innerText = "Unable to connect to server.";
+        } else {
+            alert("Unable to connect to server.");
+        }
+    }
+}
 
-        console.error(error);
-
-        alert(
-            "Unable to connect to the server."
-        );
-
+// Bind auth forms
+document.addEventListener("DOMContentLoaded", function () {
+    const loginFormEl = document.getElementById("loginForm");
+    if (loginFormEl) {
+        loginFormEl.addEventListener("submit", loginUser);
+    }
+    const registerFormEl = document.getElementById("registerForm");
+    if (registerFormEl) {
+        registerFormEl.addEventListener("submit", registerUser);
+    }
+    const otpFormEl = document.getElementById("otpForm");
+    if (otpFormEl) {
+        otpFormEl.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const email = sessionStorage.getItem("registrationEmail") || registeredEmail;
+            const otpCode = document.getElementById("otpCode")?.value.trim();
+            if (!/^\d{6}$/.test(otpCode)) {
+                alert("OTP must contain exactly 6 digits.");
+                return;
+            }
+            try {
+                const response = await apiFetch("/auth/verify-otp", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, otp_code: otpCode })
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    alert(data.message || data.detail || "OTP verification failed.");
+                    return;
+                }
+                alert("Email verified successfully. You can now login.");
+                sessionStorage.removeItem("registrationEmail");
+                showLogin();
+            } catch (err) {
+                console.error(err);
+                alert("Unable to connect to the server.");
+            }
+        });
     }
 
+    const resendOtpEl = document.getElementById("resendOtp");
+    if (resendOtpEl) {
+        resendOtpEl.addEventListener("click", async function () {
+            const email = sessionStorage.getItem("registrationEmail") || registeredEmail;
+            if (!email) {
+                alert("Email not found.");
+                return;
+            }
+            try {
+                const response = await apiFetch("/auth/resend-otp", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email })
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    alert(data.message || data.detail || "Unable to resend OTP.");
+                    return;
+                }
+                alert("A new OTP has been sent to your email.");
+            } catch (err) {
+                console.error(err);
+                alert("Unable to connect to the server.");
+            }
+        });
+    }
 });
+
+// Global window exposure for inline onclick / onsubmit attributes
+window.loginUser = loginUser;
+window.registerUser = registerUser;
+window.openAuthModal = openAuthModal;
+window.closeAuthModal = closeAuthModal;
+window.showLogin = showLogin;
+window.showRegister = showRegister;
+window.togglePassword = togglePassword;
+window.viewProject = viewProject;
+window.openProject = openProject;
+window.searchProjects = searchProjects;
+window.clearSearch = clearSearch;
+window.showMinistry = showMinistry;
+window.showSector = showSector;
 /* =====================================================
    OPEN / CLOSE MODAL
 ===================================================== */

@@ -380,7 +380,7 @@
                 <div id="ministryContent">
 
                     <div class="dashboard-heading">
-                        <h1>
+                        <h1 id="ministryHeadingTitle">
                             Department of Higher Education
                             <span>(as of July, 2026)</span>
                         </h1>
@@ -395,7 +395,7 @@
 
                             <div class="stat-info">
                                 <h3>Project Count (No.) <small>ⓘ</small></h3>
-                                <p>190</p>
+                                <p id="ministryProjectCount">-</p>
                             </div>
                         </div>
 
@@ -407,7 +407,7 @@
 
                             <div class="stat-info">
                                 <h3>Original Cost (in Cr) <small>ⓘ</small></h3>
-                                <p>₹ 465,721.36</p>
+                                <p id="ministryOriginalCost">₹ -</p>
                             </div>
                         </div>
 
@@ -419,7 +419,7 @@
 
                             <div class="stat-info">
                                 <h3>Latest Revised Cost (in Cr) <small>ⓘ</small></h3>
-                                <p>₹ 638,469.92</p>
+                                <p id="ministryRevisedCost">₹ -</p>
                             </div>
                         </div>
 
@@ -431,7 +431,7 @@
 
                             <div class="stat-info">
                                 <h3>Expenditure (Cumm.) (in Cr) <small>ⓘ</small></h3>
-                                <p>₹ 459,390.96</p>
+                                <p id="ministryExpenditure">₹ -</p>
                             </div>
                         </div>
 
@@ -443,7 +443,7 @@
 
                             <div class="stat-info">
                                 <h3>Completed During Month (No.) <small>ⓘ</small></h3>
-                                <p>0</p>
+                                <p id="ministryCompleted">-</p>
                             </div>
                         </div>
 
@@ -455,7 +455,7 @@
 
                             <div class="stat-info">
                                 <h3>Newly Added (No.) <small>ⓘ</small></h3>
-                                <p>0</p>
+                                <p id="ministryNewlyAdded">-</p>
                             </div>
                         </div>
 
@@ -945,247 +945,20 @@
         </div>
 
 
-        <div class="risk-cards-container">
-
-
-            <!-- ==============================
-             PROJECT 1
-        =============================== -->
-
-            <div class="risk-card" onclick="openProject('PRJ001')">
-
-                <div class="risk-card-top">
-
-                    <span class="risk-label">
-                        HIGH RISK
-                    </span>
-
-                    <div class="risk-score">
-
-                        <strong>87</strong>
-
-                        <span>/100</span>
-
-                    </div>
-
-                </div>
-
-
-                <h3>
-                    Mumbai-Ahmedabad High Speed Rail
-                </h3>
-
-
-                <p class="organization">
-                    National High Speed Rail Corporation
-                </p>
-
-
-                <div class="risk-details">
-
-                    <div>
-                        <span>Project Cost</span>
-                        <strong>₹1,08,000 Cr</strong>
-                    </div>
-
-                    <div>
-                        <span>Physical Progress</span>
-                        <strong>62%</strong>
-                    </div>
-
-                </div>
-
-
-                <div class="risk-progress">
-
-                    <div class="progress-label">
-                        <span>Risk Level</span>
-                        <span>87%</span>
-                    </div>
-
-                    <div class="progress-bar">
-
-                        <div class="progress-fill" style="width:87%">
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="view-project">
-
-                    View Project Analysis
-                    <span>→</span>
-
-                </div>
-
+        <div class="risk-cards-container" id="highRiskCardsContainer">
+            <div class="result-placeholder">
+                <span>⏳</span>
+                <p>Loading high risk projects from backend...</p>
             </div>
-
-
-
-            <!-- ==============================
-             PROJECT 2
-        =============================== -->
-
-            <div class="risk-card" onclick="openProject('PRJ002')">
-
-                <div class="risk-card-top">
-
-                    <span class="risk-label">
-                        HIGH RISK
-                    </span>
-
-                    <div class="risk-score">
-
-                        <strong>81</strong>
-
-                        <span>/100</span>
-
-                    </div>
-
-                </div>
-
-
-                <h3>
-                    Chennai Metro Rail Phase-II
-                </h3>
-
-
-                <p class="organization">
-                    Chennai Metro Rail Limited
-                </p>
-
-
-                <div class="risk-details">
-
-                    <div>
-                        <span>Project Cost</span>
-                        <strong>₹63,246 Cr</strong>
-                    </div>
-
-                    <div>
-                        <span>Physical Progress</span>
-                        <strong>56%</strong>
-                    </div>
-
-                </div>
-
-
-                <div class="risk-progress">
-
-                    <div class="progress-label">
-                        <span>Risk Level</span>
-                        <span>81%</span>
-                    </div>
-
-                    <div class="progress-bar">
-
-                        <div class="progress-fill" style="width:81%">
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="view-project">
-
-                    View Project Analysis
-                    <span>→</span>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- ==============================
-             PROJECT 3
-        =============================== -->
-
-            <div class="risk-card" onclick="openProject('PRJ003')">
-
-                <div class="risk-card-top">
-
-                    <span class="risk-label">
-                        HIGH RISK
-                    </span>
-
-                    <div class="risk-score">
-
-                        <strong>76</strong>
-
-                        <span>/100</span>
-
-                    </div>
-
-                </div>
-
-
-                <h3>
-                    National Highway Development Project
-                </h3>
-
-
-                <p class="organization">
-                    National Highways Authority of India
-                </p>
-
-
-                <div class="risk-details">
-
-                    <div>
-                        <span>Project Cost</span>
-                        <strong>₹91,200 Cr</strong>
-                    </div>
-
-                    <div>
-                        <span>Physical Progress</span>
-                        <strong>74%</strong>
-                    </div>
-
-                </div>
-
-
-                <div class="risk-progress">
-
-                    <div class="progress-label">
-                        <span>Risk Level</span>
-                        <span>76%</span>
-                    </div>
-
-                    <div class="progress-bar">
-
-                        <div class="progress-fill" style="width:76%">
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="view-project">
-
-                    View Project Analysis
-                    <span>→</span>
-
-                </div>
-
-            </div>
-
-
         </div>
 
 
         <!-- SEE ALL -->
 
         <div class="view-all-container">
-
-            <a href="high-risk.html" class="view-all-btn">
+            <a href="project-analysis.html?risk=HIGH" class="view-all-btn">
                 View All High Risk Projects →
             </a>
-
         </div>
 
     </section>
