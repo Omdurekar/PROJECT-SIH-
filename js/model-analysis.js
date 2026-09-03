@@ -3,6 +3,7 @@
  * File: js/model-analysis.js
  * Strictly NO emojis anywhere in the UI.
  * Pure SVG icons (Heroicons/Lucide format) and live API queries.
+ * Resilient telemetry extraction & confusion matrix parsing.
  */
 
 (function () {
@@ -123,7 +124,7 @@
     selectedFeatureDrawer: null
   };
 
-  // SVG Icons Helper (Zero Emojis)
+  // SVG Icons Helper (Zero Emojis anywhere in the UI)
   const ICONS = {
     cpu: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg>',
     checkCircle: '<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
@@ -137,7 +138,6 @@
     sliders: '<svg viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>',
     barChart: '<svg viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>',
     layers: '<svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
-    arrowRight: '<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
     database: '<svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>'
   };
 
@@ -177,7 +177,7 @@
     const primaryKey = algo.keyMap[targetId];
     const dbKey = algo.backendDbKeyMap[targetId];
 
-    // Attempt primary key first (rf_cost_overrun), then fallback to db key
+    // Attempt primary key first (rf_cost_overrun, rf_time_overrun), then fallback to backend db key
     let response = await fetch(`${API_CONFIG.BASE_URL}/ml/models/${primaryKey}`, {
       headers: API_CONFIG.getHeaders()
     });
@@ -195,15 +195,218 @@
     return await response.json();
   }
 
-  // --- 3. CONTROLLER & DISPATCHER ---
-  async function loadData() {
+  // --- 3. RESILIENT DATA PARSER & TELEMETRY RESOLVER ---
+
+  /**
+   * Dynamically resolves active test metrics payload from model response
+   * Supports dynamic operational threshold keys (e.g. at_operational_threshold_0_45, at_operational_threshold_0_24, etc.)
+   * and balanced default threshold (at_default_threshold_0_50), or flat payloads (KNN, multiclass)
+   */
+  function resolveActivePerformancePayload(model, activeThresholdMode) {
+    if (!model) return null;
+    const tp = model.test_performance || model.test_metrics || model.metrics || model;
+    if (typeof tp !== 'object' || tp === null) return null;
+
+    // Dynamically locate any operational and default threshold keys
+    const opKey = Object.keys(tp).find(k => k.startsWith('at_operational_threshold_') || k.includes('operational'));
+    const defKey = Object.keys(tp).find(k => k.startsWith('at_default_threshold_') || k.includes('default_threshold'));
+
+    if (activeThresholdMode === 'operational' && opKey && tp[opKey]) {
+      const match = opKey.match(/0_\d+/);
+      const thresholdNum = match ? parseFloat(match[0].replace('_', '.')) : 0.50;
+      return {
+        data: tp[opKey],
+        hasOperational: true,
+        hasDefault: !!defKey,
+        opKey,
+        defKey,
+        thresholdNum,
+        thresholdLabel: `${thresholdNum} (Operational Cutoff)`
+      };
+    }
+
+    if (activeThresholdMode === 'default_0_50' && defKey && tp[defKey]) {
+      return {
+        data: tp[defKey],
+        hasOperational: !!opKey,
+        hasDefault: true,
+        opKey,
+        defKey,
+        thresholdNum: 0.50,
+        thresholdLabel: '0.50 (Balanced Default)'
+      };
+    }
+
+    // Fallback: If operational was requested but only defKey exists
+    if (defKey && tp[defKey] && !opKey) {
+      return {
+        data: tp[defKey],
+        hasOperational: false,
+        hasDefault: true,
+        opKey: null,
+        defKey,
+        thresholdNum: 0.50,
+        thresholdLabel: '0.50 (Balanced Default)'
+      };
+    }
+
+    // Fallback: If defKey was requested but only opKey exists
+    if (opKey && tp[opKey]) {
+      const match = opKey.match(/0_\d+/);
+      const thresholdNum = match ? parseFloat(match[0].replace('_', '.')) : 0.50;
+      return {
+        data: tp[opKey],
+        hasOperational: true,
+        hasDefault: !!defKey,
+        opKey,
+        defKey,
+        thresholdNum,
+        thresholdLabel: `${thresholdNum} (Operational Cutoff)`
+      };
+    }
+
+    // Flat structure (e.g. KNN or Multiclass Overall Risk)
+    return {
+      data: tp,
+      hasOperational: false,
+      hasDefault: false,
+      opKey: null,
+      defKey: null,
+      thresholdNum: model.best_model_parameters?.classification_threshold ?? model.classification_threshold ?? 0.50,
+      thresholdLabel: (model.task === 'classification' && model.target === 'target_risk_class')
+        ? 'Argmax (OvR Multi-class)'
+        : '0.50 (Default)'
+    };
+  }
+
+  /**
+   * Flexible getter function to extract holdout test metrics regardless of nesting
+   */
+  function extractTelemetryMetrics(model, activeThresholdMode) {
+    const resolved = resolveActivePerformancePayload(model, activeThresholdMode);
+    if (!resolved || !resolved.data) return null;
+
+    const data = resolved.data;
+    const root = model || {};
+
+    // Accuracy: Read data.test_metrics?.accuracy ?? data.metrics?.accuracy ?? data.test_accuracy ?? data.accuracy
+    const accuracy = data.test_metrics?.accuracy ?? data.metrics?.accuracy ?? data.test_accuracy ?? 
+                     data.accuracy ?? root.test_accuracy ?? root.accuracy;
+
+    // Precision: Read data.test_metrics?.precision ?? data.metrics?.precision ?? data.test_precision ?? data.precision
+    const precision = data.test_metrics?.precision ?? data.metrics?.precision ?? data.test_precision ?? 
+                      data.weighted_precision ?? data.precision ?? data.macro_precision ?? root.precision;
+
+    // Recall: Read data.test_metrics?.recall ?? data.metrics?.recall ?? data.test_recall ?? data.recall
+    const recall = data.test_metrics?.recall ?? data.metrics?.recall ?? data.test_recall ?? 
+                   data.weighted_recall ?? data.recall ?? data.macro_recall ?? root.recall;
+
+    // F1 Score: Read data.test_metrics?.f1 ?? data.metrics?.f1 ?? data.test_f1 ?? data.f1
+    const f1 = data.test_metrics?.f1 ?? data.metrics?.f1 ?? data.test_f1 ?? 
+               data.weighted_f1 ?? data.f1 ?? data.macro_f1 ?? root.f1;
+
+    // ROC-AUC: Read data.test_metrics?.roc_auc ?? data.metrics?.roc_auc ?? data.test_roc_auc ?? data.roc_auc
+    const rocAuc = data.test_metrics?.roc_auc ?? data.metrics?.roc_auc ?? data.test_roc_auc ?? 
+                   data.multiclass_roc_auc_ovr ?? data.roc_auc ?? root.roc_auc;
+
+    // Decision Threshold: Read data.threshold ?? data.operational_threshold ?? resolved.thresholdNum ?? 0.5
+    const threshold = data.threshold ?? data.operational_threshold ?? resolved.thresholdNum ?? 
+                      root.classification_threshold ?? 0.50;
+
+    return {
+      accuracy,
+      precision,
+      recall,
+      f1,
+      rocAuc,
+      threshold,
+      thresholdLabel: resolved.thresholdLabel,
+      hasOperational: resolved.hasOperational,
+      hasDefault: resolved.hasDefault,
+      opKey: resolved.opKey,
+      defKey: resolved.defKey,
+      rawPayload: data
+    };
+  }
+
+  /**
+   * Robust Confusion Matrix Parser supporting:
+   * 1. 2D Matrix Array: [[TN, FP], [FN, TP]]
+   * 2. Named Object: { tn, fp, fn, tp } or { true_negative, false_positive, false_negative, true_positive }
+   * 3. Multiclass 3x3 Array: [[C00, C01, C02], [C10, C11, C12], [C20, C21, C22]]
+   */
+  function parseConfusionMatrix(model, activeThresholdMode) {
+    const resolved = resolveActivePerformancePayload(model, activeThresholdMode);
+    const data = resolved?.data || model?.test_performance || model || {};
+
+    // 1. Check direct confusion_matrix candidate in payload or model
+    let rawMatrix = data.confusion_matrix ?? data.matrix ?? model?.test_performance?.confusion_matrix ?? model?.confusion_matrix;
+
+    // Handle 2D Matrix Array
+    if (Array.isArray(rawMatrix) && rawMatrix.length > 0 && Array.isArray(rawMatrix[0])) {
+      if (rawMatrix.length === 2 && rawMatrix[0].length === 2) {
+        const tn = Number(rawMatrix[0][0]) || 0;
+        const fp = Number(rawMatrix[0][1]) || 0;
+        const fn = Number(rawMatrix[1][0]) || 0;
+        const tp = Number(rawMatrix[1][1]) || 0;
+        return {
+          type: 'binary',
+          tn, fp, fn, tp,
+          total: tn + fp + fn + tp
+        };
+      }
+      if (rawMatrix.length === 3 && rawMatrix[0].length === 3) {
+        let total = 0;
+        for (let r = 0; r < 3; r++) {
+          for (let c = 0; c < 3; c++) {
+            total += (Number(rawMatrix[r][c]) || 0);
+          }
+        }
+        return {
+          type: 'multiclass',
+          matrix: rawMatrix,
+          total: total || 1103
+        };
+      }
+    }
+
+    // Handle Named Object: { tn, fp, fn, tp } or { true_negative, false_positive, false_negative, true_positive }
+    const obj = (rawMatrix && typeof rawMatrix === 'object' && !Array.isArray(rawMatrix)) ? rawMatrix : data;
+    const tn = obj.tn ?? obj.true_negative ?? obj.true_negatives;
+    const fp = obj.fp ?? obj.false_positive ?? obj.false_positives;
+    const fn = obj.fn ?? obj.false_negative ?? obj.false_negatives;
+    const tp = obj.tp ?? obj.true_positive ?? obj.true_positives;
+
+    if (tn !== undefined && fp !== undefined && fn !== undefined && tp !== undefined &&
+        tn !== null && fp !== null && fn !== null && tp !== null) {
+      const nTN = Number(tn) || 0;
+      const nFP = Number(fp) || 0;
+      const nFN = Number(fn) || 0;
+      const nTP = Number(tp) || 0;
+      return {
+        type: 'binary',
+        tn: nTN, fp: nFP, fn: nFN, tp: nTP,
+        total: nTN + nFP + nFN + nTP
+      };
+    }
+
+    return null;
+  }
+
+  // --- 4. CONTROLLER & DISPATCHER ---
+  async function loadData(isInitial = false) {
     appState.isLoading = true;
     appState.hasError = false;
     appState.errorMessage = '';
-    renderApp();
+    
+    if (isInitial || !document.getElementById('maHeroPanel')) {
+      renderApp();
+    } else {
+      renderLoadingOverlay();
+    }
 
     try {
-      // Parallel fetch: Catalog, SHAP summary, and active model detail
+      // Parallel live backend fetch
       const [catalog, shap, modelDetail] = await Promise.all([
         fetchAllModelsCatalog(),
         fetchShapExplainability(),
@@ -287,7 +490,7 @@
       .trim();
   }
 
-  function getFeatureInterpretation(feature, direction) {
+  function getFeatureInterpretation(feature) {
     const map = {
       'cost_anticipated': 'Projects with higher anticipated completion budget exhibit higher escalation velocity due to extensive capital outlays.',
       'cost_original': 'Original baseline estimates establish the fiscal scope; large variations indicate initial cost underestimation.',
@@ -303,7 +506,7 @@
     return map[feature] || 'Identified by tree-based SHAP analysis as a significant risk-determining signal across monitored projects.';
   }
 
-  // --- 4. RENDERERS ---
+  // --- 5. RENDERERS ---
   function renderApp() {
     const container = document.getElementById('model-analysis-app');
     if (!container) return;
@@ -314,7 +517,7 @@
       return;
     }
 
-    if (appState.isLoading) {
+    if (appState.isLoading && !document.getElementById('maHeroPanel')) {
       container.innerHTML = renderSkeletonState();
       return;
     }
@@ -353,13 +556,18 @@
     attachEventListeners();
   }
 
+  function renderLoadingOverlay() {
+    const refreshBtn = document.getElementById('maRefreshBtn');
+    if (refreshBtn) refreshBtn.classList.add('loading');
+  }
+
   // Component A: Hero & Controls
   function renderHeroAndControls(target, algo, model) {
     const datasetInfo = model.dataset_info || {};
     const modelKeyDisplay = algo.keyMap[target.id];
 
     return `
-      <section class="ma-hero-panel">
+      <section class="ma-hero-panel" id="maHeroPanel">
         <div class="ma-hero-header">
           <div class="ma-title-group">
             <h2>
@@ -372,9 +580,9 @@
             </p>
           </div>
           <div class="ma-hero-meta">
-            <button class="ma-btn-refresh" id="maRefreshBtn" title="Re-fetch live metrics from backend">
+            <button class="ma-btn-refresh ${appState.isLoading ? 'loading' : ''}" id="maRefreshBtn" title="Re-fetch live metrics from backend">
               <span class="ma-icon">${ICONS.refresh}</span>
-              <span>Refresh Telemetry</span>
+              <span>${appState.isLoading ? 'Fetching...' : 'Refresh Telemetry'}</span>
             </button>
           </div>
         </div>
@@ -444,56 +652,30 @@
 
   // Component B: Performance Metrics
   function renderPerformanceMetrics(target, algo, model) {
-    const testPerf = model.test_performance || {};
+    const metrics = extractTelemetryMetrics(model, appState.activeThresholdMode);
     const cvResults = model.cross_validation_results || {};
 
-    let metrics = {
-      accuracy: 0,
-      precision: 0,
-      recall: 0,
-      f1: 0,
-      rocAuc: 0,
-      threshold: 0.5,
-      thresholdLabel: '0.50 (Default)'
-    };
-
-    const hasOperational = !!testPerf.at_operational_threshold_0_24 || !!testPerf.at_operational_threshold_0_21;
-    const hasDefault = !!testPerf.at_default_threshold_0_50;
-
-    if (hasOperational && appState.activeThresholdMode === 'operational') {
-      const opObj = testPerf.at_operational_threshold_0_24 || testPerf.at_operational_threshold_0_21;
-      const opThreshVal = testPerf.at_operational_threshold_0_24 ? 0.24 : 0.21;
-      metrics = {
-        accuracy: opObj.accuracy,
-        precision: opObj.precision,
-        recall: opObj.recall,
-        f1: opObj.f1,
-        rocAuc: opObj.roc_auc,
-        threshold: opThreshVal,
-        thresholdLabel: `${opThreshVal} (Cost-Sensitive Operational)`
-      };
-    } else if (hasDefault && appState.activeThresholdMode === 'default_0_50') {
-      const defObj = testPerf.at_default_threshold_0_50;
-      metrics = {
-        accuracy: defObj.accuracy,
-        precision: defObj.precision,
-        recall: defObj.recall,
-        f1: defObj.f1,
-        rocAuc: defObj.roc_auc,
-        threshold: 0.50,
-        thresholdLabel: '0.50 (Balanced)'
-      };
-    } else {
-      // Direct metrics (like KNN or Multiclass)
-      metrics = {
-        accuracy: testPerf.accuracy,
-        precision: testPerf.weighted_precision || testPerf.precision || testPerf.macro_precision,
-        recall: testPerf.weighted_recall || testPerf.recall || testPerf.macro_recall,
-        f1: testPerf.weighted_f1 || testPerf.f1 || testPerf.macro_f1,
-        rocAuc: testPerf.multiclass_roc_auc_ovr || testPerf.roc_auc,
-        threshold: model.best_model_parameters?.classification_threshold || 0.50,
-        thresholdLabel: target.id === 'overall_risk' ? 'Argmax (OvR Multi-class)' : '0.50'
-      };
+    // Null Data Handling
+    if (!metrics) {
+      return `
+        <section>
+          <div class="ma-section-header">
+            <h3 class="ma-section-title">
+              <span class="ma-icon">${ICONS.barChart}</span>
+              Executive Performance Telemetry
+            </h3>
+          </div>
+          <div class="ma-enterprise-callout">
+            <div class="ma-callout-icon-box">
+              <span class="ma-icon ma-icon-lg">${ICONS.info}</span>
+            </div>
+            <div class="ma-callout-content">
+              <h4>Telemetry for this algorithm combination is currently non-evaluated on backend.</h4>
+              <p>Evaluation metrics payload was returned as null from the live endpoint. Ensure the model evaluation job has run successfully on the server.</p>
+            </div>
+          </div>
+        </section>
+      `;
     }
 
     return `
@@ -526,11 +708,11 @@
           <div class="ma-metric-card">
             <div class="ma-metric-top">
               <span class="ma-metric-label">Precision</span>
-              <span class="ma-metric-badge">${target.id === 'overall_risk' ? 'Weighted' : 'Positives'}</span>
+              <span class="ma-metric-badge">${target.id === 'overall_risk' ? 'Weighted' : 'Confidence'}</span>
             </div>
             <div class="ma-metric-val">${fmtPct(metrics.precision)}</div>
             <div class="ma-metric-sub">
-              <span>Confidence</span>
+              <span>Positive Pred.</span>
               <span>CV: ${fmtPct(cvResults.cv_mean_precision)}</span>
             </div>
           </div>
@@ -580,7 +762,7 @@
               <span class="ma-metric-label">Threshold</span>
               <span class="ma-metric-badge">Decision Boundary</span>
             </div>
-            <div class="ma-metric-val">${metrics.threshold}</div>
+            <div class="ma-metric-val">${metrics.threshold !== null ? metrics.threshold : '0.50'}</div>
             <div class="ma-metric-sub">
               <span>${metrics.thresholdLabel}</span>
             </div>
@@ -588,12 +770,12 @@
         </div>
 
         <!-- Threshold Selector (if operational and default exist) -->
-        ${(hasOperational && hasDefault) ? `
+        ${(metrics.hasOperational && metrics.hasDefault) ? `
           <div class="ma-threshold-bar">
             <span><strong>Threshold Decision Calibration:</strong> Switch test evaluation policy to inspect impact on false alarms vs missed alerts.</span>
             <div class="ma-threshold-controls">
               <button class="ma-threshold-btn ${appState.activeThresholdMode === 'operational' ? 'active' : ''}" data-threshold-mode="operational">
-                Operational Cutoff (${testPerf.at_operational_threshold_0_24 ? '0.24' : '0.21'})
+                Operational Cutoff (${metrics.threshold})
               </button>
               <button class="ma-threshold-btn ${appState.activeThresholdMode === 'default_0_50' ? 'active' : ''}" data-threshold-mode="default_0_50">
                 Default (0.50)
@@ -637,43 +819,37 @@
 
   // Component C: Confusion Matrix Module
   function renderConfusionMatrix(target, algo, model) {
-    const testPerf = model.test_performance || {};
-    let matrix = null;
-    let observationCount = 1103;
+    const parsed = parseConfusionMatrix(model, appState.activeThresholdMode);
 
-    // Retrieve active matrix according to threshold mode
-    if (testPerf.at_operational_threshold_0_24 && appState.activeThresholdMode === 'operational') {
-      matrix = testPerf.at_operational_threshold_0_24.confusion_matrix;
-      observationCount = testPerf.at_operational_threshold_0_24.observation_count || 1103;
-    } else if (testPerf.at_operational_threshold_0_21 && appState.activeThresholdMode === 'operational') {
-      matrix = testPerf.at_operational_threshold_0_21.confusion_matrix;
-      observationCount = testPerf.at_operational_threshold_0_21.observation_count || 1103;
-    } else if (testPerf.at_default_threshold_0_50 && appState.activeThresholdMode === 'default_0_50') {
-      matrix = testPerf.at_default_threshold_0_50.confusion_matrix;
-      observationCount = testPerf.at_default_threshold_0_50.observation_count || 1103;
-    } else if (testPerf.confusion_matrix) {
-      matrix = testPerf.confusion_matrix;
-      observationCount = testPerf.observation_count || 1103;
-    }
-
-    if (!matrix || !Array.isArray(matrix)) {
+    // Graceful Null Data Handling
+    if (!parsed) {
       return `
         <div class="ma-card">
-          <h3 class="ma-section-title"><span class="ma-icon">${ICONS.grid}</span> Confusion Matrix</h3>
-          <p class="ma-subtitle">Confusion matrix data is currently not available for this model.</p>
+          <div class="ma-section-header">
+            <h3 class="ma-section-title">
+              <span class="ma-icon">${ICONS.grid}</span>
+              Confusion Matrix Module
+            </h3>
+          </div>
+          <div class="ma-enterprise-callout" style="margin-top: 8px;">
+            <div class="ma-callout-icon-box">
+              <span class="ma-icon ma-icon-lg">${ICONS.info}</span>
+            </div>
+            <div class="ma-callout-content">
+              <h4>Telemetry for this algorithm combination is currently non-evaluated on backend.</h4>
+              <p>Confusion matrix observations are not recorded in the server response for this selection.</p>
+            </div>
+          </div>
         </div>
       `;
     }
 
     // Binary Classification (2x2 Matrix)
-    if (matrix.length === 2 && matrix[0].length === 2) {
-      const tn = matrix[0][0] || 0;
-      const fp = matrix[0][1] || 0;
-      const fn = matrix[1][0] || 0;
-      const tp = matrix[1][1] || 0;
-      const total = tn + fp + fn + tp || 1;
-      const accuracy = ((tn + tp) / total) * 100;
-      const errorRate = ((fp + fn) / total) * 100;
+    if (parsed.type === 'binary') {
+      const { tn, fp, fn, tp, total } = parsed;
+      const safeTotal = total || 1;
+      const accuracy = ((tn + tp) / safeTotal) * 100;
+      const errorRate = ((fp + fn) / safeTotal) * 100;
 
       return `
         <div class="ma-card">
@@ -704,12 +880,12 @@
                   <td class="ma-matrix-cell ma-cell-correct">
                     <span class="cell-count">${tn}</span>
                     <span class="cell-desc">True Negative</span>
-                    <span class="cell-pct">${((tn / total) * 100).toFixed(1)}%</span>
+                    <span class="cell-pct">${((tn / safeTotal) * 100).toFixed(1)}%</span>
                   </td>
                   <td class="ma-matrix-cell ma-cell-error">
                     <span class="cell-count">${fp}</span>
                     <span class="cell-desc">False Positive (Type I)</span>
-                    <span class="cell-pct">${((fp / total) * 100).toFixed(1)}%</span>
+                    <span class="cell-pct">${((fp / safeTotal) * 100).toFixed(1)}%</span>
                   </td>
                 </tr>
                 <tr>
@@ -717,12 +893,12 @@
                   <td class="ma-matrix-cell ma-cell-error">
                     <span class="cell-count">${fn}</span>
                     <span class="cell-desc">False Negative (Type II)</span>
-                    <span class="cell-pct">${((fn / total) * 100).toFixed(1)}%</span>
+                    <span class="cell-pct">${((fn / safeTotal) * 100).toFixed(1)}%</span>
                   </td>
                   <td class="ma-matrix-cell ma-cell-correct">
                     <span class="cell-count">${tp}</span>
                     <span class="cell-desc">True Positive</span>
-                    <span class="cell-pct">${((tp / total) * 100).toFixed(1)}%</span>
+                    <span class="cell-pct">${((tp / safeTotal) * 100).toFixed(1)}%</span>
                   </td>
                 </tr>
               </tbody>
@@ -748,7 +924,8 @@
     }
 
     // Multi-Class Risk Model (3x3 Matrix)
-    if (matrix.length === 3 && matrix[0].length === 3) {
+    if (parsed.type === 'multiclass') {
+      const matrix = parsed.matrix;
       const classLabels = [
         'Class 0 (Low / No Overrun)',
         'Class 1 (Inconclusive)',
@@ -756,14 +933,15 @@
       ];
 
       let correctTotal = 0;
-      let grandTotal = 0;
+      let grandTotal = parsed.total || 0;
 
       for (let r = 0; r < 3; r++) {
         for (let c = 0; c < 3; c++) {
-          grandTotal += matrix[r][c];
-          if (r === c) correctTotal += matrix[r][c];
+          if (r === c) correctTotal += (Number(matrix[r][c]) || 0);
         }
       }
+
+      const safeGrandTotal = grandTotal || 1;
 
       return `
         <div class="ma-card">
@@ -795,12 +973,13 @@
                     <td class="ma-matrix-row-label">${classLabels[rIdx]}</td>
                     ${row.map((cellVal, cIdx) => {
                       const isDiagonal = rIdx === cIdx;
-                      const cellClass = isDiagonal ? 'ma-cell-correct' : (cellVal > 0 ? 'ma-cell-error' : 'ma-cell-neutral');
+                      const numVal = Number(cellVal) || 0;
+                      const cellClass = isDiagonal ? 'ma-cell-correct' : (numVal > 0 ? 'ma-cell-error' : 'ma-cell-neutral');
                       return `
                         <td class="ma-matrix-cell ${cellClass}">
-                          <span class="cell-count">${cellVal}</span>
+                          <span class="cell-count">${numVal}</span>
                           <span class="cell-desc">${isDiagonal ? 'Match' : 'Error'}</span>
-                          <span class="cell-pct">${((cellVal / (grandTotal || 1)) * 100).toFixed(1)}%</span>
+                          <span class="cell-pct">${((numVal / safeGrandTotal) * 100).toFixed(1)}%</span>
                         </td>
                       `;
                     }).join('')}
@@ -817,7 +996,7 @@
             </div>
             <div class="ma-matrix-stat">
               <div class="ma-matrix-stat-label">Diagonal Accuracy</div>
-              <div class="ma-matrix-stat-val" style="color: #059669;">${((correctTotal / (grandTotal || 1)) * 100).toFixed(1)}%</div>
+              <div class="ma-matrix-stat-val" style="color: #059669;">${((correctTotal / safeGrandTotal) * 100).toFixed(1)}%</div>
             </div>
             <div class="ma-matrix-stat">
               <div class="ma-matrix-stat-label">Misclassified Samples</div>
@@ -1006,7 +1185,7 @@
         <div class="ma-shap-chart-container" id="maShapRowsList">
           ${sortedFeatures.slice(0, 15).map((f, idx) => {
             const val = f.mean_abs_shap || 0;
-            const pct = Math.max(3, (val / maxVal) * 100);
+            const pct = Math.max(4, (val / maxVal) * 100);
             const direction = f.direction || 'Context-Dependent';
             
             let dirBadgeClass = 'ma-dir-nonlinear';
@@ -1092,7 +1271,7 @@
 
     const f = appState.selectedFeatureDrawer;
     const cleanName = cleanFeatureName(f.feature);
-    const interp = getFeatureInterpretation(f.feature, f.direction);
+    const interp = getFeatureInterpretation(f.feature);
     const relPct = f.totalImportance > 0 ? ((f.mean_abs_shap / f.totalImportance) * 100).toFixed(1) : 'N/A';
 
     let dirBadgeClass = 'ma-dir-nonlinear';
@@ -1130,7 +1309,7 @@
             Directional Risk Bias
           </div>
           <span class="ma-shap-direction-badge ${dirBadgeClass}" style="font-size: 12.5px; padding: 6px 12px;">
-            ${f.direction}
+            ${f.direction || 'Context-Dependent'}
           </span>
         </div>
 
@@ -1160,20 +1339,20 @@
     backdrop.onclick = closeFeatureDrawer;
   }
 
-  // Skeleton Loader State
+  // Skeleton Loader State (Smooth Pulse Overlays)
   function renderSkeletonState() {
     return `
       <section class="ma-hero-panel">
         <div class="ma-skeleton ma-skeleton-title"></div>
         <div class="ma-skeleton ma-skeleton-text" style="width: 60%;"></div>
-        <div class="ma-controls-grid" style="margin-top: 20px;">
-          <div class="ma-skeleton" style="height: 50px;"></div>
-          <div class="ma-skeleton" style="height: 50px;"></div>
+        <div class="ma-controls-grid" style="margin-top: 24px;">
+          <div class="ma-skeleton" style="height: 54px;"></div>
+          <div class="ma-skeleton" style="height: 54px;"></div>
         </div>
       </section>
 
       <section>
-        <div class="ma-skeleton ma-skeleton-text" style="width: 200px; height: 24px; margin-bottom: 14px;"></div>
+        <div class="ma-skeleton ma-skeleton-text" style="width: 220px; height: 26px; margin-bottom: 18px;"></div>
         <div class="ma-metrics-grid">
           ${[1, 2, 3, 4, 5, 6].map(() => `
             <div class="ma-skeleton ma-skeleton-card"></div>
@@ -1183,16 +1362,16 @@
 
       <div class="ma-middle-layout">
         <div class="ma-card">
-          <div class="ma-skeleton" style="height: 220px;"></div>
+          <div class="ma-skeleton" style="height: 240px;"></div>
         </div>
         <div class="ma-card">
-          <div class="ma-skeleton" style="height: 220px;"></div>
+          <div class="ma-skeleton" style="height: 240px;"></div>
         </div>
       </div>
 
       <section class="ma-shap-card">
-        <div class="ma-skeleton ma-skeleton-title" style="width: 300px;"></div>
-        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 18px;">
+        <div class="ma-skeleton ma-skeleton-title" style="width: 320px;"></div>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 22px;">
           ${[1, 2, 3, 4, 5].map(() => `
             <div class="ma-skeleton ma-skeleton-bar"></div>
           `).join('')}
@@ -1220,7 +1399,7 @@
     `;
   }
 
-  // --- 5. EVENT BINDINGS ---
+  // --- 6. EVENT BINDINGS ---
   function attachEventListeners() {
     // Target segmented buttons
     const targetBtns = document.querySelectorAll('#maTargetSegments .ma-segment-btn');
@@ -1244,7 +1423,6 @@
     const refreshBtn = document.getElementById('maRefreshBtn');
     if (refreshBtn) {
       refreshBtn.addEventListener('click', () => {
-        refreshBtn.classList.add('loading');
         loadData();
       });
     }
@@ -1303,14 +1481,14 @@
     const retryBtn = document.getElementById('maRetryBtn');
     if (retryBtn) {
       retryBtn.addEventListener('click', () => {
-        loadData();
+        loadData(true);
       });
     }
   }
 
-  // --- 6. INITIALIZATION ---
+  // --- 7. INITIALIZATION ---
   document.addEventListener('DOMContentLoaded', () => {
-    loadData();
+    loadData(true);
   });
 
 })();
