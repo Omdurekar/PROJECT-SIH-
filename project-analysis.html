@@ -662,13 +662,14 @@
 
                         <div class="sim-layout">
                             <!-- Left: Form Controls -->
-                            <form id="mlSimForm" class="sim-form-card" onsubmit="return false;">
+                            <form id="mlSimForm" data-testid="ml-simulator-form" class="sim-form-card" onsubmit="return false;">
                                 <h5><i class="fa-solid fa-sliders"></i> Adjustable Simulation Parameters</h5>
 
                                 <div class="sim-form-grid">
                                     <div class="sim-field">
                                         <label for="simBudget">Project Budget (₹ Crores): <strong id="simBudgetDisplay">0</strong></label>
                                         <input type="range" id="simBudget" min="10" max="50000" step="50" value="1200">
+                                        <input type="hidden" id="sim-cost" value="1200">
                                     </div>
 
                                     <div class="sim-field">
@@ -689,11 +690,13 @@
                                     <div class="sim-field">
                                         <label for="simCompletion">Physical Completion (%): <strong id="simCompletionDisplay">0</strong>%</label>
                                         <input type="range" id="simCompletion" min="0" max="100" step="1" value="45">
+                                        <input type="hidden" id="sim-progress" value="45">
                                     </div>
 
                                     <div class="sim-field">
                                         <label for="simDelayedMilestones">Delayed Milestones: <strong id="simDelayedDisplay">0</strong></label>
                                         <input type="range" id="simDelayedMilestones" min="0" max="30" step="1" value="4">
+                                        <input type="hidden" id="sim-delay" value="4">
                                     </div>
 
                                     <div class="sim-field">
@@ -708,7 +711,7 @@
                                 </div>
 
                                 <div class="sim-actions">
-                                    <button type="button" class="btn btn-primary btn-block" id="runMlSimBtn">
+                                    <button type="submit" class="btn btn-primary btn-block" id="runMlSimBtn" data-testid="simulateBtn">
                                         <i class="fa-solid fa-bolt"></i> Run Live ML Inference
                                     </button>
                                 </div>

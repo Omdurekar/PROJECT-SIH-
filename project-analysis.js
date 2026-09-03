@@ -177,9 +177,12 @@ const RISKLENS_ANALYSIS = {
             modalReportDate: document.getElementById("modalReportDate"),
 
             // ML Simulator
-            mlSimForm: document.getElementById("mlSimForm"),
-            runMlSimBtn: document.getElementById("runMlSimBtn"),
+            mlSimForm: document.getElementById("mlSimForm") || document.getElementById("ml-simulator-form"),
+            runMlSimBtn: document.getElementById("runMlSimBtn") || document.getElementById("simulateBtn"),
             simOutputBox: document.getElementById("simOutputBox"),
+            simCost: document.getElementById("sim-cost"),
+            simProgress: document.getElementById("sim-progress"),
+            simDelay: document.getElementById("sim-delay"),
             simBudget: document.getElementById("simBudget"),
             simBudgetDisplay: document.getElementById("simBudgetDisplay"),
             simExpenditure: document.getElementById("simExpenditure"),
@@ -289,29 +292,50 @@ const RISKLENS_ANALYSIS = {
             });
         });
 
-        // Simulator Range Inputs
+        // Simulator Range Inputs & Form Submission
         this.bindSimulatorInputs();
-        this.dom.runMlSimBtn.addEventListener("click", () => this.runLiveMlInference());
+
+        const simForm = this.dom.mlSimForm || document.getElementById("mlSimForm") || document.getElementById("ml-simulator-form");
+        if (simForm) {
+            simForm.addEventListener("submit", (e) => {
+                if (e && typeof e.preventDefault === "function") {
+                    e.preventDefault();
+                }
+                this.runLiveMlInference(e);
+            });
+        }
+
+        const simBtn = this.dom.runMlSimBtn || document.getElementById("runMlSimBtn") || document.getElementById("simulateBtn");
+        if (simBtn) {
+            simBtn.addEventListener("click", (e) => {
+                if (e && typeof e.preventDefault === "function") {
+                    e.preventDefault();
+                }
+                this.runLiveMlInference(e);
+            });
+        }
     },
 
     // -----------------------------------------------------
     // SIMULATOR SLIDERS BINDING
     // -----------------------------------------------------
     bindSimulatorInputs() {
-        const syncSlider = (slider, display, suffix = "") => {
+        const syncSlider = (slider, display, suffix = "", aliasElem = null) => {
             if (!slider || !display) return;
             display.textContent = `${slider.value}${suffix}`;
+            if (aliasElem) aliasElem.value = slider.value;
             slider.addEventListener("input", (e) => {
                 display.textContent = `${e.target.value}${suffix}`;
+                if (aliasElem) aliasElem.value = e.target.value;
             });
         };
 
-        syncSlider(this.dom.simBudget, this.dom.simBudgetDisplay, " Cr");
+        syncSlider(this.dom.simBudget, this.dom.simBudgetDisplay, " Cr", this.dom.simCost);
         syncSlider(this.dom.simExpenditure, this.dom.simExpenditureDisplay, " Cr");
         syncSlider(this.dom.simPlannedDuration, this.dom.simDurationDisplay, " Days");
         syncSlider(this.dom.simTimeElapsed, this.dom.simElapsedDisplay, " Days");
-        syncSlider(this.dom.simCompletion, this.dom.simCompletionDisplay, "");
-        syncSlider(this.dom.simDelayedMilestones, this.dom.simDelayedDisplay, "");
+        syncSlider(this.dom.simCompletion, this.dom.simCompletionDisplay, "", this.dom.simProgress);
+        syncSlider(this.dom.simDelayedMilestones, this.dom.simDelayedDisplay, "", this.dom.simDelay);
         syncSlider(this.dom.simTotalMilestones, this.dom.simTotalMilestonesDisplay, "");
         syncSlider(this.dom.simRiskScore, this.dom.simRiskScoreDisplay, "");
     },
@@ -1435,51 +1459,104 @@ const RISKLENS_ANALYSIS = {
     // POPULATE TAB 4: LIVE ML SIMULATOR
     // -----------------------------------------------------
     populateSimulatorDefaults(p) {
-        this.dom.simBudget.value = Math.round(p.cost_original);
-        this.dom.simBudgetDisplay.textContent = `${Math.round(p.cost_original)} Cr`;
+        if (!p) return;
+        const budget = Math.round(Number(p.cost_original) || 1200);
+        const expenditure = Math.round(Number(p.expenditure_cumulative) || 450);
+        const plannedDuration = Math.round(Number(p.planned_duration_days) || 1095);
+        const timeElapsed = Math.round(Number(p.time_elapsed_days) || 720);
+        const completion = Math.round(Number(p.physical_progress_clean) || 45);
+        const delayed = Math.round(Number(p.delayed_milestones) || 4);
+        const totalMilestones = Math.round(Number(p.total_milestones) || 20);
+        const riskScore = Number.isFinite(Number(p.risk_score)) ? Number(p.risk_score).toFixed(1) : "4.5";
 
-        this.dom.simExpenditure.value = Math.round(p.expenditure_cumulative);
-        this.dom.simExpenditureDisplay.textContent = `${Math.round(p.expenditure_cumulative)} Cr`;
+        if (this.dom.simBudget) {
+            this.dom.simBudget.value = budget;
+            if (this.dom.simBudgetDisplay) this.dom.simBudgetDisplay.textContent = `${budget} Cr`;
+        }
+        if (this.dom.simCost) this.dom.simCost.value = budget;
 
-        this.dom.simPlannedDuration.value = p.planned_duration_days;
-        this.dom.simDurationDisplay.textContent = `${p.planned_duration_days} Days`;
+        if (this.dom.simExpenditure) {
+            this.dom.simExpenditure.value = expenditure;
+            if (this.dom.simExpenditureDisplay) this.dom.simExpenditureDisplay.textContent = `${expenditure} Cr`;
+        }
 
-        this.dom.simTimeElapsed.value = p.time_elapsed_days;
-        this.dom.simElapsedDisplay.textContent = `${p.time_elapsed_days} Days`;
+        if (this.dom.simPlannedDuration) {
+            this.dom.simPlannedDuration.value = plannedDuration;
+            if (this.dom.simDurationDisplay) this.dom.simDurationDisplay.textContent = `${plannedDuration} Days`;
+        }
 
-        this.dom.simCompletion.value = Math.round(p.physical_progress_clean);
-        this.dom.simCompletionDisplay.textContent = `${Math.round(p.physical_progress_clean)}`;
+        if (this.dom.simTimeElapsed) {
+            this.dom.simTimeElapsed.value = timeElapsed;
+            if (this.dom.simElapsedDisplay) this.dom.simElapsedDisplay.textContent = `${timeElapsed} Days`;
+        }
 
-        this.dom.simDelayedMilestones.value = p.delayed_milestones;
-        this.dom.simDelayedDisplay.textContent = `${p.delayed_milestones}`;
+        if (this.dom.simCompletion) {
+            this.dom.simCompletion.value = completion;
+            if (this.dom.simCompletionDisplay) this.dom.simCompletionDisplay.textContent = `${completion}`;
+        }
+        if (this.dom.simProgress) this.dom.simProgress.value = completion;
 
-        this.dom.simTotalMilestones.value = p.total_milestones;
-        this.dom.simTotalMilestonesDisplay.textContent = `${p.total_milestones}`;
+        if (this.dom.simDelayedMilestones) {
+            this.dom.simDelayedMilestones.value = delayed;
+            if (this.dom.simDelayedDisplay) this.dom.simDelayedDisplay.textContent = `${delayed}`;
+        }
+        if (this.dom.simDelay) this.dom.simDelay.value = delayed;
 
-        this.dom.simRiskScore.value = p.risk_score.toFixed(1);
-        this.dom.simRiskScoreDisplay.textContent = `${p.risk_score.toFixed(1)}`;
+        if (this.dom.simTotalMilestones) {
+            this.dom.simTotalMilestones.value = totalMilestones;
+            if (this.dom.simTotalMilestonesDisplay) this.dom.simTotalMilestonesDisplay.textContent = `${totalMilestones}`;
+        }
+
+        if (this.dom.simRiskScore) {
+            this.dom.simRiskScore.value = riskScore;
+            if (this.dom.simRiskScoreDisplay) this.dom.simRiskScoreDisplay.textContent = riskScore;
+        }
     },
 
-    async runLiveMlInference() {
-        const btn = this.dom.runMlSimBtn;
-        const output = this.dom.simOutputBox;
+    async runLiveMlInference(e) {
+        if (e && typeof e.preventDefault === "function") {
+            e.preventDefault();
+        }
+
+        const btn = this.dom.runMlSimBtn || document.getElementById("runMlSimBtn") || document.getElementById("simulateBtn");
+        const output = this.dom.simOutputBox || document.getElementById("simOutputBox");
+
+        // Sanitize inputs: wrap input value extractions in numerical conversions with fallback defaults
+        const delay = parseFloat(document.getElementById('sim-delay')?.value || 0);
+        const progress = parseFloat(document.getElementById('sim-progress')?.value || 0);
+        const cost = parseFloat(document.getElementById('sim-cost')?.value || 0);
+
+        const delayElem = document.getElementById('sim-delay');
+        const progressElem = document.getElementById('sim-progress');
+        const costElem = document.getElementById('sim-cost');
+
+        const effectiveDelay = (delayElem && delayElem.value !== "" && !isNaN(delay)) ? delay : (parseFloat(this.dom.simDelayedMilestones?.value || 0) || 0);
+        const effectiveProgress = (progressElem && progressElem.value !== "" && !isNaN(progress)) ? progress : (parseFloat(this.dom.simCompletion?.value || 0) || 0);
+        const effectiveCost = (costElem && costElem.value !== "" && !isNaN(cost) && cost > 0) ? cost : (parseFloat(this.dom.simBudget?.value || 0) || 1200);
+        const effectiveExp = parseFloat(this.dom.simExpenditure?.value || 0) || Math.round(effectiveCost * 0.4);
+        const effectivePlannedDuration = Math.max(1, parseInt(this.dom.simPlannedDuration?.value || 0) || 1095);
+        const effectiveTimeElapsed = Math.max(0, parseInt(this.dom.simTimeElapsed?.value || 0) || 720);
+        const effectiveTotalMilestones = Math.max(1, parseInt(this.dom.simTotalMilestones?.value || 0) || 20);
+        const effectiveRiskScore = Math.min(10, Math.max(0, parseFloat(this.dom.simRiskScore?.value || 0) || 4.5));
 
         const payload = {
-            budget: parseFloat(this.dom.simBudget.value),
-            expenditure: parseFloat(this.dom.simExpenditure.value),
-            planned_duration_days: parseInt(this.dom.simPlannedDuration.value),
-            time_elapsed_days: parseInt(this.dom.simTimeElapsed.value),
-            completion_percentage: parseFloat(this.dom.simCompletion.value),
-            total_milestones: parseInt(this.dom.simTotalMilestones.value),
-            completed_milestones: Math.round(parseInt(this.dom.simTotalMilestones.value) * (parseFloat(this.dom.simCompletion.value) / 100)),
-            delayed_milestones: parseInt(this.dom.simDelayedMilestones.value),
-            pending_milestones: Math.max(0, parseInt(this.dom.simTotalMilestones.value) - parseInt(this.dom.simDelayedMilestones.value)),
-            risk_score: parseFloat(this.dom.simRiskScore.value),
+            budget: Number.isFinite(effectiveCost) ? effectiveCost : 1200,
+            expenditure: Number.isFinite(effectiveExp) ? effectiveExp : 450,
+            planned_duration_days: effectivePlannedDuration,
+            time_elapsed_days: effectiveTimeElapsed,
+            completion_percentage: Math.min(100, Math.max(0, Number.isFinite(effectiveProgress) ? effectiveProgress : 0)),
+            total_milestones: effectiveTotalMilestones,
+            completed_milestones: Math.round(effectiveTotalMilestones * (Math.min(100, Math.max(0, effectiveProgress)) / 100)),
+            delayed_milestones: Math.min(effectiveTotalMilestones, Math.max(0, Number.isFinite(effectiveDelay) ? effectiveDelay : 0)),
+            pending_milestones: Math.max(0, effectiveTotalMilestones - Math.min(effectiveTotalMilestones, Math.max(0, Number.isFinite(effectiveDelay) ? effectiveDelay : 0))),
+            risk_score: effectiveRiskScore,
             project_id: this.state.selectedProject?.id || null
         };
 
-        btn.disabled = true;
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Running ML Inference...`;
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Running ML Inference...`;
+        }
 
         try {
             let result = null;
@@ -1497,17 +1574,22 @@ const RISKLENS_ANALYSIS = {
             }
 
             if (!result) {
-                const fallbackRes = await fetch(`${this.config.apiFallback}/predict`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                });
-                if (fallbackRes.ok) result = await fallbackRes.json();
+                try {
+                    const fallbackRes = await fetch(`${this.config.apiFallback}/predict`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+                    if (fallbackRes.ok) result = await fallbackRes.json();
+                } catch (fallbackErr) {
+                    console.warn("Fallback inference endpoint failed...", fallbackErr);
+                }
             }
 
             if (!result) {
                 // Ground-truth ML inference derivation fallback
-                const expectedCompletion = Math.min(100.0, (payload.time_elapsed_days / payload.planned_duration_days) * 100.0);
+                const plannedDays = Math.max(1, payload.planned_duration_days);
+                const expectedCompletion = Math.min(100.0, (payload.time_elapsed_days / plannedDays) * 100.0);
                 const progressVariance = payload.completion_percentage - expectedCompletion;
                 
                 let delayLevel = "LOW";
@@ -1517,7 +1599,9 @@ const RISKLENS_ANALYSIS = {
                     delayLevel = "MEDIUM";
                 }
 
-                const burnRate = payload.completion_percentage > 0 ? payload.expenditure / (payload.budget * (payload.completion_percentage / 100)) : 1.0;
+                const budgetSafe = Math.max(1, payload.budget);
+                const progressRatio = Math.max(0.01, payload.completion_percentage / 100);
+                const burnRate = payload.completion_percentage > 0 ? (payload.expenditure / (budgetSafe * progressRatio)) : 1.0;
                 const elapsedMonths = Math.max(1, payload.time_elapsed_days / 30.4);
                 const velocity = payload.completion_percentage / elapsedMonths;
 
@@ -1525,58 +1609,97 @@ const RISKLENS_ANALYSIS = {
                     delay_level: delayLevel,
                     confidence: delayLevel === "HIGH" ? 0.91 : (delayLevel === "MEDIUM" ? 0.79 : 0.94),
                     derived_metrics: {
-                        cost_burn_rate: burnRate,
-                        schedule_velocity: velocity,
+                        cost_burn_rate: Number.isFinite(burnRate) ? burnRate : 1.0,
+                        schedule_velocity: Number.isFinite(velocity) ? velocity : 2.5,
                         delayed_milestone_ratio: payload.total_milestones > 0 ? payload.delayed_milestones / payload.total_milestones : 0,
-                        progress_gap: progressVariance
+                        progress_gap: Number.isFinite(progressVariance) ? progressVariance : 0
                     }
                 };
             }
 
-            const level = result.delay_level || "MEDIUM";
-            const conf = Math.round((result.confidence || 0.85) * 100);
+            // Cleanly parse Risk Level: e.g. "HIGH RISK", "MEDIUM RISK", "LOW RISK"
+            let rawLevel = result.delay_level ?? result.risk_level ?? result.risk_class ?? result.predicted_risk_class ?? "MEDIUM";
+            if (typeof rawLevel === "number" || (!isNaN(Number(rawLevel)) && String(rawLevel).trim() !== "")) {
+                const num = Number(rawLevel);
+                if (num === 2) rawLevel = "HIGH";
+                else if (num === 1) rawLevel = "MEDIUM";
+                else if (num === 0) rawLevel = "LOW";
+            }
+            let levelStr = String(rawLevel).trim().toUpperCase().replace(/\s*RISK\s*$/, "");
+            if (!["HIGH", "MEDIUM", "LOW"].includes(levelStr)) {
+                levelStr = "MEDIUM";
+            }
+            const fullRiskLevel = `${levelStr} RISK`;
+
+            // Cleanly parse Confidence %
+            let rawConf = result.confidence ?? result.predicted_risk_probability ?? result.probability ?? 0.85;
+            let confNum = parseFloat(rawConf);
+            if (isNaN(confNum) || !isFinite(confNum)) confNum = 0.85;
+            const confPct = Math.round(confNum <= 1 && confNum > 0 ? confNum * 100 : confNum);
+
             const derived = result.derived_metrics || {};
+            const costBurnRate = Number.isFinite(derived.cost_burn_rate) ? derived.cost_burn_rate : (derived.expenditure_pct ? derived.expenditure_pct / 100 : 1.0);
+            const schedVelocity = Number.isFinite(derived.schedule_velocity) ? derived.schedule_velocity : (derived.time_elapsed_pct ? derived.time_elapsed_pct / 12 : 2.5);
+            const delayedRatio = Number.isFinite(derived.delayed_milestone_ratio) ? derived.delayed_milestone_ratio : (derived.milestone_delay_ratio ?? (payload.total_milestones > 0 ? payload.delayed_milestones / payload.total_milestones : 0));
+            const progressGap = Number.isFinite(derived.progress_gap) ? derived.progress_gap : (derived.progress_variance ?? 0);
 
-            const predClass = level === "HIGH" ? "pred-high" : (level === "MEDIUM" ? "pred-medium" : "pred-low");
+            const predClass = levelStr === "HIGH" ? "pred-high" : (levelStr === "MEDIUM" ? "pred-medium" : "pred-low");
 
-            output.innerHTML = `
-                <div class="sim-result-box">
-                    <div class="sim-prediction-pill ${predClass}">
-                        <span style="font-size:0.75rem;text-transform:uppercase;font-weight:700;">Predicted Delay Severity</span>
-                        <span class="sim-pred-title">${level} RISK</span>
-                        <span style="font-size:0.8rem;font-weight:600;">Model Confidence: <strong>${conf}%</strong></span>
+            if (output) {
+                output.innerHTML = `
+                    <div class="sim-result-box">
+                        <div class="sim-prediction-pill ${predClass}" id="simResultCard">
+                            <span style="font-size:0.75rem;text-transform:uppercase;font-weight:700;">Predicted Delay Severity</span>
+                            <span class="sim-pred-title" id="simRiskLevel" data-testid="sim-risk-level">${fullRiskLevel}</span>
+                            <span style="font-size:0.8rem;font-weight:600;">Model Confidence: <strong id="simConfidence" data-testid="sim-confidence">${confPct}%</strong></span>
+                        </div>
+
+                        <div class="sim-metrics-list">
+                            <div class="sim-metric-row">
+                                <span>Cost Burn Rate:</span>
+                                <strong>${costBurnRate.toFixed(2)}</strong>
+                            </div>
+                            <div class="sim-metric-row">
+                                <span>Schedule Velocity:</span>
+                                <strong>${schedVelocity.toFixed(2)} %/mo</strong>
+                            </div>
+                            <div class="sim-metric-row">
+                                <span>Delayed Milestone Ratio:</span>
+                                <strong>${(delayedRatio * 100).toFixed(1)}%</strong>
+                            </div>
+                            <div class="sim-metric-row">
+                                <span>Progress Gap Variance:</span>
+                                <strong class="${progressGap < 0 ? 'text-red' : 'text-green'}">${progressGap.toFixed(1)}%</strong>
+                            </div>
+                        </div>
                     </div>
+                `;
+            }
 
-                    <div class="sim-metrics-list">
-                        <div class="sim-metric-row">
-                            <span>Cost Burn Rate:</span>
-                            <strong>${(derived.cost_burn_rate || 0).toFixed(2)}</strong>
-                        </div>
-                        <div class="sim-metric-row">
-                            <span>Schedule Velocity:</span>
-                            <strong>${(derived.schedule_velocity || 0).toFixed(2)} %/mo</strong>
-                        </div>
-                        <div class="sim-metric-row">
-                            <span>Delayed Milestone Ratio:</span>
-                            <strong>${((derived.delayed_milestone_ratio || 0) * 100).toFixed(1)}%</strong>
-                        </div>
-                        <div class="sim-metric-row">
-                            <span>Progress Gap Variance:</span>
-                            <strong class="${(derived.progress_gap || 0) < 0 ? 'text-red' : 'text-green'}">${(derived.progress_gap || 0).toFixed(1)}%</strong>
-                        </div>
-                    </div>
-                </div>
-            `;
+            // Sync any dedicated external DOM elements if present
+            const riskLevelElem = document.getElementById('sim-risk-level') || document.getElementById('risk-level');
+            if (riskLevelElem && riskLevelElem !== document.getElementById('simRiskLevel')) {
+                riskLevelElem.textContent = fullRiskLevel;
+            }
+            const confElem = document.getElementById('sim-confidence') || document.getElementById('confidence');
+            if (confElem && confElem !== document.getElementById('simConfidence')) {
+                confElem.textContent = `${confPct}%`;
+            }
 
         } catch (error) {
-            output.innerHTML = `
-                <div style="color:#DC2626;background:#FEE2E2;padding:12px;border-radius:8px;font-size:0.85rem;">
-                    <strong>Inference Error:</strong> ${error.message}
-                </div>
-            `;
+            console.error("Live ML Simulation runner error or payload mismatch:", error);
+            if (output) {
+                output.innerHTML = `
+                    <div style="color:#DC2626;background:#FEE2E2;padding:12px;border-radius:8px;font-size:0.85rem;">
+                        <strong>Inference Error:</strong> ${error?.message || "Simulation failed"}
+                    </div>
+                `;
+            }
         } finally {
-            btn.disabled = false;
-            btn.innerHTML = `<i class="fa-solid fa-bolt"></i> Run Live ML Inference`;
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-bolt"></i> Run Live ML Inference`;
+            }
         }
     },
 
