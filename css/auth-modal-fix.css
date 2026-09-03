@@ -1,0 +1,328 @@
+/* =====================================================
+   RISKLENS / PROJECT GUARDIAN - AUTH MODAL RESPONSIVE FIX
+   File: css/auth-modal-fix.css
+   Isolate modal layout, height, scrollbar, and OTP styles.
+   Guarantees full visibility across standard viewports (1080p / 768p / 100% zoom).
+   ===================================================== */
+
+/* Utility Visibility Helpers */
+.hidden {
+    display: none !important;
+}
+
+/* Modal Backdrop & Outer Container */
+.auth-modal,
+#authModal {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box !important;
+    z-index: 99999 !important;
+}
+
+.auth-modal.show,
+#authModal.show {
+    display: flex !important;
+}
+
+/* Modal Dialog Card Container */
+.auth-box,
+#authModal .auth-box,
+.auth-modal .auth-box,
+.modal-content {
+    max-height: 85vh !important;
+    min-height: 460px;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: grid !important;
+    box-sizing: border-box !important;
+    margin: auto !important;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f8fafc;
+}
+
+/* Form Area Internal Scroll */
+.auth-form-area,
+#authModal .auth-form-area,
+.auth-modal .auth-form-area {
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+    padding: 28px 42px 25px !important;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f8fafc;
+}
+
+/* Left Informational Area on desktop */
+.auth-info,
+#authModal .auth-info,
+.auth-modal .auth-info {
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+/* Compact input padding to prevent height cut-off */
+#registerForm .form-group,
+#loginForm .form-group,
+#otpForm .form-group {
+    margin-bottom: 12px;
+}
+
+#registerForm input,
+#loginForm input {
+    padding: 10px 14px;
+    font-size: 13.5px;
+}
+
+#registerForm .form-subtitle,
+#loginForm .form-subtitle,
+#otpForm .form-subtitle {
+    margin: 4px 0 14px;
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: #64748b;
+}
+
+/* WebKit Clean Custom Scrollbars */
+.auth-box::-webkit-scrollbar,
+.auth-form-area::-webkit-scrollbar,
+.auth-modal::-webkit-scrollbar,
+#authModal::-webkit-scrollbar,
+.modal-content::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.auth-box::-webkit-scrollbar-track,
+.auth-form-area::-webkit-scrollbar-track,
+.auth-modal::-webkit-scrollbar-track,
+#authModal::-webkit-scrollbar-track,
+.modal-content::-webkit-scrollbar-track {
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.auth-box::-webkit-scrollbar-thumb,
+.auth-form-area::-webkit-scrollbar-thumb,
+.auth-modal::-webkit-scrollbar-thumb,
+#authModal::-webkit-scrollbar-thumb,
+.modal-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+.auth-box::-webkit-scrollbar-thumb:hover,
+.auth-form-area::-webkit-scrollbar-thumb:hover,
+.auth-modal::-webkit-scrollbar-thumb:hover,
+#authModal::-webkit-scrollbar-thumb:hover,
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Feedback Notifications */
+.auth-feedback-banner {
+    padding: 10px 14px;
+    margin: 0 0 14px 0;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    font-weight: 500;
+    display: none;
+    animation: authFadeIn 0.25s ease;
+}
+
+.auth-feedback-banner.show {
+    display: block;
+}
+
+.auth-feedback-banner.success {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.auth-feedback-banner.error {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.auth-feedback-banner.info {
+    background-color: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+/* =====================================================
+   OTP FORM & 6-DIGIT BOXES INTERFACE
+===================================================== */
+#otpForm.auth-form {
+    display: none;
+}
+
+#otpForm.auth-form.active,
+#otpForm:not(.hidden) {
+    display: block;
+    animation: formSlide 0.35s ease;
+}
+
+.otp-target-display {
+    display: inline-block;
+    background: #f1f5f9;
+    color: #0d47a1;
+    font-weight: 700;
+    font-family: monospace, sans-serif;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-top: 4px;
+    word-break: break-all;
+    border: 1px solid #e2e8f0;
+}
+
+/* Expiration Warning & Countdown */
+.otp-expiration-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 6px 0 14px;
+    font-size: 13px;
+    color: #b45309;
+    font-weight: 600;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+.otp-expiration-line span {
+    font-family: monospace, sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    margin-left: 6px;
+}
+
+.otp-expiration-line.expired {
+    background: #fef2f2;
+    color: #b91c1c;
+    border-color: #fecaca;
+}
+
+/* 6-Digit Auto-Focusing Numeric Boxes */
+.otp-boxes-container {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+    margin: 10px 0 16px;
+}
+
+.otp-digit,
+.otp-box-digit {
+    width: 44px !important;
+    height: 50px !important;
+    font-size: 22px !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    padding: 0 !important;
+    border: 2px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    background: #ffffff !important;
+    color: #0a2558 !important;
+    font-family: monospace, sans-serif !important;
+    transition: all 0.2s ease !important;
+    outline: none !important;
+    box-sizing: border-box !important;
+}
+
+.otp-digit:focus,
+.otp-box-digit:focus {
+    border-color: #0d47a1 !important;
+    box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.15) !important;
+    background: #f0f7ff !important;
+}
+
+.otp-digit.filled,
+.otp-box-digit.filled {
+    border-color: #059669 !important;
+    background: #f0fdf4 !important;
+}
+
+.otp-actions-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 14px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-resend-otp {
+    background: none;
+    border: 1px solid #cbd5e1;
+    color: #0d47a1;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-resend-otp:hover:not(:disabled) {
+    background: #f0f7ff;
+    border-color: #93c5fd;
+}
+
+.btn-resend-otp:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    background: #f8fafc;
+    color: #64748b;
+    border-color: #e2e8f0;
+}
+
+/* Loading button state */
+button.auth-submit:disabled {
+    opacity: 0.75;
+    cursor: wait;
+}
+
+/* Responsive Overrides */
+@media (max-width: 850px) {
+    .auth-box,
+    #authModal .auth-box,
+    .modal-content {
+        max-height: 90vh !important;
+        grid-template-columns: 1fr !important;
+    }
+    .auth-info {
+        display: none !important;
+    }
+    .auth-form-area,
+    #authModal .auth-form-area {
+        padding: 24px 22px !important;
+    }
+    .otp-digit,
+    .otp-box-digit {
+        width: 38px !important;
+        height: 46px !important;
+        font-size: 20px !important;
+    }
+}
+
+@keyframes authFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
