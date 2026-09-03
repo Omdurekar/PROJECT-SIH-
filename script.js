@@ -892,73 +892,9 @@ async function registerUser(event) {
     }
 }
 
-// Bind auth forms
+// Bind auth forms (handled by js/auth-otp-handler.js to prevent race conditions & duplicate submits)
 document.addEventListener("DOMContentLoaded", function () {
-    const loginFormEl = document.getElementById("loginForm");
-    if (loginFormEl) {
-        loginFormEl.addEventListener("submit", loginUser);
-    }
-    const registerFormEl = document.getElementById("registerForm");
-    if (registerFormEl) {
-        registerFormEl.addEventListener("submit", registerUser);
-    }
-    const otpFormEl = document.getElementById("otpForm");
-    if (otpFormEl) {
-        otpFormEl.addEventListener("submit", async function (event) {
-            event.preventDefault();
-            const email = sessionStorage.getItem("registrationEmail") || registeredEmail;
-            const otpCode = document.getElementById("otpCode")?.value.trim();
-            if (!/^\d{6}$/.test(otpCode)) {
-                alert("OTP must contain exactly 6 digits.");
-                return;
-            }
-            try {
-                const response = await apiFetch("/auth/verify-otp", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, otp_code: otpCode })
-                });
-                const data = await response.json();
-                if (!response.ok) {
-                    alert(data.message || data.detail || "OTP verification failed.");
-                    return;
-                }
-                alert("Email verified successfully. You can now login.");
-                sessionStorage.removeItem("registrationEmail");
-                showLogin();
-            } catch (err) {
-                console.error(err);
-                alert("Unable to connect to the server.");
-            }
-        });
-    }
-
-    const resendOtpEl = document.getElementById("resendOtp");
-    if (resendOtpEl) {
-        resendOtpEl.addEventListener("click", async function () {
-            const email = sessionStorage.getItem("registrationEmail") || registeredEmail;
-            if (!email) {
-                alert("Email not found.");
-                return;
-            }
-            try {
-                const response = await apiFetch("/auth/resend-otp", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email })
-                });
-                const data = await response.json();
-                if (!response.ok) {
-                    alert(data.message || data.detail || "Unable to resend OTP.");
-                    return;
-                }
-                alert("A new OTP has been sent to your email.");
-            } catch (err) {
-                console.error(err);
-                alert("Unable to connect to the server.");
-            }
-        });
-    }
+    // Event listeners for auth forms are managed by js/auth-otp-handler.js
 });
 
 // Global window exposure for inline onclick / onsubmit attributes

@@ -48,6 +48,7 @@ app.add_middleware(
 # Include API Routers
 app.include_router(auth_router, prefix=settings.API_PREFIX)
 app.include_router(api_router, prefix=settings.API_PREFIX)
+app.include_router(auth_router) # Also mount auth_router at root for convenient direct calls
 app.include_router(api_router)  # Also mount at root for convenient direct calls
 
 

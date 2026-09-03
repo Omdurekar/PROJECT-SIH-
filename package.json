@@ -5,7 +5,7 @@
   "main": "app/main.py",
   "scripts": {
     "backend": "python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000",
-    "frontend": "npx live-server . --port=3000 --entry=index.html --no-browser",
+    "frontend": "npx live-server . --port=3000 --entry=index.html --no-browser --ignore=sih_project_monitoring.db,*.db,*.sqlite,*.log,app/**,temporary_data/**",
     "dev": "npx concurrently -k -n \"BACKEND,FRONTEND\" -c \"blue.bold,green.bold\" \"npm run backend\" \"npm run frontend\""
   },
   "devDependencies": {

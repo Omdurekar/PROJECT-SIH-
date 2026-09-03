@@ -615,11 +615,6 @@
       registerForm.addEventListener('submit', handleRegisterTransition, { capture: true });
     }
 
-    const createAccountBtn = document.querySelector('#registerForm button[type="submit"]');
-    if (createAccountBtn) {
-      createAccountBtn.addEventListener('click', handleRegisterTransition, { capture: true });
-    }
-
     const otpForm = document.getElementById('otpForm');
     if (otpForm) {
       otpForm.addEventListener('submit', handleVerifyOtp, { capture: true });
