@@ -23,6 +23,7 @@
 
     </style> -->
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/auth-modal-fix.css">
 </head>
 
 
@@ -1687,7 +1688,7 @@
                                 </div>
 
 
-                                <button type="submit" class="auth-submit">
+                                <button type="submit" class="auth-submit" onclick="registerUser(event)">
 
                                     Create Account
 
@@ -1710,12 +1711,67 @@
 
                             </form>
 
+                            <!-- =================================================
+                                 OTP VERIFICATION FORM
+                            ================================================== -->
+                            <form id="otpForm" class="auth-form hidden" onsubmit="verifyOtp(event)">
+
+                                <h2>Verify Your Email</h2>
+
+                                <p class="form-subtitle">
+                                    Enter the 6-digit OTP sent to<br>
+                                    <strong id="otpTargetEmailDisplay" class="otp-target-display">user@example.com</strong>
+                                </p>
+
+                                <div class="otp-expiration-line" id="otpExpirationLine">
+                                    OTP expires in <span id="otpExpireCountdown">02:00</span>
+                                </div>
+
+                                <div id="otpFeedbackBanner" class="auth-feedback-banner"></div>
+
+                                <div class="form-group">
+                                    <label for="otpCode">Enter 6-Digit OTP *</label>
+                                    <div class="otp-boxes-container" id="otpBoxesContainer">
+                                        <input type="text" maxlength="1" class="otp-digit otp-box-digit" data-index="0" inputmode="numeric" pattern="[0-9]" autofocus autocomplete="one-time-code">
+                                        <input type="text" maxlength="1" class="otp-digit otp-box-digit" data-index="1" inputmode="numeric" pattern="[0-9]">
+                                        <input type="text" maxlength="1" class="otp-digit otp-box-digit" data-index="2" inputmode="numeric" pattern="[0-9]">
+                                        <input type="text" maxlength="1" class="otp-digit otp-box-digit" data-index="3" inputmode="numeric" pattern="[0-9]">
+                                        <input type="text" maxlength="1" class="otp-digit otp-box-digit" data-index="4" inputmode="numeric" pattern="[0-9]">
+                                        <input type="text" maxlength="1" class="otp-digit otp-box-digit" data-index="5" inputmode="numeric" pattern="[0-9]">
+                                    </div>
+                                    <input type="hidden" id="otpCode" name="otp_code">
+                                </div>
+
+                                <button type="submit" class="auth-submit" id="otpSubmitBtn">
+                                    Verify OTP
+                                    <span>→</span>
+                                </button>
+
+                                <div class="otp-actions-row">
+                                    <button type="button" class="btn-resend-otp" id="resendOtpBtn" onclick="resendOtp(event)" disabled>
+                                        Resend in 60s
+                                    </button>
+                                    <p class="switch-text" style="margin: 0;">
+                                        Change details?
+                                        <button type="button" onclick="showRegister()">
+                                            Register
+                                        </button>
+                                    </p>
+                                </div>
+
+                            </form>
+
+                            <!-- Legacy Safe Guard Container -->
+                            <div id="authMessage" style="display: none;"></div>
+
                         </div>
 
                     </div>
 
                 </div>
+                <script src="js/auth.js"></script>
                 <script src="script.js"></script>
+                <script src="js/auth-otp-handler.js"></script>
 </body>
 
 </html>
