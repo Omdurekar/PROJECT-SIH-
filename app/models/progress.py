@@ -1,12 +1,7 @@
 import datetime
 from typing import Optional
 from pydantic import BaseModel, Field
-<<<<<<< HEAD
-=======
-from app.config.database import Base
-
 # --- ORM Model ---
->>>>>>> origin/main
 from app.models.orm import ProgressUpdate
 
 # --- Pydantic Schemas ---

@@ -4,12 +4,6 @@ from pydantic import BaseModel, Field
 from app.models.orm import PredictionLog, AuditLog
 from app.models.project import ProjectResponse
 
-<<<<<<< HEAD
-=======
-# --- ORM Models ---
-from app.models.orm import PredictionLog, AuditLog
-
->>>>>>> origin/main
 # --- Pydantic Schemas ---
 class PredictionRequest(BaseModel):
     budget: float = Field(..., gt=0)

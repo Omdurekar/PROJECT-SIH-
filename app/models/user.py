@@ -1,14 +1,8 @@
 import datetime
 from typing import Optional
-<<<<<<< HEAD
-from pydantic import BaseModel, EmailStr
-=======
-from sqlalchemy import Column, Integer, String, DateTime
 from pydantic import BaseModel, EmailStr, Field
-from app.config.database import Base
 
 # --- ORM Model ---
->>>>>>> origin/main
 from app.models.orm import User
 
 # --- Pydantic Schemas ---

@@ -466,7 +466,25 @@ const RISKLENS_ANALYSIS = {
         let progressVelocity = parseFloat(p.progress_velocity_clean !== undefined ? p.progress_velocity_clean : (projectAgeMonths > 0 ? physicalProgress / projectAgeMonths : 2.5));
 
         // Predictions & Risk
-        let riskClass = (p.risk_class_prediction || p.delay_level || "").toUpperCase();
+        let rawRiskVal = (p.risk_class_prediction !== undefined && p.risk_class_prediction !== null && p.risk_class_prediction !== "")
+            ? p.risk_class_prediction
+            : p.delay_level;
+
+        let riskClass = "";
+        if (typeof rawRiskVal === "number" || (rawRiskVal !== null && rawRiskVal !== "" && !isNaN(rawRiskVal))) {
+            const numRisk = Number(rawRiskVal);
+            if (numRisk === 2) riskClass = "HIGH";
+            else if (numRisk === 1) riskClass = "MEDIUM";
+            else if (numRisk === 0) riskClass = "LOW";
+        }
+
+        if (!riskClass && rawRiskVal) {
+            const upperStr = String(rawRiskVal).trim().toUpperCase();
+            if (["HIGH", "MEDIUM", "LOW"].includes(upperStr)) {
+                riskClass = upperStr;
+            }
+        }
+
         if (!riskClass || !["HIGH", "MEDIUM", "LOW"].includes(riskClass)) {
             if (physicalProgress < 40 && (slippageMonths > 6 || costOverrunPct > 15)) {
                 riskClass = "HIGH";
